@@ -19,7 +19,7 @@ function Customers() {
       {
       customer && (
         <AddCustomer
-        onClick={()=>setCustomer(false)}
+        close={()=>setCustomer(false)}
         />
       )
     }

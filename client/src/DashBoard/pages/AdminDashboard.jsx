@@ -8,7 +8,7 @@ const AdminDashboard = () => {
 
 
   return (
-    <section className="min-h-screen bg-gray-50 p-4 lg:p-8">
+    <section className="min-h-screen p-1 bg-gray-50  lg:p-8">
       
       <div className=" w-full">
         
