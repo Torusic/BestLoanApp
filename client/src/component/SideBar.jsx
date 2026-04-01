@@ -14,16 +14,17 @@ function SideBar() {
       icon: <MdHome />,
       path: "/adminStats/adminDashboard"
     },
+     {
+      name: "Loans",
+      icon: <FaMoneyBillWave />,
+      path: "/adminStats/loans"
+    },
     {
       name: "Customers",
       icon: <IoPeople />,
       path: "/adminStats/customers"
     },
-    {
-      name: "Loans",
-      icon: <FaMoneyBillWave />,
-      path: "/adminStats/loans"
-    },
+   
     {
       name: "Repayments",
       icon: <FaMoneyBillWave />,

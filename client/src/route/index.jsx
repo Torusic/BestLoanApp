@@ -6,6 +6,7 @@ import Login from "../AuthPages/Login.jsx";
 import AdminStats from "../DashBoard/AdminStats.jsx";
 import AdminDashboard from "../DashBoard/pages/AdminDashboard.jsx";
 import Customers from "../DashBoard/pages/Customers.jsx";
+import Loan from "../DashBoard/pages/Loan.jsx";
 
 const router=createBrowserRouter([
     {
@@ -28,6 +29,10 @@ const router=createBrowserRouter([
             children:[{
                 path:'adminDashboard',
                 element:<AdminDashboard/>
+            },
+            {
+                path:'loans',
+                element:<Loan/>
             },
             {
                 path:'customers',

@@ -14,16 +14,17 @@ function Footer() {
       icon: <MdHome size={22} />,
       path: "/adminStats/adminDashboard"
     },
+     {
+      name: "Loans",
+      icon: <FaMoneyBillWave size={22} />,
+      path: "/adminStats/loans"
+    },
     {
       name: "Customers",
       icon: <IoPeople size={22} />,
       path: "/adminStats/customers"
     },
-    {
-      name: "Loans",
-      icon: <FaMoneyBillWave size={22} />,
-      path: "/adminStats/loans"
-    },
+   
     {
       name: "Repayments",
       icon: <GiReceiveMoney size={22} />,
