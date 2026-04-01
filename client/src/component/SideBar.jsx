@@ -39,7 +39,7 @@ function SideBar() {
 
   return (
 
-      <aside className="hidden  sticky top-0 left-0 lg:flex flex-col w-64 h-screen bg-white border-r border-gray-100 shadow-sm p-4">
+      <aside className="hidden  fixed top-16 lg:flex flex-col w-64 h-screen bg-white border-r border-gray-100 shadow-sm p-4">
 
       <div className="mb-8">
         <h1 className="text-lg font-bold text-gray-800">

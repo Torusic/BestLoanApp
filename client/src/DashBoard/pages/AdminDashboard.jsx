@@ -1,129 +1,186 @@
-import React from 'react'
-import Footer from '../../component/Footer'
-import { IoIosPersonAdd } from "react-icons/io";
-import { FcApproval } from "react-icons/fc";
-import { FaHistory } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react'
+import { IoIosPersonAdd } from "react-icons/io"
+import { FcApproval } from "react-icons/fc"
+import { FaHistory } from 'react-icons/fa'
+import AxiosToastError from '../../utils/AxiosToastError'
+import Axios from '../../utils/Axios'
+import SummaryApi from '../../common/SummaryApi'
+import toast from 'react-hot-toast'
+import { LuLoader } from "react-icons/lu"
 
 const AdminDashboard = () => {
+  const [stats, setStats] = useState(null)
 
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const response = await Axios({
+          ...SummaryApi.getStats,
+        })
+
+        if (response.data.success) {
+          toast.success(response.data.message)
+          setStats(response.data.data)
+        }
+
+      } catch (error) {
+        AxiosToastError(error)
+      }
+    }
+
+    fetch()
+  }, [])
+
+  const formatCurrency = (num) =>
+    new Intl.NumberFormat('en-KE', {
+      style: 'currency',
+      currency: 'KES'
+    }).format(num || 0)
 
   return (
-    <section className="min-h-screen p-1 bg-gray-50  lg:p-8">
-      
-      <div className=" w-full">
-        
-        {/* HEADER */}
-        <div className="mb-6">
-          <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-500 text-sm">
-            Overview of system performance and loan activity
-          </p>
-        </div>
-        <div className='grid grid-cols md:grid-cols lg:grid-cols-3  gap-2 my-2'>
-          <div className='bg-white p-3 rounded-2xl shadow-sm grid grid-cols justify-center border border-gray-100'>
-            <p className="text-sm text-gray-500 font-semibold">Total Amount Issued</p>
-            <h2 className="text-xl font-bold text-green-600 mt-1">12800</h2>
+    <section className="min-h-screen p-1 bg-gradient-to-br from-gray-50 to-gray-100 lg:p-8">
+
+      <div className="w-full">
+
+        {!stats ? (
+          <div className='flex items-center justify-center h-[50vh]'>
+            <LuLoader className='animate-spin text-2xl text-gray-500' />
           </div>
-        </div>
-         <div className=' grid grid-cols-2 justify-between gap-2 my-2'>
-               <div className='bg-white p-3 rounded-2xl shadow-sm grid  justify-between  border border-gray-100'>
-               <p className="text-sm text-gray-500 font-semibold">Total Amount Repaid</p>
-               <h2 className="text-xl font-bold text-green-600 mt-1">12800</h2>
-               </div>
-            <div className='bg-white p-3 rounded-2xl shadow-sm grid  justify-between  border border-gray-100'>
-               <p className="text-sm text-gray-500 font-semibold">Total Amount </p>
-               <h2 className="text-xl font-bold text-green-600 mt-1">12800</h2>
+        ) : (
+
+          <div>
+
+            {/* HEADER */}
+            <div className="mb-6">
+              <h1 className="text-2xl lg:text-3xl font-semibold text-gray-800 tracking-tight">
+                Admin Dashboard
+              </h1>
+              <p className="text-gray-400 text-sm">
+                Overview of system performance and loan activity
+              </p>
+            </div>
+
+            {/* MAIN KPI */}
+            <div className='bg-gradient-to-r from-indigo-500 to-indigo-600 text-white lg:p-6 p-5 rounded-2xl shadow-md hover:shadow-lg transition'>
+              <p className="text-sm opacity-80 font-medium">Total Amount Issued</p>
+              <h2 className="text-2xl font-bold mt-1">
+                {formatCurrency(stats?.totalAmountIssued)}
+              </h2>
+            </div>
+
+            {/* SECONDARY STATS */}
+            <div className='grid grid-cols-2 gap-3 my-3'>
+
+              <div className='bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition'>
+                <p className="text-sm text-gray-500 font-medium">Total Amount Repaid</p>
+                <h2 className="text-xl font-bold text-emerald-500 mt-1">
+                  {formatCurrency(stats?.totalAmountRepaid)}
+                </h2>
+              </div>
+
+              <div className='bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition'>
+                <p className="text-sm text-gray-500 font-medium">Total Overdue Amount</p>
+                <h2 className="text-xl font-bold text-rose-500 mt-1">
+                  {formatCurrency(stats?.totalOverdueAmount)}
+                </h2>
+              </div>
 
             </div>
 
+            {/* SMALL STATS GRID */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-gray-500">Total Clients</p>
+                  <h2 className="text-xl font-bold text-gray-800 mt-1">
+                    {stats?.totalClients}
+                  </h2>
+                </div>
+                <IoIosPersonAdd className='text-emerald-500 text-2xl' />
+              </div>
+
+              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition">
+                <p className="text-sm text-gray-500">Total Agents</p>
+                <h2 className="text-xl font-bold text-indigo-500 mt-1">
+                  {stats?.totalAgents}
+                </h2>
+              </div>
+
+              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-gray-500">Loans Approved</p>
+                  <h2 className="text-xl font-bold text-gray-800 mt-1">
+                    {stats?.loansApproved}
+                  </h2>
+                </div>
+                <FcApproval className='text-xl' />
+              </div>
+
+              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-gray-500">Loans Pending</p>
+                  <h2 className="text-xl font-bold text-amber-500 mt-1">
+                    {stats?.loansPending}
+                  </h2>
+                </div>
+                <FaHistory className='text-amber-500 text-lg' />
+              </div>
+
             </div>
 
-        {/* STATS GRID */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          
-          {/* CARD */}
-          <div className="bg-white p-3 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100">
-            <div className='grid items-center'>
-            <p className="text-sm text-gray-500">Total Clients</p>
-            <h2 className="text-xl font-bold text-gray-800 mt-1">128</h2>
+            {/* TABLE */}
+            <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border border-gray-200/50 p-4 overflow-x-auto hover:shadow-lg transition">
+
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Agent Performance
+              </h3>
+
+              <table className="min-w-full text-xs text-left">
+
+                <thead className="bg-gray-50/70 text-gray-500 uppercase tracking-wide text-[11px]">
+                  <tr>
+                    <th className="px-4 py-3">Agent Name</th>
+                    <th className="px-4 py-3">Total Loans</th>
+                    <th className="px-4 py-3">Amount Issued</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  {stats?.agentStats?.length > 0 ? (
+                    stats.agentStats.map((agent) => (
+                      <tr
+                        key={agent.agentId}
+                        className="border-t border-gray-100/60 hover:bg-gray-50/60 transition"
+                      >
+                        <td className="px-4 py-2 text-gray-700">{agent.name}</td>
+                        <td className="px-4 py-2 text-gray-600">{agent.totalLoans}</td>
+                        <td className="px-4 py-2 text-emerald-600 font-semibold">
+                          {formatCurrency(agent.totalAmountIssued)}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="text-center py-6 text-gray-400">
+                        No agent data available
+                      </td>
+                    </tr>
+                  )}
+
+                </tbody>
+
+              </table>
+
             </div>
-            <IoIosPersonAdd  className='text-green-400' />
-            
-          </div>
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-            <p className="text-sm text-gray-500">Total Agents</p>
-            <h2 className="text-xl font-bold text-green-500 mt-1">8</h2>
+
           </div>
 
-          <div className="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-gray-100">
-            <div>
-              <p className="text-sm text-gray-500">Loans Approved</p>
-            <h2 className="text-xl font-bold text-gray-800 mt-1">18</h2>
-
-            </div>
-            
-            <FcApproval />
-          </div>
-
-          
-
-          <div className="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-gray-100">
-            <div>
-              <p className="text-sm text-gray-500">Loans Pending</p>
-            <h2 className="text-xl font-bold text-yellow-500 mt-1">9</h2>
-            </div>
-
-            <FaHistory className='text-yellow-400'/>
-          </div>
-
-        </div>
-
-        
-        <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 overflow-x-auto">
-  
-  <h3 className="text-lg font-semibold text-gray-800 mb-4">
-    Agent Performance
-  </h3>
-
-  <table className="min-w-full text-xs text-left">
-    
-    
-    <thead className="bg-gray-50 text-gray-600  text-xs">
-      <tr>
-        <th className="px-4 py-3 text-xs">Agent Name</th>
-        <th className="px-4 py-3">Total Loans</th>
-        <th className="px-4 py-3">Amount Issued</th>
-        
-      </tr>
-    </thead>
-
-   
-    <tbody >
-      <tr className="hover:bg-gray-50">
-        <td className="px-4 py-3 font-medium text-gray-800">John Doe</td>
-        <td className="px-4 py-3">12</td>
-        <td className="px-4 py-3 text-green-600">KES 45,000</td>
-       
-      </tr>
-
-      <tr className="hover:bg-gray-50">
-        <td className="px-4 py-3 font-medium text-gray-800">Jane Smith</td>
-        <td className="px-4 py-3">8</td>
-        <td className="px-4 py-3 text-green-600">KES 30,000</td>
-        
-      </tr>
-    </tbody>
-
-  </table>
-</div>
-
-
+        )}
 
       </div>
 
-      
     </section>
   )
 }
