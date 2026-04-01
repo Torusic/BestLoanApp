@@ -6,9 +6,11 @@ import SummaryApi from '../../common/SummaryApi'
 import AxiosToastError from '../../utils/AxiosToastError'
 import { LuLoader } from "react-icons/lu"
 import { FaInfoCircle } from 'react-icons/fa'
+import Approve from './actions/Approve'
 
 function Loan() {
   const [customer, setCustomer] = useState(false)
+  const[approve,setApprove]=useState(false)
   const [loans, setLoans] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -46,10 +48,10 @@ const formatDate = (dateString) => {
 }
 
   return (
-    <section className='bg-gray-100 h-full overflow-y-auto '>
+    <section className='bg-gray-100   overflow-y-auto scrollbar-hidden '>
       <div className='bg-white p-2 lg:p-6 max-w-7xl mx-auto rounded-2xl shadow-sm'>
-        <div className='sticky top-0'>
-                  <div className='flex items-center justify-between mb-6'>
+        <div className='sticky top-0 mb-2 p-2  rounded-sm'>
+        <div className='flex  items-center justify-between mb-6'>
           <h2 className='text-xl font-bold text-gray-800'>Loans</h2>
           <div>
             
@@ -67,7 +69,6 @@ const formatDate = (dateString) => {
           
         </div>
         <p className='flex items-center gap-2 text-xs my-2'><FaInfoCircle size={20} />Verify the M-Pesa code before approving or rejecting.</p>
-
         </div>
    
 
@@ -79,9 +80,9 @@ const formatDate = (dateString) => {
             </div>
           ) : (
             
-            <div className="overflow-x-auto scrollbar-hidden ">
+            <div className="overflow-x-auto overflow-y-auto scrollbar-hidden ">
               
-              <table className='min-w-full text-sm rounded-full '>
+              <table className='min-w-full  overflow-y-auto scrollbar-hidden text-sm rounded-full '>
               
                 <thead className='bg-gray-200  text-xs text-gray-600'>
                   <tr>
@@ -98,7 +99,7 @@ const formatDate = (dateString) => {
                   </tr>
                 </thead>
 
-                <tbody className='text-xs'>
+                <tbody className='text-xs h-full overflow-y-auto scrollbar-hidden '>
                   {loans.map((loan) => (
 
                     <tr key={loan._id} className=' hover:bg-gray-50'>
@@ -159,15 +160,15 @@ const formatDate = (dateString) => {
                         <div className="flex gap-2">
 
                           <button
-                           
-                            className="px-3 py-1 text-xs bg-green-500 text-white rounded-lg disabled:opacity-40"
+                          onClick={()=>setApprove(true)}
+                            className="px-3 py-1 text-xs cursor-pointer bg-green-500 text-white rounded-lg disabled:opacity-40"
                           >
                             Approve
                           </button>
 
                           <button
                             
-                            className="px-3 py-1 text-xs bg-red-500 text-white rounded-lg disabled:opacity-40"
+                            className="px-3 py-1 text-xs cursor-pointer bg-red-500 text-white rounded-lg disabled:opacity-40"
                           >
                             Reject
                           </button>
@@ -190,9 +191,17 @@ const formatDate = (dateString) => {
       {customer && (
         <AddLoan 
         close={() => setCustomer(false)} 
-       
+        fetch={fetchLoans}
         />
       )}
+      {
+        approve && (
+          <Approve
+          close={()=>setApprove(false)}
+          />
+        )
+
+      }
     </section>
   )
 }

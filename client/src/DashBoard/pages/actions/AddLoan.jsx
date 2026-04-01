@@ -3,10 +3,11 @@ import { IoClose } from 'react-icons/io5'
 import AxiosToastError from '../../../utils/AxiosToastError'
 import SummaryApi from '../../../common/SummaryApi'
 import toast from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
-import Axios from '../../../utils/Axios'
 
-function AddLoan({close}) {
+import Axios from '../../../utils/Axios'
+import { useNavigate } from 'react-router-dom'
+
+function AddLoan({close,fetch}) {
     const navigate=useNavigate()
 
     const[data,setData]=useState({
@@ -36,7 +37,9 @@ function AddLoan({close}) {
                     durationWeeks:4,
                     mpesaCode:""
                 })
-                navigate('/adminStats/loans')
+                fetch()
+                close()
+                navigate("/adminStats/loans")
             }else{
                 toast.error(response.data.error)
             }
@@ -75,7 +78,7 @@ const decrement = () => {
     
   return (
     
-    <section className='bg-gray-950/50 fixed top-0 flex  items-center justify-center bottom-0 right-0 left-0 '>
+    <section className='bg-gray-950/50 z-50 fixed top-0 flex  items-center justify-center bottom-0 right-0 left-0 '>
          <div className='bg-white py-6 px-5 max-w-sm md:max-w-md w-full lg:max-w-3xl lg:w-full rounded mx-2 '>
             <div className='flex justify-between items-center'>
                 <p className='text-xs font-semibold lg:text-sm my-2 text-gray-700'>Apply Loan for Customer</p>
@@ -137,7 +140,7 @@ const decrement = () => {
 
             </div>
                 <div className='flex items-center justify-center my-3 mt-6'>
-                    <button type='submit' className=' w-full cursor-pointer text-white  font-semibold  bg-gray-900 p-3 rounded-lg '>
+                    <button   className=' w-full cursor-pointer text-white  font-semibold  bg-gray-900 p-3 rounded-lg '>
                         Add Loan
                     </button>
 
