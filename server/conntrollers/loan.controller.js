@@ -1,7 +1,7 @@
 import { request } from "express";
 import LoanModel from "../models/loan.model.js";
 import UserModel from "../models/user.model.js";
-import bcrypjs from 'bcryptjs'
+import bcryptjs from 'bcryptjs'
 
 //Apply loan
 export async function applyLoanOnline(req,res){
@@ -63,7 +63,7 @@ export async function applyLoanOnline(req,res){
 export async function applyLoanViaAgent(req,res) {
     try {
         const agentId=req.userId;
-        const{name,email,phone,nationalId, amount, durationWeeks}=req.body
+        const{name,email,phone,nationalId, amount, durationWeeks,mpesaCode}=req.body
 
         //check if user exists
         let client=await UserModel.findOne({nationalId});
@@ -110,13 +110,33 @@ export async function applyLoanViaAgent(req,res) {
         })
 
         }
+        if(!mpesaCode){
+            return res.status(400).json({
+                message:"Enter a valid code !!!",
+                error:true,
+                success:false
+            })
+        }
+
+      const existingMpesacode=await LoanModel.findOne({mpesaCode})
+      if(existingMpesacode){
+            return res.status(400).json({
+                message:"Enter a valid code !!!",
+                error:true,
+                success:false
+            })
+        }
         //create loan
          const loan = await LoanModel.create({
             user: client._id,
             agent: agentId,
             amount,
-            durationWeeks
+            durationWeeks,
+            mpesaCode
     });
+
+   
+       
 
     return res.status(200).json({
         message:"Loan via agent submitted successfully",
@@ -124,6 +144,7 @@ export async function applyLoanViaAgent(req,res) {
         success:true,
         data:loan
     })
+    
         
        
     } catch (error) {
