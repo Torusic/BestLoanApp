@@ -69,7 +69,7 @@ export async function applyLoanViaAgent(req,res) {
         let client=await UserModel.findOne({nationalId});
 
        if(!client){
-         const hashedPassword = await bcryptjs.hash("1234", 10);
+         const hashedPassword = await  bcryptjs.hash("1234", 10);
 
          client = await UserModel.create({
             name,
