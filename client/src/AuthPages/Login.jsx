@@ -86,8 +86,8 @@ const handleChange = (e) => {
                 <p className='text-xs lg:text-sm text-gray-500 cursor-pointer'>forgot password ?</p>
               </div>
 
-              <div className='bg-gradient-to-r from-green-400 flex items-center justify-center to-green-500 rounded-lg  p-1 my-3'>
-                <button  className='text-white font-semibold  '><Link to={'/adminStats/adminDashboard'}>Login</Link></button>
+              <div className='bg-gradient-to-r from-green-400 flex items-center justify-center to-green-500 rounded-lg  p-2 my-3'>
+                <button  className='text-white font-semibold  '>Login</button>
               </div>
 
               <div className='my-4 mx-2 flex'>
