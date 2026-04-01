@@ -3,7 +3,7 @@ import { IoClose } from 'react-icons/io5'
 
 function Approve({close}) {
   return (
-    <section className='bg-gray-900/70 fixed bottom-0 top-0 right-0 left-0 flex items-center  justify-center'>
+    <section className='bg-gray-900/70 z-50 p-3 fixed bottom-0 top-0 right-0 left-0 flex items-center  justify-center'>
         <div className='md:max-w-md bg-white md:w-full lg:max-w-lg lg:w-full max-w-sm w-full p-7 rounded-lg shadow-2xl'>
 
             <div className='flex items-center justify-between '>
