@@ -46,11 +46,15 @@ const formatDate = (dateString) => {
 }
 
   return (
-    <section className='bg-gray-100 min-h-screen overflow-y-auto p-2'>
-      <div className='bg-white p-4 lg:p-6 max-w-7xl mx-auto rounded-2xl shadow-sm'>
-
-        <div className='flex items-center justify-between mb-6'>
+    <section className='bg-gray-100 h-full overflow-y-auto '>
+      <div className='bg-white p-2 lg:p-6 max-w-7xl mx-auto rounded-2xl shadow-sm'>
+        <div className='sticky top-0'>
+                  <div className='flex items-center justify-between mb-6'>
           <h2 className='text-xl font-bold text-gray-800'>Loans</h2>
+          <div>
+            
+          </div>
+
 
           <button
             onClick={() => setCustomer(true)}
@@ -59,7 +63,14 @@ const formatDate = (dateString) => {
             <IoAdd />
             Apply Loan
           </button>
+
+          
         </div>
+        <p className='flex items-center gap-2 text-xs my-2'><FaInfoCircle size={20} />Verify the M-Pesa code before approving or rejecting.</p>
+
+        </div>
+   
+
 
         {
           loading ? (
@@ -68,9 +79,8 @@ const formatDate = (dateString) => {
             </div>
           ) : (
             
-            <div className="overflow-x-auto scrollbar-hidden">
-              <p className='flex items-center gap-2 text-xs my-2'><FaInfoCircle size={20} />Verify the M-Pesa code before approving or rejecting.
-</p>
+            <div className="overflow-x-auto scrollbar-hidden ">
+              
               <table className='min-w-full text-sm rounded-full '>
               
                 <thead className='bg-gray-200  text-xs text-gray-600'>
