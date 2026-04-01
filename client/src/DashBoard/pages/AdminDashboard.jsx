@@ -80,30 +80,7 @@ const AdminDashboard = () => {
 
         </div>
 
-        {/* EXTRA SECTION (Optional SaaS feel) */}
-        <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            System Summary
-          </h3>
-
-          <div className="flex lg:flex-cols-4 md:flex-cols-3 justify-between  gap-2">
-            <div className="bg-gray-50 p-4  rounded-xl">
-              <p className="text-xs text-gray-500">Active Loans</p>
-              <p className="text-sm font-bold text-gray-800">17</p>
-            </div>
-
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <p className="text-xs text-gray-500">Fees Pending</p>
-              <p className="text-sm font-bold text-red-500">3</p>
-            </div>
-
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <p className="text-xs text-gray-500">Fees Verified </p>
-              <p className="text-xs font-bold text-green-600">3</p>
-            </div>
-          </div>
-        </div>
-
+        
         <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 overflow-x-auto">
   
   <h3 className="text-lg font-semibold text-gray-800 mb-4">
