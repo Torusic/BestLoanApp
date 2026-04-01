@@ -1,7 +1,7 @@
 import { request } from "express";
 import LoanModel from "../models/loan.model.js";
 import UserModel from "../models/user.model.js";
-import bcryptjs from 'bcryptjs'
+import bcryptjs from "bcryptjs"
 
 //Apply loan
 export async function applyLoanOnline(req,res){

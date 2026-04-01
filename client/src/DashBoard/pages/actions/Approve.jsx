@@ -11,7 +11,7 @@ function Approve({close}) {
                 <IoClose onClick={close}/>
             </div>
             <div className='my-5 grid items-center justify-between gap-2'>
-                <p className='lg:text-sm text-sm font-semibold text-gray-900'>
+                <p className='lg:text-sm text-sm font-normal text-gray-900'>
                     Are you Sure you want to approve ?
                  </p>
 
