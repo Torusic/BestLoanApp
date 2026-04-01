@@ -12,7 +12,7 @@ const AdminStats = () => {
         <div className="hidden lg:block w-64">
           <SideBar />
         </div>
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 overflow-y-auto scrollbar-hidden h-full">
           <Outlet />
         </div>
       </div>

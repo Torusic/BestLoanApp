@@ -71,7 +71,7 @@ function AddLoan({close}) {
                 </div>
                  <div className='flex items-center justify-center my-3 mt-6'>
                     <button className=' w-full cursor-pointer text-white font-semibold bg-green-400 p-3 rounded-lg '>
-                        Add Customer
+                        Add Loan
                     </button>
 
                 </div>
