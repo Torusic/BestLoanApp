@@ -135,13 +135,8 @@ const AdminDashboard = () => {
                 <h3 className="lg:text-lg md:text-sm text-xs  font-semibold text-gray-800 mb-4">
                   Agent Performance
                 </h3>
-                <div className='flex items-center gap-2'>
-                  <button
-                    onClick={() => navigate("/adminStats/allAgents")}
-                    className='bg-gray-200 text-gray-700 px-4 py-2 rounded-xl md:text-sm text-xs lg:text-lg'
-                  >
-                    View All
-                  </button>
+                
+
                   <button
                     onClick={() => setAddAgent(true)}
                     className='flex items-center gap-2 bg-gray-900 cursor-pointer text-white px-4 py-2 rounded-xl md:text-sm text-xs lg:text-lg'
@@ -149,7 +144,7 @@ const AdminDashboard = () => {
                     <IoAdd />
                     Add Agent
                   </button>
-                </div>
+                
               </div>
 
               <table className="min-w-full text-xs text-left">
@@ -175,6 +170,7 @@ const AdminDashboard = () => {
                         <td className="px-4 py-2 text-emerald-600 font-semibold">
                           {formatCurrency(agent.totalAmountIssued)}
                         </td>
+
                       </tr>
                     ))
                   ) : (
@@ -185,9 +181,20 @@ const AdminDashboard = () => {
                     </tr>
                   )}
 
+
                 </tbody>
 
-              </table>
+              </table> 
+              <div className='w-fit ml-auto my-2'>
+                  <button
+                    onClick={() => navigate("/adminStats/allAgents")}
+                    className='bg-gray-200 text-gray-700 px-4  py-2 rounded-xl md:text-sm text-xs lg:text-lg'
+                  >
+                    View All
+                  </button>
+
+              </div>
+
 
             </div>
 
