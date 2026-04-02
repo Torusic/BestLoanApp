@@ -38,7 +38,7 @@ function Footer() {
   ]
 
   return (
-    <section className="sticky bottom-0 z-100 bg-gray-100 border-t border-gray-100 shadow-lg px-4 py-2 rounded-t-2xl">
+    <section className="sticky bottom-0 z-10001 bg-gray-100 border-t border-gray-100 shadow-lg px-4 py-2 rounded-t-2xl">
 
       <div className="flex items-center justify-between">
 
