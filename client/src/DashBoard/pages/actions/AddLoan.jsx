@@ -78,7 +78,7 @@ const decrement = () => {
     
   return (
     
-    <section className='bg-gray-950/50  fixed top-0 flex  items-center justify-center bottom-0 right-0 left-0 '>
+    <section className='bg-gray-950/50   fixed top-0 flex  items-center justify-center bottom-0 right-0 left-0 '>
          <div className='bg-white py-6 px-5 max-w-sm md:max-w-md w-full lg:max-w-3xl lg:w-full rounded mx-2 '>
             <div className='flex justify-between items-center'>
                 <p className='text-xs font-semibold lg:text-sm my-2 text-gray-700'>Apply Loan for Customer</p>
