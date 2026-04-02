@@ -103,6 +103,7 @@ function Loan() {
                     <tr>
                       <th className="px-4 py-3 text-left">Customer</th>
                       <th className="px-4 py-3 hidden md:table-cell">ID</th>
+                      <th className="px-4 py-3 hidden md:table-cell">Agent Name</th>
                       <th className="px-4 py-3">Amount</th>
                       <th className="px-4 py-3">Duration</th>
                       <th className="px-4 py-3">M-Pesa Code</th>
@@ -125,7 +126,9 @@ function Loan() {
                         <td className="px-4 py-3 hidden md:table-cell">
                           {loan.user?.nationalId}
                         </td>
-
+                         <td className="px-4 py-3 hidden md:table-cell">
+                          {/**{loan.agent.name || 'Self application'}*/}
+                        </td>
                         <td className="px-4 py-3 text-green-600 font-semibold">
                           KES {loan.amount}
                         </td>

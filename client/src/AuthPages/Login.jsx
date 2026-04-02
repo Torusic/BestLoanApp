@@ -4,6 +4,7 @@ import AxiosToastError from '../utils/AxiosToastError'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import toast from 'react-hot-toast'
+import { LuLoaderCircle } from 'react-icons/lu'
 
 const Login = () => {
     const navigate=useNavigate()
@@ -39,6 +40,9 @@ const Login = () => {
         } catch (error) {
             AxiosToastError(error)
         }
+        finally{
+            setLoading(false)
+        }
     }
 const handleChange = (e) => {
         const { name, value } = e.target
@@ -50,8 +54,8 @@ const handleChange = (e) => {
     }
 
   return (
-    <section className='mt-5  flex items-center justify-center px-7 py-9'>
-        <div className='max-w-md w-full bg-white shadow-md p-3 rounded-xl'>
+    <section className='  flex items-center justify-center px-7 py-50'>
+        <div className='max-w-md w-full items-center  bg-white shadow-md p-3 rounded-xl'>
         <div className='grid items-center  gap-2 p-2'>
             <p className='text-sm font-semibold text-green-400'>Login</p>
 
@@ -87,7 +91,7 @@ const handleChange = (e) => {
               </div>
 
               <div className='bg-gradient-to-r from-green-400 flex items-center justify-center to-green-500 rounded-lg  p-2 my-3'>
-                <button  className='text-white font-semibold  '>Login</button>
+                <button className='text-white font-semibold  '>{loading ? <LuLoaderCircle size={20} className='animate-spin '/> : "Login"}</button>
               </div>
 
               <div className='my-4 mx-2 flex'>
