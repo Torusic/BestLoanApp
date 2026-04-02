@@ -12,7 +12,6 @@ import loanRouter from './routes/loan.route.js'
 dotenv.config()
 
 const app=express()
-
 app.use(express.json())
 const allowedOrigins = [
   "http://localhost:5173",
