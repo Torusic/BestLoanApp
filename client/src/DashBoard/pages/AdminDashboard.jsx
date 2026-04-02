@@ -7,9 +7,12 @@ import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SummaryApi'
 import toast from 'react-hot-toast'
 import { LuLoader } from "react-icons/lu"
+import { IoAdd } from 'react-icons/io5'
+import AddAgent from './actions/AddAgent'
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null)
+  const[addAgent,setAddAgent]=useState(false)
 
   useEffect(() => {
     const fetch = async () => {
@@ -51,11 +54,11 @@ const AdminDashboard = () => {
           <div>
 
             {/* HEADER */}
-            <div className="mb-6">
-              <h1 className="text-2xl lg:text-3xl font-semibold text-gray-800 tracking-tight">
+            <div className="mb-4">
+              <h1 className="text-md lg:text-3xl font-semibold text-gray-800 tracking-tight">
                 Admin Dashboard
               </h1>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-400 lg:text-sm text-xs md:text-sm">
                 Overview of system performance and loan activity
               </p>
             </div>
@@ -131,11 +134,18 @@ const AdminDashboard = () => {
 
             {/* TABLE */}
             <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border border-gray-200/50 p-4 overflow-x-auto hover:shadow-lg transition">
-
+            <div className='flex items-center justify-between my-2'>
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Agent Performance
               </h3>
-
+              <button
+                onClick={() => setAddAgent(true)}
+                className='flex items-center gap-2 bg-gray-900 cursor-pointer text-white px-4 py-2 rounded-xl text-sm'
+              >
+                <IoAdd />
+                Add Agent
+              </button>
+            </div>
               <table className="min-w-full text-xs text-left">
 
                 <thead className="bg-gray-50/70 text-gray-500 uppercase tracking-wide text-[11px]">
@@ -180,6 +190,13 @@ const AdminDashboard = () => {
         )}
 
       </div>
+      {
+        addAgent &&(
+          <AddAgent
+          close={()=>{setAddAgent(false)}}
+          />
+        )
+      }
 
     </section>
   )
