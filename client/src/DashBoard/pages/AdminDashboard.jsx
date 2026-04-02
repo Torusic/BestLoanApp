@@ -132,19 +132,19 @@ const AdminDashboard = () => {
 
             <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border border-gray-200/50 p-4 overflow-x-auto hover:shadow-lg transition">
               <div className='flex items-center justify-between my-2'>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                <h3 className="lg:text-lg md:text-sm text-xs  font-semibold text-gray-800 mb-4">
                   Agent Performance
                 </h3>
                 <div className='flex items-center gap-2'>
                   <button
                     onClick={() => navigate("/adminStats/allAgents")}
-                    className='bg-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm'
+                    className='bg-gray-200 text-gray-700 px-4 py-2 rounded-xl md:text-sm text-xs lg:text-lg'
                   >
                     View All
                   </button>
                   <button
                     onClick={() => setAddAgent(true)}
-                    className='flex items-center gap-2 bg-gray-900 cursor-pointer text-white px-4 py-2 rounded-xl text-sm'
+                    className='flex items-center gap-2 bg-gray-900 cursor-pointer text-white px-4 py-2 rounded-xl md:text-sm text-xs lg:text-lg'
                   >
                     <IoAdd />
                     Add Agent
