@@ -5,10 +5,12 @@ import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import toast from 'react-hot-toast'
 import { LuLoaderCircle } from 'react-icons/lu'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 const Login = () => {
     const navigate=useNavigate()
     const[loading,setLoading]=useState(false)
+    const[showPassword,setShowPassword]=useState(false)
     const[data,setData]=useState({
         phone:"",
         password:""
@@ -54,7 +56,7 @@ const handleChange = (e) => {
     }
 
   return (
-    <section className='  flex items-center justify-center px-7 py-50'>
+    <section className='  flex items-center justify-center px-7 py-40'>
         <div className='max-w-md w-full items-center  bg-white shadow-md p-3 rounded-xl'>
         <div className='grid items-center  gap-2 p-2'>
             <p className='text-sm font-semibold text-green-400'>Login</p>
@@ -74,14 +76,22 @@ const handleChange = (e) => {
                 </div>
                 <div className='grid lg:text-sm text-xs gap-2'>
                     <label htmlFor="">Password:</label>
-                    <input type="password" 
+
+                    <div className='bg-gray-100 flex items-center px-2 outline-none rounded-lg hover:border hover:border-green-300'>
+                    <input
+                     type={showPassword ?"text":"password" }
                     id='password'
                     name='password'
                     value={data.password}
                     onChange={handleChange}
                      placeholder='Enter password' 
-                     className='bg-gray-100 p-2 outline-none rounded-lg hover:border hover:border-green-300' />
+                     className=' p-2 outline-none rounded-lg w-full' />
 
+                     <span onClick={() => setShowPassword(prev => !prev)} className="cursor-pointer text-gray-500">
+                       {showPassword ? <FaEye /> : <FaEyeSlash />}
+                      </span>
+
+                    </div>
                 </div>
 
               </div>

@@ -66,7 +66,16 @@ function Loan() {
     <section className='bg-gray-100  overflow-y-auto scrollbar-hidden'>
       <div className='bg-white p-2 lg:p-6 max-w-7xl mx-auto rounded-2xl shadow-sm'>
 
-        <div className='fixed top-15 right-0 left-0 lg:left-65 bg-white mb-2 p-2 rounded-sm'>
+
+
+        {
+          loading ? (
+            <div className='flex justify-center py-10'>
+              <LuLoader className='animate-spin text-xl' />
+            </div>
+          ) : (
+            <>
+                    <div className='fixed top-15 right-0 left-0 lg:left-65 bg-white mb-2 p-2 rounded-sm'>
           <div className='flex items-center justify-between mb-6'>
             <h2 className='text-xl font-bold text-gray-800'>Loans</h2>
 
@@ -89,14 +98,6 @@ function Loan() {
             Verify the M-Pesa code before approving or rejecting.
           </p>
         </div>
-
-        {
-          loading ? (
-            <div className='flex justify-center py-10'>
-              <LuLoader className='animate-spin text-xl' />
-            </div>
-          ) : (
-            <>
               <div className="overflow-x-auto mt-30 h-full overflow-y-auto scrollbar-hidden">
                 <table className='min-w-full text-sm'>
                   <thead className='bg-gray-200 text-xs text-gray-600'>
