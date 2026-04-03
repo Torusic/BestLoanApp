@@ -94,6 +94,8 @@ export  async function loginController(req,res){
                     data:{
                         accessToken,
                         refreshToken,
+                        role: user.role, // <-- add this
+                        name: user.name  
                     }
                 })
         

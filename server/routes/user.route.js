@@ -8,7 +8,7 @@ const userRouter=Router()
 userRouter.post('/register',registerController)
 userRouter.post('/login',loginController)
 userRouter.post('/admin/addAgent',auth,authorizeRoles('admin'),adminAddAgents)
-userRouter.get('/admin/adminStats',auth,authorizeRoles('admin','agent'),adminDashboardController)
+userRouter.get('/admin/adminStats',auth,authorizeRoles('admin'),adminDashboardController)
 userRouter.get('/admin/allAgents',auth,authorizeRoles('admin'),getAllAgents)
 userRouter.get('/admin/allClients',auth,authorizeRoles('admin'),getAllClients)
 
