@@ -1,7 +1,7 @@
 import React from 'react'
 import { MdDashboard, MdHome } from "react-icons/md";
 import { IoPeople, IoSettings } from "react-icons/io5";
-import { FaMoneyBillWave } from "react-icons/fa";
+import { FaHistory, FaMoneyBillWave } from "react-icons/fa";
 import { GiReceiveMoney } from "react-icons/gi";
 import { Link, useLocation } from 'react-router-dom';
 
@@ -14,19 +14,19 @@ function Footer() {
       name: "Dashboard",
       icon: <MdDashboard size={22} />,
       path: "/adminStats/adminDashboard",
-      roles:['admin','agent']
+      roles:['admin']
     },
      {
       name: "Loans",
       icon: <FaMoneyBillWave size={22} />,
       path: "/adminStats/loans",
-      roles:['admin','agent']
+      roles:['admin']
     },
     {
       name: "Customers",
       icon: <IoPeople size={22} />,
       path: "/adminStats/customers",
-      roles:['admin','agent']
+      roles:['admin']
     },
    
     {
@@ -48,6 +48,18 @@ function Footer() {
       path: "/clientStats/clientDashboard",
       roles:['client']
     },
+     {
+          name: "Apply",
+          icon: <FaMoneyBillWave size={25} />,
+          path: "/clientStats/apply",
+          roles:['client']
+        },
+            {
+          name: "History",
+          icon: <FaHistory size={20} />,
+          path: "/clientStats/apply",
+          roles:['client']
+        },
 
   ]
 

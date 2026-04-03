@@ -33,8 +33,9 @@ const Login = () => {
                     phone:'',
                     password:''
                 })
-                    const role = response.data.data?.role; 
-                    localStorage.setItem('role',role)
+                const role = response.data.data?.role; // adjust path based on API
+                console.log("Role from API:", role);
+                localStorage.setItem('role', role);
 
                     // Role-based navigation
                     if (role === 'admin') {

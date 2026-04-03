@@ -2,39 +2,60 @@ import React from 'react'
 import { FaMoneyBillWave } from 'react-icons/fa'
 import { GiReceiveMoney } from 'react-icons/gi'
 import { IoPeople, IoSettings } from 'react-icons/io5'
-import { MdHome } from 'react-icons/md'
+import { MdDashboard, MdHome } from 'react-icons/md'
 import { Link, useLocation } from 'react-router-dom'
 
 function SideBar() {
     const location = useLocation()
 
+   const role = localStorage.getItem("role");
+
   const navItems = [
     {
-      name: "Home",
-      icon: <MdHome />,
-      path: "/adminStats/adminDashboard"
+      name: "Dashboard",
+      icon: <MdDashboard size={22} />,
+      path: "/adminStats/adminDashboard",
+      roles:['admin']
     },
      {
       name: "Loans",
-      icon: <FaMoneyBillWave />,
-      path: "/adminStats/loans"
+      icon: <FaMoneyBillWave size={22} />,
+      path: "/adminStats/loans",
+      roles:['admin']
     },
     {
       name: "Customers",
-      icon: <IoPeople />,
-      path: "/adminStats/customers"
+      icon: <IoPeople size={22} />,
+      path: "/adminStats/customers",
+      roles:['admin']
     },
    
     {
       name: "Repayments",
-      icon: <FaMoneyBillWave />,
-      path: "/adminStats/repayments"
+      icon: <GiReceiveMoney size={22} />,
+      path: "/adminStats/repayments",
+      roles:['admin']
     },
     {
       name: "Settings",
-      icon: <IoSettings />,
-      path: "/adminStats/settings"
-    }
+      icon: <IoSettings size={22} />,
+      path: "/adminStats/settings",
+       roles:['admin']
+      
+    },
+        {
+      name: "Home",
+      icon: <MdHome size={22} />,
+      path: "/clientStats/clientDashboard",
+      roles:['client']
+    },
+    ,
+     {
+      name: "Apply",
+      icon: <FaMoneyBillWave size={30} />,
+      path: "/clientStats/apply",
+      roles:['client']
+    },
   ]
 
   return (
@@ -46,12 +67,13 @@ function SideBar() {
           Best Loan Offers
         </h1>
         <p className="text-xs text-gray-400">
-          Admin Panel
+         
         </p>
       </div>
 
       <nav className="flex flex-col gap-2">
-        {navItems.map((item, index) => {
+        {navItems.filter(item => item.roles.includes(role))
+         .map((item, index) => {
           const isActive = location.pathname === item.path
 
           return (
