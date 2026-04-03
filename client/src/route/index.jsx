@@ -7,6 +7,8 @@ import AdminStats from "../DashBoard/AdminStats.jsx";
 import AdminDashboard from "../DashBoard/pages/AdminDashboard.jsx";
 import Customers from "../DashBoard/pages/Customers.jsx";
 import Loan from "../DashBoard/pages/Loan.jsx";
+import ClientStats from "../DashBoard/ClientStats.jsx";
+import ClientDashboard from "../DashBoard/pages/ClientDashboard.jsx";
 
 const router=createBrowserRouter([
     {
@@ -39,7 +41,16 @@ const router=createBrowserRouter([
                 element:<Customers/>
             }
         ]
+        },
+        {
+            path:'clientStats',
+            element:<ClientStats/>,
+            children:[{
+                path:"clientDashboard",
+                element:<ClientDashboard/>
+            }]
         }
+
     ]
     }
 ])

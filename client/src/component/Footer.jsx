@@ -1,5 +1,5 @@
 import React from 'react'
-import { MdHome } from "react-icons/md";
+import { MdDashboard, MdHome } from "react-icons/md";
 import { IoPeople, IoSettings } from "react-icons/io5";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { GiReceiveMoney } from "react-icons/gi";
@@ -7,69 +7,71 @@ import { Link, useLocation } from 'react-router-dom';
 
 function Footer() {
   const location = useLocation()
+  const role = localStorage.getItem("role");
 
   const navItems = [
     {
-      name: "Home",
-      icon: <MdHome size={22} />,
-      path: "/adminStats/adminDashboard"
+      name: "Dashboard",
+      icon: <MdDashboard size={22} />,
+      path: "/adminStats/adminDashboard",
+      roles:['admin']
     },
      {
       name: "Loans",
       icon: <FaMoneyBillWave size={22} />,
-      path: "/adminStats/loans"
+      path: "/adminStats/loans",
+      roles:['admin','agent']
     },
     {
       name: "Customers",
       icon: <IoPeople size={22} />,
-      path: "/adminStats/customers"
+      path: "/adminStats/customers",
+      roles:['admin','agent']
     },
    
     {
       name: "Repayments",
       icon: <GiReceiveMoney size={22} />,
-      path: "/adminStats/repayments"
+      path: "/adminStats/repayments",
+      roles:['admin']
     },
     {
       name: "Settings",
       icon: <IoSettings size={22} />,
       path: "/adminStats/settings"
-    }
+    },
+        {
+      name: "Dash",
+      icon: <MdHome size={22} />,
+      path: "/clientStats/clientDashboard",
+      roles:['client']
+    },
+
   ]
 
   return (
     <section className="sticky bottom-0 z-50 bg-gray-100 border-t border-gray-100 shadow-lg px-4 py-2 rounded-t-2xl">
 
       <div className="flex items-center justify-between">
-
-        {navItems.map((item, index) => {
-          const isActive = location.pathname === item.path
-
-          return (
-            <Link
-              key={index}
-              to={item.path}
-              className={`flex flex-col items-center justify-center flex-1 py-2 rounded-xl transition-all ${
-                isActive
-                  ? "text-green-600"
-                  : "text-gray-500 hover:text-green-500"
-              }`}
-            >
-              <div
-                className={`p-2 rounded-lg ${
-                  isActive ? "bg-green-50" : ""
-                }`}
-              >
-                {item.icon}
-              </div>
-
-              <span className="text-[11px] mt-1 font-medium">
-                {item.name}
-              </span>
-            </Link>
-          )
-        })}
-
+{navItems
+  .filter(item => item.roles.includes(role))
+  .map((item, index) => {
+    const isActive = location.pathname === item.path;
+    return (
+      <Link
+        key={index}
+        to={item.path}
+        className={`flex flex-col items-center justify-center flex-1 py-2 rounded-xl transition-all ${
+          isActive ? "text-green-600" : "text-gray-500 hover:text-green-500"
+        }`}
+      >
+        <div className={`p-2 rounded-lg ${isActive ? "bg-green-50" : ""}`}>
+          {item.icon}
+        </div>
+        <span className="text-[11px] mt-1 font-medium">{item.name}</span>
+      </Link>
+    );
+  })}
       </div>
 
     </section>
