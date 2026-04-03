@@ -12,7 +12,7 @@ function ClientDashboard() {
         <p className='text-gray-900 mb-2 text-sm md:text-sm lg:text-lg '>Overview</p>
         
         <div className='items-center justify-between gap-2 my-2'>
-            <div className='bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 my-2 p-2  rounded-xl shadow-md '>
+            <div className='shadow-md bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 my-2 p-2  rounded-xl shadow-md '>
                 
                 <div className='flex items-center gap-2'>
                     <MdAttachMoney size={40} className='text-gray-600' />
@@ -28,7 +28,7 @@ function ClientDashboard() {
             </div>
             <div className='grid grid-cols-2 items-center justify-between gap-2'>
                 
-                <div className='flex items-center gap-2 bg-gradient-to-r  from-green-400 via-green-400 to-green-500 p-2 rounded-xl'>
+                <div className='flex items-center gap-2 shadow-md bg-gradient-to-r  from-green-400 via-green-400 to-green-500 p-2 rounded-xl'>
                     <GiSandsOfTime size={30} className='text-gray-600' />
 
                     <div className='grid'>
@@ -38,7 +38,7 @@ function ClientDashboard() {
                     
 
                 </div>
-                <div className='flex items-center gap-2 bg-gradient-to-r  from-gray-200 via-gray-300 to-gray-400 p-2 rounded-xl'>
+                <div className='flex items-center gap-2 shadow-md bg-gradient-to-r  from-gray-200 via-gray-300 to-gray-400 p-2 rounded-xl'>
                     <FaRegClock size={30} className='text-gray-600' />
 
                     <div className='grid'>
