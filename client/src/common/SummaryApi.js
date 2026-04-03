@@ -32,6 +32,10 @@ const SummaryApi={
         url:"/api/loan/activeLoan",
         method:'get'
 
+    },
+    makeProcessingFee:{
+        url:"/api/mpesa/stkPush",
+        method:"post"
     }
 
 

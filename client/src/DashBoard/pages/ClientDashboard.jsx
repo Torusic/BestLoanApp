@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaRegClock } from 'react-icons/fa';
 import { GiSandsOfTime } from 'react-icons/gi';
 import { MdAttachMoney } from 'react-icons/md';
 import { TbMoneybag } from "react-icons/tb";
 import ActiveLoan from './ActiveLoan';
 
+
 function ClientDashboard() {
+  
   return (
    <section className='flex items-center justify-center p-1 bg-gray-100'>
     <div className='w-full grid bg-gray-50 p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded '>
@@ -76,6 +78,7 @@ function ClientDashboard() {
         
 
     </div>
+
    </section>
   )
 }

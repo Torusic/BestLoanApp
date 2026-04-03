@@ -4,12 +4,15 @@ import AxiosToastError from '../../utils/AxiosToastError'
 import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SummaryApi'
 import toast from 'react-hot-toast'
+import ProcessingFee from '../ProcessingFee'
+
 
 
 function ActiveLoan() {
     const[active, setActive]=useState(null)
     const[loading, setLoading]=useState(false)
     const [showMore, setShowMore] = useState(false)
+      const[fee,setFee]=useState(false)
 
     const fetchActiveLoans=async()=>{
         
@@ -46,7 +49,7 @@ function ActiveLoan() {
       currency: 'KES'
     }).format(num || 0)
   return (
-    <section className='flex '>
+    <section className=''>
         <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded '>
            <p className='text-sm font-medium text-gray-500 my-2'> My Active loans</p>
            <div className='bg-white p-2 rounded '>
@@ -74,8 +77,8 @@ function ActiveLoan() {
                <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Processing Fee: <span className='font-medium'> {active.isFeePaid ? "Paid" : "Not Paid"}</span></p>
 
                {!active.isFeePaid && (
-                <button className="bg-blue-600 text-sm text-white px-4 py-2 my-2 rounded">
-                    Pay Processing Fee (Ksh 200)
+                <button onClick={()=>setFee(true)} className="bg-blue-600 text-sm text-white px-4 py-2 my-2 rounded">
+                     Pay Processing Fee: ({formatCurrency(active.processingFee)})
                 </button>
                 )}
                
@@ -137,6 +140,13 @@ function ActiveLoan() {
 
            </div>
         </div>
+    {fee && (
+    <ProcessingFee
+        loan={active} 
+        onClose={() => setFee(false)} 
+        refresh={fetchActiveLoans}
+    />
+)}
     </section>
   )
 }

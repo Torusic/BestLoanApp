@@ -3,10 +3,14 @@ import LoanModel from "../models/loan.model.js";
 
 export async function makeProcessingFee(req, res) {
   try {
-    const { loanId, amount } = req.body;
+    const {  amount } = req.body;
 
     // Find loan and populate user to get phone
-    const loan = await LoanModel.findById(loanId).populate("user");
+    const loan = await LoanModel.findOne({
+      user:req.userId,
+      status:"pending"
+
+    }).populate("user");
     if (!loan) {
       return res.status(400).json({
         message: "Loan not found",
