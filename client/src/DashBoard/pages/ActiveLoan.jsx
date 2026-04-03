@@ -72,7 +72,7 @@ function ActiveLoan() {
                 <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Due Date <span className='font-medium'> {active.dueDate ? new Date(active.dueDate).toDateString()  : "Set at Approval"}</span></p>
                 
             </div>
-            <div className='p-2 grid items-center gap-2 mt-1'>
+            <div className='p-2 grid items-center gap-2 mt-2'>
 
                <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Processing Fee: <span className='font-medium'> {active.isFeePaid ? "Paid" : "Not Paid"}</span></p>
 
