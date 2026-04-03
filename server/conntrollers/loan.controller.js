@@ -38,7 +38,8 @@ export async function applyLoanOnline(req,res){
         const createLoan=await LoanModel.create({
             user:clientId,
             amount,
-            durationWeeks
+            durationWeeks,
+            
         })
         await createLoan.save()
 
