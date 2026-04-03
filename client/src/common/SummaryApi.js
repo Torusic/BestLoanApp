@@ -27,7 +27,13 @@ const SummaryApi={
     applyLoanForCustomer:{
         url:'/api/loan/agent/apply',
         method:"post"
+    },
+    myLoan:{
+        url:"/api/loan/activeLoan",
+        method:'get'
+
     }
+
 
       
 }

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth, authorizeRoles } from "../middleware/auth.js";
-import { applyLoanOnline, applyLoanViaAgent, getAllLoans, submitProcessingFee, verifyProcessingFee } from "../conntrollers/loan.controller.js";
+import { applyLoanOnline, applyLoanViaAgent, getAllLoans, myLoan, submitProcessingFee, verifyProcessingFee } from "../conntrollers/loan.controller.js";
 
 const loanRouter=Router();
 
@@ -9,5 +9,6 @@ loanRouter.post('/agent/apply',auth,authorizeRoles('agent','admin'),applyLoanVia
 loanRouter.post('/submitfee',auth,authorizeRoles('client','admin','client'),submitProcessingFee)
 loanRouter.post('/verify-fee',auth,authorizeRoles('admin'),verifyProcessingFee)
 loanRouter.get('/admin/getAllLoans',auth,authorizeRoles('admin','agent'),getAllLoans)
+loanRouter.get('/activeLoan',auth,authorizeRoles('client'),myLoan)
 
 export default loanRouter; 

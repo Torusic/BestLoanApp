@@ -17,7 +17,7 @@ const Login = () => {
     })
 
     const handleSubmit=async(e)=>{
-        e.preventDefault()
+        e.preventDefault(e)
 
         try {
             setLoading(true)

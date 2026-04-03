@@ -67,7 +67,7 @@ function ClientDashboard() {
 
         </div>
 
-        <div className='mt-4'>
+        <div className='mt-1'>
              <ActiveLoan/>
             
         </div>

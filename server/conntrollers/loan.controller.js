@@ -316,3 +316,35 @@ export async function getAllLoans(req,res){
         
     }
 }
+export async function myLoan(req, res) {
+    try {
+        const userId = req.userId;
+
+        const loan = await LoanModel.findOne({
+            user: userId,
+            status: { $in: ["pending", "approved"] }
+        }).sort({ createdAt: -1 });
+
+        if (!loan) {
+            return res.status(404).json({
+                message: "No active loan found",
+                error: true,
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: "Active loan fetched successfully",
+            error: false,
+            success: true,
+            data: loan
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        });
+    }
+}
