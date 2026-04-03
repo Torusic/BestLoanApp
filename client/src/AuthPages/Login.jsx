@@ -37,10 +37,10 @@ const Login = () => {
                     localStorage.setItem('role',role)
 
                     // Role-based navigation
-                    if (role === 'admin'|| role==='agent') {
+                    if (role === 'admin') {
                         navigate('/adminStats/adminDashboard');
                     } else if (role === 'client') {
-                        navigate('/client');
+                        navigate('/clientStats/clientDashboard');
                     } else if (role === 'agent') {
                         navigate('/agent/dashboard');
                     } else {

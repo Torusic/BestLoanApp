@@ -14,7 +14,7 @@ function Footer() {
       name: "Dashboard",
       icon: <MdDashboard size={22} />,
       path: "/adminStats/adminDashboard",
-      roles:['admin']
+      roles:['admin','agent']
     },
      {
       name: "Loans",
