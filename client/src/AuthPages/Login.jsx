@@ -33,10 +33,25 @@ const Login = () => {
                     phone:'',
                     password:''
                 })
-                navigate('/adminStats/adminDashboard')
-            }else{
-                toast.error(response.data.message)
-            }
+                    const role = response.data.data?.role; 
+                    localStorage.setItem('role',role)
+
+                    // Role-based navigation
+                    if (role === 'admin'&& role==='agent') {
+                        navigate('/adminStats/adminDashboard');
+                    } else if (role === 'client') {
+                        navigate('/client/dashboard');
+                    } else if (role === 'agent') {
+                        navigate('/agent/dashboard');
+                    } else {
+                        navigate('/'); // fallback route
+                    }
+                    
+
+                    } else {
+                        toast.error(response.data.message);
+                    }
+            
 
             
         } catch (error) {
