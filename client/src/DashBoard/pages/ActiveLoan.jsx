@@ -80,7 +80,7 @@ function ActiveLoan() {
                 )}
                
 
-               <span className='text-xs lg:text-sm md:text-sm'>{active.feeStatus}</span>
+               <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Fee Status: <span className='font-medium'> {active.feeStatus}</span></p>
             </div>
 
             <button 
