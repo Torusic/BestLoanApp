@@ -43,7 +43,7 @@ function Footer() {
       
     },
         {
-      name: "Dash",
+      name: "Home",
       icon: <MdHome size={22} />,
       path: "/clientStats/clientDashboard",
       roles:['client']
