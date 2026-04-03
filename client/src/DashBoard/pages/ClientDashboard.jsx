@@ -9,8 +9,20 @@ function ClientDashboard() {
   return (
    <section className='flex items-center justify-center p-1 bg-gray-100'>
     <div className='w-full grid bg-gray-50 p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded '>
-        <p className='text-gray-900 my-1 font-semibold text-md md:text-sm lg:text-lg '>Home</p>
+        <div className='flex items-center justify-between'>
+            <div>
+         <p className='text-gray-900 my-1 font-semibold text-md md:text-sm lg:text-lg '>Home</p>
         <p className='text-gray-900 mb-2 text-sm md:text-sm lg:text-lg '>Overview</p>
+            </div>
+
+        <div className='my-4 flex justify-center items-center'>
+            <button className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 px-6 rounded-2xl shadow-md transition-colors">
+            Apply Loan
+            </button>
+
+        </div>
+        </div>
+        
         
         <div className='items-center justify-between gap-2 my-2'>
             <div className='shadow-md bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 my-2 p-2  rounded-xl shadow-md '>
@@ -54,14 +66,12 @@ function ClientDashboard() {
 
 
         </div>
-        <div className='my-4 flex justify-center items-center'>
-            <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors">
-            Apply Loan
-            </button>
 
+        <div className='mt-4'>
+             <ActiveLoan/>
+            
         </div>
-
-        <ActiveLoan/>
+       
 
         
 
