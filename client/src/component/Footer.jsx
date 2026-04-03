@@ -38,7 +38,9 @@ function Footer() {
     {
       name: "Settings",
       icon: <IoSettings size={22} />,
-      path: "/adminStats/settings"
+      path: "/adminStats/settings",
+       roles:['admin']
+      
     },
         {
       name: "Dash",
