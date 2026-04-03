@@ -14,7 +14,7 @@ function ClientDashboard() {
         <div className='flex items-center justify-between'>
             <div>
          <p className='text-gray-900 my-1 font-semibold text-md md:text-sm lg:text-lg '>Home</p>
-        <p className='text-gray-900 mb-2 text-sm md:text-sm lg:text-lg '>Overview</p>
+        <p className='text-gray-900 mb-1 text-sm md:text-sm lg:text-lg '>Overview</p>
             </div>
 
         <div className='my-4 flex justify-center items-center'>
