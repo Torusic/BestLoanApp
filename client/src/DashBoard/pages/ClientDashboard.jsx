@@ -3,6 +3,7 @@ import { FaRegClock } from 'react-icons/fa';
 import { GiSandsOfTime } from 'react-icons/gi';
 import { MdAttachMoney } from 'react-icons/md';
 import { TbMoneybag } from "react-icons/tb";
+import ActiveLoan from './ActiveLoan';
 
 function ClientDashboard() {
   return (
@@ -59,6 +60,8 @@ function ClientDashboard() {
             </button>
 
         </div>
+
+        <ActiveLoan/>
 
         
 
