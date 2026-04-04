@@ -10,6 +10,7 @@ import Loan from "../DashBoard/pages/Loan.jsx";
 import ClientStats from "../DashBoard/ClientStats.jsx";
 import ClientDashboard from "../DashBoard/pages/ClientDashboard.jsx";
 import ApplyLoan from "../DashBoard/pages/actions/ApplyLoan.jsx";
+import MyLoan from "../DashBoard/pages/MyLoan.jsx";
 
 const router=createBrowserRouter([
     {
@@ -50,6 +51,12 @@ const router=createBrowserRouter([
                 path:"clientDashboard",
                 element:<ClientDashboard/>
             },{
+                path:"myloan",
+                element:<MyLoan/>
+
+            },
+            
+            {
             path:"apply",
             element:<ApplyLoan/>
         }

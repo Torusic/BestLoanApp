@@ -4,6 +4,7 @@ import { GiSandsOfTime } from 'react-icons/gi';
 import { MdAttachMoney } from 'react-icons/md';
 import { TbMoneybag } from "react-icons/tb";
 import ActiveLoan from './ActiveLoan';
+import { Link } from 'react-router-dom';
 
 
 function ClientDashboard() {
@@ -19,7 +20,7 @@ function ClientDashboard() {
 
         <div className='my-4 flex justify-center items-center'>
             <button className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 px-6 rounded-2xl shadow-md transition-colors">
-            Apply Loan
+            <Link to={"/clientStats/apply"}>Apply Loan</Link>
             </button>
 
         </div>
@@ -30,11 +31,11 @@ function ClientDashboard() {
             <div className='shadow-md bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 my-2 p-2  rounded-xl shadow-md '>
                 
                 <div className='flex items-center gap-2'>
-                    <MdAttachMoney size={40} className='text-gray-600' />
+                    <MdAttachMoney size={40} className='text-gray-100 ' />
 
                     <div className='grid'>
-                        <p className='text-gray-700 my-2 font-semibold text-md md;text-sm lg:text-lg'>Loan Limit</p>
-                        <span className='text-gray-700 my-2 font-bold text-lg md;text-sm lg:text-lg'>Ksh. 5,000 - Ksh. 95,000</span>
+                        <p className='text-gray-100  my-2 font-semibold text-md md;text-sm lg:text-lg'>Loan Limit</p>
+                        <span className='text-gray-100  my-2 font-bold text-lg md;text-sm lg:text-lg'>Ksh. 5,000 - Ksh. 95,000</span>
                     </div>
                     
 
@@ -44,11 +45,11 @@ function ClientDashboard() {
             <div className='grid grid-cols-2 items-center justify-between gap-2'>
                 
                 <div className='flex items-center gap-2 shadow-md bg-gradient-to-r  from-green-400 via-green-400 to-green-500 p-2 rounded-xl'>
-                    <GiSandsOfTime size={30} className='text-gray-600' />
+                    <GiSandsOfTime size={30} className='text-gray-100 ' />
 
                     <div className='grid'>
-                        <p className='text-white my-2 font-semibold text-sm md;text-sm lg:text-lg'>Repayment Period</p>
-                        <span className='text-white my-2 font-bold text-xs md;text-sm lg:text-lg'>4 - 24 Weeks</span>
+                        <p className='text-gray-100  my-2 font-semibold text-sm md;text-sm lg:text-lg'>Repayment Period</p>
+                        <span className='text-gray-100  my-2 font-bold text-xs md;text-sm lg:text-lg'>4 - 24 Weeks</span>
                     </div>
                     
 

@@ -4,6 +4,7 @@ import { IoPeople, IoSettings } from "react-icons/io5";
 import { FaHistory, FaMoneyBillWave } from "react-icons/fa";
 import { GiReceiveMoney } from "react-icons/gi";
 import { Link, useLocation } from 'react-router-dom';
+import { GrMoney } from "react-icons/gr";
 
 function Footer() {
   const location = useLocation()
@@ -48,12 +49,20 @@ function Footer() {
       path: "/clientStats/clientDashboard",
       roles:['client']
     },
+    {
+      name: "My-Loan",
+          icon: <GrMoney size={20} />,
+          path: "/clientStats/myLoan",
+          roles:['client']
+
+    },
      {
           name: "Apply",
-          icon: <FaMoneyBillWave size={25} />,
+          icon: <FaMoneyBillWave size={20} />,
           path: "/clientStats/apply",
           roles:['client']
         },
+
             {
           name: "History",
           icon: <FaHistory size={20} />,
@@ -61,10 +70,11 @@ function Footer() {
           roles:['client']
         },
 
+
   ]
 
   return (
-    <section className="sticky bottom-0 z-50 bg-gray-100 border-t border-gray-100 shadow-lg px-4 py-2 rounded-t-2xl">
+    <section className="sticky bottom-0 z-50 bg-gray-100 border-t border-gray-100 shadow-lg px-4 py-1 rounded-t-2xl">
 
       <div className="flex items-center justify-between">
 {navItems
