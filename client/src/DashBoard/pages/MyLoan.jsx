@@ -7,6 +7,7 @@ import { GiSandsOfTime } from 'react-icons/gi'
 import { MdAttachMoney } from 'react-icons/md'
 import { FaRegClock } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { LuLoader } from 'react-icons/lu'
 
 function MyLoan() {
   
@@ -49,8 +50,6 @@ function MyLoan() {
          style: 'currency',
          currency: 'KES'
        }).format(num || 0)
-
-       const loan = active || {}
      return (
        <section className=''>
            <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
@@ -64,55 +63,55 @@ function MyLoan() {
                     </button>
                     </div>
                     </div>
-                   {!loading && !active && (
-                    <div className='text-gray-700 flex text-xs lg:text-sm justify-center'>
-                        No Loan
-                    </div>
-                   )}
-
-                   {
-                    active &&(
-                        <div>
-                    <div className='items-center justify-between gap-2 my-2'>
-
-                    {/* Total Repayment */}
-                    <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2 rounded-xl'>
-                        <div className='flex items-center gap-2'>
-                        <MdAttachMoney size={40} className='text-white' />
-
-                        <div className='grid'>
-                            <p className='text-gray-100 my-2 font-semibold text-md'>Total Repayment</p>
-                            <span className='text-gray-100 my-2 font-bold text-2xl'>
-                            {loading ? "..." : formatCurrency(loan.totalRepayment)}
-                            </span>
-                        </div>
-                        </div>
-                    </div>
-
-                    {/* Paid & Balance */}
-                    <div className='grid grid-cols-2 items-center gap-2'>
-
-                        <div className='flex items-center gap-2 shadow-md bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 p-2 rounded-xl'>
-                        <div className='grid px-4'>
-                            <p className='text-gray-100 my-2 font-semibold text-sm'>Amount Repaid</p>
-                            <span className='text-gray-100 my-2 font-bold text-2xl'>
-                            {loading ? "..." : formatCurrency(loan.amountPaid)}
-                            </span>
-                        </div>
-                        </div>
-
-                        <div className='flex items-center gap-2 shadow-md bg-gradient-to-r from-red-400 via-red-500 to-red-600 p-2 rounded-xl'>
-                        <div className='grid px-4'>
-                            <p className='text-gray-100 my-2 font-semibold text-sm'>Balance</p>
-                            <span className='text-gray-100 my-2 font-bold text-2xl'>
-                            {loading ? "..." : formatCurrency(loan.balance)}
-                            </span>
-                        </div>
-                        </div>
-
-                    </div>
-
-                    </div>
+                                  {!active ?(
+                   <div className='text-gray-700 flex font-semibold rounded-lg bg-gray-100 text-xs p-2 lg:text-sm font-normal  items-center justify-center'>
+                    No Loan
+                   </div>
+   
+               ):(
+                   <div>
+                               <div className='items-center justify-between gap-2 my-2'>
+                                <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2  rounded-xl shadow-md '>
+                                    
+                                    <div className='flex items-center gap-2'>
+                                        <MdAttachMoney size={40} className='text-white' />
+                    
+                                        <div className='grid'>
+                                            <p className='text-gray-100 my-2 font-semibold text-md md:text-sm lg:text-lg'>Total Repayment</p>
+                                            <span className='text-gray-100 my-2 font-bold text-2xl md:text-sm lg:text-lg'> {formatCurrency(active.totalRepayment)}</span>
+                                        </div>
+                                        
+                    
+                                    </div>
+                    
+                                </div>
+                                <div className='grid grid-cols-2 items-center justify-between gap-2'>
+                                    
+                                    <div className='flex items-center gap-2 shadow-md bg-gradient-to-r  from-blue-400 via-blue-500 to-blue-600 p-2 rounded-xl'>
+                                    
+                    
+                                        <div className='grid px-4'>
+                                            <p className='text-gray-100 my-2 font-semibold text-sm md;text-sm lg:text-lg'>Amount Repaid</p>
+                                            <span className='text-gray-100 my-2 font-bold text-2xl md;text-sm lg:text-lg'>{formatCurrency(active.amountPaid)}</span>
+                                        </div>
+                                        
+                    
+                                    </div>
+                                    <div className='flex items-center gap-2 shadow-md bg-gradient-to-r  from-red-400 via-red-500 to-red-600 p-2 rounded-xl'>
+                                        
+                    
+                                        <div className='grid px-4'>
+                                            <p className='text-gray-100 my-2 font-semibold text-sm md;text-sm lg:text-lg'>Balance</p>
+                                            <span className='text-gray-100 my-2 font-bold text-2xl md:text-sm lg:text-lg'> {formatCurrency(active.balance)} </span>
+                                        </div>
+                                        
+                    
+                                    </div>
+                    
+                                </div>
+                    
+                    
+                            </div>
                    <div className='bg-gray-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
@@ -191,10 +190,13 @@ function MyLoan() {
 
 
                    </div>
-                    )
-                   }
    
-               
+                   
+                   
+   
+               )
+   
+               }
             
                
    

@@ -38,7 +38,7 @@ function ApplyLoan() {
 
 
         {/* Form Title */}
-        <p className="text-lg md:text-xl text-gray-600 lg:text-2xl font-medium text-center my-4">Enter Amount</p>
+        <p className="text-lg md:text-xl text-gray-500 lg:text-2xl font-medium text-center my-4">Enter Amount</p>
 
         {/* Loan Amount Input */}
         <input

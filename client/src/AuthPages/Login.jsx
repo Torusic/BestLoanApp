@@ -117,7 +117,7 @@ const handleChange = (e) => {
               </div>
 
               <div className='bg-gradient-to-r from-green-400 flex items-center justify-center to-green-500 rounded-lg  p-2 my-3'>
-                <button className='text-white font-semibold  '>{loading ? <LuLoaderCircle size={20} className='animate-spin '/> : "Login"}</button>
+                <button className='text-white font-semibold  '><Link className=' underline px-2 text-green-400' to={'/adminStats/adminDashboard'}>{loading ? <LuLoaderCircle size={20} className='animate-spin '/> : "Login"}</Link></button>
               </div>
 
               <div className='my-4 mx-2 flex'>
