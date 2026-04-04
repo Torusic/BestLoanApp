@@ -3,189 +3,215 @@ import SummaryApi from '../../common/SummaryApi'
 import Axios from '../../utils/Axios'
 import AxiosToastError from '../../utils/AxiosToastError'
 import toast from 'react-hot-toast'
+import { GiSandsOfTime } from 'react-icons/gi'
 import { MdAttachMoney } from 'react-icons/md'
+import { FaRegClock } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 
 function MyLoan() {
   
-  const [active, setActive] = useState([]) // ✅ FIX
-  const [loading, setLoading] = useState(false)
-  const [showMore, setShowMore] = useState(false)
-  const [fee, setFee] = useState(false)
+   const[active, setActive]=useState(null)
+       const[loading, setLoading]=useState(false)
+       const [showMore, setShowMore] = useState(false)
+         const[fee,setFee]=useState(false)
+   
+       const fetchActiveLoans=async()=>{
+           
+   
+           try {
+               setLoading(true)
+               const response=await Axios({
+                   ...SummaryApi.myLoan,
+               })
+               if(response.data.success){
+                   toast.success(response.data.message);
+                   setActive(response.data.data)
+               }else{
+                   toast.error(response.data.error)
+               }
+   
+               
+           } catch (error) {
+               AxiosToastError(error)
+               
+           }finally{
+               setLoading(false)
+           }
+       }
+   
+       useEffect(()=>{
+           fetchActiveLoans()
+   
+       },[])
+   
+         const formatCurrency = (num) =>
+       new Intl.NumberFormat('en-KE', {
+         style: 'currency',
+         currency: 'KES'
+       }).format(num || 0)
 
-  const fetchActiveLoans = async () => {
-    try {
-      setLoading(true)
-      const response = await Axios({
-        ...SummaryApi.myLoan,
-      })
+       const loan = active || {}
+     return (
+       <section className=''>
+           <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
+ 
+              <div className='bg-white p-2 rounded-lg '>
+                    <div className='flex items-center justify-between'>
+                     <p className='text-lg font-medium text-gray-500 my-2'> Loan</p>
+                     <div className='my-4 flex justify-center items-center w-fit ml-auto'>
+                            <button className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 px-6 rounded-2xl shadow-md transition-colors">
+                            <Link to={"/clientStats/apply"}>Apply Loan</Link>
+                    </button>
+                    </div>
+                    </div>
+                   {!loading && !active && (
+                    <div className='text-gray-700 flex text-xs lg:text-sm justify-center'>
+                        No Loan
+                    </div>
+                   )}
 
-      if (response.data.success) {
-        setActive(response.data.data || [])
-      } else {
-        toast.error(response.data.error)
-      }
+                   {
+                    active &&(
+                        <div>
+                    <div className='items-center justify-between gap-2 my-2'>
 
-    } catch (error) {
-      AxiosToastError(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+                    {/* Total Repayment */}
+                    <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2 rounded-xl'>
+                        <div className='flex items-center gap-2'>
+                        <MdAttachMoney size={40} className='text-white' />
 
-  useEffect(() => {
-    fetchActiveLoans()
-  }, [])
+                        <div className='grid'>
+                            <p className='text-gray-100 my-2 font-semibold text-md'>Total Repayment</p>
+                            <span className='text-gray-100 my-2 font-bold text-2xl'>
+                            {loading ? "..." : formatCurrency(loan.totalRepayment)}
+                            </span>
+                        </div>
+                        </div>
+                    </div>
 
-  const formatCurrency = (num) =>
-    new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES'
-    }).format(num || 0)
+                    {/* Paid & Balance */}
+                    <div className='grid grid-cols-2 items-center gap-2'>
 
-  return (
-    <section>
-      <div className='w-full grid bg-gray-50 p-2 max-w-4xl lg:max-w-7xl md:max-w-5xl rounded-lg'>
+                        <div className='flex items-center gap-2 shadow-md bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 p-2 rounded-xl'>
+                        <div className='grid px-4'>
+                            <p className='text-gray-100 my-2 font-semibold text-sm'>Amount Repaid</p>
+                            <span className='text-gray-100 my-2 font-bold text-2xl'>
+                            {loading ? "..." : formatCurrency(loan.amountPaid)}
+                            </span>
+                        </div>
+                        </div>
 
-        <div className='bg-white p-2 rounded-lg'>
-          
-          {/* Header */}
-          <div className='flex items-center justify-between'>
-            <p className='text-lg font-medium text-gray-500 my-2'>Loan</p>
+                        <div className='flex items-center gap-2 shadow-md bg-gradient-to-r from-red-400 via-red-500 to-red-600 p-2 rounded-xl'>
+                        <div className='grid px-4'>
+                            <p className='text-gray-100 my-2 font-semibold text-sm'>Balance</p>
+                            <span className='text-gray-100 my-2 font-bold text-2xl'>
+                            {loading ? "..." : formatCurrency(loan.balance)}
+                            </span>
+                        </div>
+                        </div>
 
-            <button className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 px-6 rounded-2xl shadow-md">
-              <Link to={"/clientStats/apply"}>Apply Loan</Link>
-            </button>
-          </div>
+                    </div>
 
-          {/* Loading */}
-          {loading && (
-            <p className='text-center text-gray-500 text-sm'>Loading...</p>
-          )}
-
-          {/* No Loan */}
-          {!loading && active.length === 0 && (
-            <div className='text-gray-700 text-xs lg:text-sm flex justify-center'>
-              No Loan
-            </div>
-          )}
-
-          {/* Loans */}
-          {active.map((data, index) => (
-            <div key={index} className='my-4'>
-
-              {/* Total Repayment */}
-              <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 p-2 rounded-xl'>
-                <div className='flex items-center gap-2'>
-                  <MdAttachMoney size={40} className='text-white' />
-                  <div>
-                    <p className='text-gray-100 font-semibold'>Total Repayment</p>
-                    <span className='text-white font-bold text-xl'>
-                      {formatCurrency(data.totalRepayment)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Paid & Balance */}
-              <div className='grid grid-cols-2 gap-2 mt-2'>
-
-                <div className='bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 p-2 rounded-xl shadow-md'>
-                  <p className='text-white text-sm'>Amount Repaid</p>
-                  <span className='text-white font-bold text-lg'>
-                    {formatCurrency(data.amountPaid)}
-                  </span>
-                </div>
-
-                <div className='bg-gradient-to-r from-red-400 via-red-500 to-red-600 p-2 rounded-xl shadow-md'>
-                  <p className='text-white text-sm'>Balance</p>
-                  <span className='text-white font-bold text-lg'>
-                    {formatCurrency(data.balance)}
-                  </span>
-                </div>
-
-              </div>
-
-              {/* Details */}
-              <div className='bg-gray-100 p-2 rounded-lg text-xs mt-2 grid gap-2'>
-
-                <p>Loan Amount: <span className='font-medium'>{formatCurrency(data.amount)}</span></p>
-
-                <div className='lg:flex grid justify-between'>
-                  <p>Status:
-                    <span className={`ml-1 font-medium ${
-                      data.status === "pending" ? "text-yellow-500" :
-                      data.status === "approved" ? "text-green-600" :
-                      "text-red-500"
-                    }`}>
-                      {data.status}
-                    </span>
-                  </p>
-
-                  <p>Repayment Period:
-                    <span className='font-medium ml-1'>{data.durationWeeks} Weeks</span>
-                  </p>
-                </div>
-
-                <p>Due Date:
-                  <span className='font-medium ml-1'>
-                    {data.dueDate ? new Date(data.dueDate).toDateString() : "Set at Approval"}
-                  </span>
-                </p>
-              </div>
-
-              {/* Fee Section */}
-              <div className='p-2 grid gap-2 text-xs mt-2'>
-
-                <p>Processing Fee:
-                  <span className='font-medium ml-1'>
-                    {data.isFeePaid ? "Paid" : "Not Paid"}
-                  </span>
-                </p>
-
-                {data.processingFee && !data.isFeePaid && (
-                  <button 
-                    onClick={() => setFee(true)} 
-                    className="bg-blue-600 text-white px-4 py-2 rounded">
-                    Pay Processing Fee ({formatCurrency(data.processingFee)})
-                  </button>
-                )}
-
-              </div>
-
-              {/* View More */}
-              <button 
+                    </div>
+                   <div className='bg-gray-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+   
+                   <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
+   
+                   <div className='lg:flex grid items-center justify-between gap-2'>
+                       <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span className={`font-medium ${active.status === "pending" ? "text-yellow-500" : active.status === "approved" ? "text-green-600" :"text-red-500"} text-yellow-500`}> Pending</span></p>
+                       <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Repayment Period: <span className='font-medium'> {active.durationWeeks} Weeks</span></p>
+                        
+                   </div>
+                   <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Due Date <span className='font-medium'> {active.dueDate ? new Date(active.dueDate).toDateString()  : "Set at Approval"}</span></p>
+                   
+               </div>
+               <div className='p-2 grid items-center gap-2 mt-2'>
+   
+                  <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Processing Fee: <span className='font-medium'> {active.isFeePaid ? "Paid" : "Not Paid"}</span></p>
+   
+                  {active.processingFee && (
+                   <button onClick={()=>setFee(true)} className="bg-blue-600 text-sm text-white px-4 py-2  rounded">
+                        Pay Processing Fee: ({formatCurrency(active.processingFee)})
+                   </button>
+                   )}
+                  
+   
+                  <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Fee Status: <span className='font-medium'> {active.feeStatus}</span></p>
+               </div>
+   
+                   
+                    {!active.amount && (
+                   <button onClick={()=>setFee(true)} className="bg-blue-600 text-sm text-white px-4 py-2  rounded-lg">
+                        Pay Loan: ({formatCurrency(active.amount)})
+                   </button>
+                   )}
+                   <div className=' grid'>
+                                       <button 
                 onClick={() => setShowMore(!showMore)}
-                className="text-blue-600 text-xs mt-2"
-              >
+                className="text-blue-600 text-xs mt-2 w-fit"
+                >
                 {showMore ? "View Less" : "View More"}
-              </button>
+                </button>
 
-              {showMore && (
-                <div className="bg-gray-50 p-2 rounded mt-2 text-xs grid gap-2">
-                  <p>Fee Status: <span className="font-medium">{data.feeStatus}</span></p>
-                  <p>Payment Verified: <span>{data.paymentVerified ? "Yes" : "No"}</span></p>
-                  <p>Repayment Status: <span>{data.repaymentStatus}</span></p>
+
+                {showMore && (
+                <div className="bg-gray-50 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                    
+                    <p>Processing Fee: <span className="font-medium">{formatCurrency(active.processingFee)}</span></p>
+
+                    <p>Fee Status: 
+                    <span className="font-medium capitalize"> {active.feeStatus}</span>
+                    </p>
+
+                    <p>Payment Verified: 
+                    <span className="font-medium"> {active.paymentVerified ? "Yes" : "No"}</span>
+                    </p>
+
+                    <p>Total Repayment: 
+                    <span className="font-medium"> {formatCurrency(active.totalRepayment)}</span>
+                    </p>
+
+                    <p>Amount Paid: 
+                    <span className="font-medium"> {formatCurrency(active.amountPaid)}</span>
+                    </p>
+
+                    <p>Balance: 
+                    <span className="font-medium"> {formatCurrency(active.balance)}</span>
+                    </p>
+
+                    <p>Repayment Status: 
+                    <span className="font-medium capitalize"> {active.repaymentStatus}</span>
+                    </p>
+
                 </div>
-              )}
+                )}
+                   
+                    
+                   </div>
 
-            </div>
-          ))}
 
-        </div>
-      </div>
-
-      {/* Modal */}
-      {fee && (
-        <ProcessingFee
-          loan={active}
-          onClose={() => setFee(false)}
-          refresh={fetchActiveLoans}
-        />
-      )}
-
-    </section>
-  )
+                   </div>
+                    )
+                   }
+   
+               
+            
+               
+   
+              
+   
+              </div>
+           </div>
+       {fee && (
+       <ProcessingFee
+           loan={active} 
+           onClose={() => setFee(false)} 
+           refresh={fetchActiveLoans}
+       />
+   )}
+       </section>
+     )
+  
 }
 
 export default MyLoan
