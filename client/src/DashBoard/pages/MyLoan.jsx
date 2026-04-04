@@ -52,7 +52,7 @@ function MyLoan() {
      return (
        <section className=''>
            <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
-              <p className='text-lg font-medium text-gray-500 my-2'> Loan</p>
+ 
               <div className='bg-white p-2 rounded-lg '>
                                   {!active ?(
                    <div className='text-gray-900 flex items-center justify-center'>
@@ -62,8 +62,7 @@ function MyLoan() {
                ):(
                    <div>
                     <div className='flex items-center justify-between'>
-
-                    
+                     <p className='text-lg font-medium text-gray-500 my-2'> Loan</p>
                      <div className='my-4 flex justify-center items-center w-fit ml-auto'>
                             <button className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 px-6 rounded-2xl shadow-md transition-colors">
                             <Link to={"/clientStats/apply"}>Apply Loan</Link>
