@@ -62,14 +62,8 @@ function MyLoan() {
                     </button>
                     </div>
                     </div>
-                                  {!active ?(
-                   <div className='text-gray-700 flex text-xs lg:text-sm font-normal  items-center justify-center'>
-                       No Loan
-                   </div>
-   
-               ):(
-                   <div>
-                               <div className='items-center justify-between gap-2 my-2'>
+
+                                                 <div className='items-center justify-between gap-2 my-2'>
                                 <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2  rounded-xl shadow-md '>
                                     
                                     <div className='flex items-center gap-2'>
@@ -111,6 +105,14 @@ function MyLoan() {
                     
                     
                             </div>
+                                  {!active ?(
+                   <div className='text-gray-700 flex text-xs lg:text-sm font-normal  items-center justify-center'>
+                       No Loan
+                   </div>
+   
+               ):(
+                   <div>
+  
                    <div className='bg-gray-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
