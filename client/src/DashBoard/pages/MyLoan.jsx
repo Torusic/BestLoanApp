@@ -63,7 +63,7 @@ function MyLoan() {
                     </div>
                     </div>
                                   {!active ?(
-                   <div className='text-gray-900 flex text-xs lg:text-sm font-normal  items-center justify-center'>
+                   <div className='text-gray-700 flex text-xs lg:text-sm font-normal  items-center justify-center'>
                        No Loan
                    </div>
    
