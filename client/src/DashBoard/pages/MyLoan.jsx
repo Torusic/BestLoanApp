@@ -64,7 +64,7 @@ function MyLoan() {
                     </div>
                                   {!active ?(
                    <div className='text-gray-900 flex items-center justify-center'>
-                       No active loan...
+                       No  loan...
                    </div>
    
                ):(
