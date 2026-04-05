@@ -70,7 +70,7 @@ function MyLoan() {
                    </div>
    
                ):(
-                   <div className='bg-green-50'>
+                   <div className='bg-green-50 p-1 rounded-xl'>
                                <div className='items-center justify-between gap-2 my-2'>
                                 <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2  rounded-xl shadow-md '>
                                     
