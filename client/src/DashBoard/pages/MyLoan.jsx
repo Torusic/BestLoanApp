@@ -93,7 +93,7 @@ function MyLoan() {
                     
                                         <div className='grid px-4'>
                                             <p className='text-gray-100 my-2 font-semibold text-sm md;text-sm lg:text-lg'>Amount Repaid</p>
-                                            <span className='text-gray-100 my-2 font-bold text-2xl md;text-sm lg:text-lg'>{formatCurrency(active.amountPaid)}</span>
+                                            <span className='text-gray-100 my-2 font-bold text-lg md;text-sm lg:text-lg'>{formatCurrency(active.amountPaid)}</span>
                                         </div>
                                         
                     
@@ -103,7 +103,7 @@ function MyLoan() {
                     
                                         <div className='grid px-4'>
                                             <p className='text-gray-100 my-2 font-semibold text-sm md;text-sm lg:text-lg'>Balance</p>
-                                            <span className='text-gray-100 my-2 font-bold text-2xl md:text-sm lg:text-lg'> {formatCurrency(active.balance)} </span>
+                                            <span className='text-gray-100 my-2 font-bold text-lg md:text-sm lg:text-lg'> {formatCurrency(active.balance)} </span>
                                         </div>
                                         
                     
@@ -113,33 +113,19 @@ function MyLoan() {
                     
                     
                             </div>
-                   <div className='bg-gray-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                   <div className='bg-green-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
    
                    <div className='lg:flex grid items-center justify-between gap-2'>
-                       <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span className={`font-medium ${active.status === "pending" ? "text-yellow-500" : active.status === "approved" ? "text-green-600" :"text-red-500"} text-yellow-500`}> Pending</span></p>
+                       <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span  className={`font-normal ${active.status === "pending" ? "text-yellow-700 bg-gradient-to-r from-yellow-100 to-yellow-200 py-1 px-2 rounded-xl" : active.status === "approved" ? "text-green-600 py-1 px-2 rounded-xl bg-gradient-to-r from-green-100 via-green-200 to-green-300" :"text-red-500"}`}> {active.status}</span></p>
                        <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Repayment Period: <span className='font-medium'> {active.durationWeeks} Weeks</span></p>
                         
                    </div>
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Due Date <span className='font-medium'> {active.dueDate ? new Date(active.dueDate).toDateString()  : "Set at Approval"}</span></p>
                    
                </div>
-               <div className='p-2 grid items-center gap-2 mt-2'>
-   
-                  <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Processing Fee: <span className='font-medium'> {active.isFeePaid ? "Paid" : "Not Paid"}</span></p>
-   
-                  {active.processingFee && (
-                   <button onClick={()=>setFee(true)} className="bg-blue-600 text-sm text-white px-4 py-2  rounded">
-                        Pay Processing Fee: ({formatCurrency(active.processingFee)})
-                   </button>
-                   )}
-                  
-   
-                  <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Fee Status: <span className='font-medium'> {active.feeStatus}</span></p>
-               </div>
-   
-                   
+
                     {!active.amount && (
                    <button onClick={()=>setFee(true)} className="bg-blue-600 text-sm text-white px-4 py-2  rounded-lg">
                         Pay Loan: ({formatCurrency(active.amount)})
@@ -155,7 +141,7 @@ function MyLoan() {
 
 
                 {showMore && (
-                <div className="bg-gray-50 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                <div className="bg-green-50 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Processing Fee: <span className="font-medium">{formatCurrency(active.processingFee)}</span></p>
 

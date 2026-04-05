@@ -52,7 +52,7 @@ function ActiveLoan() {
     <section className=''>
         <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
            <p className='text-sm font-medium text-gray-500 my-2'> My Active loans</p>
-           <div className='bg-white p-2 rounded-lg '>
+           <div className='bg-green-50 p-2 rounded-lg '>
                                {!active ?(
                 <div className='text-gray-900 flex items-center justify-center'>
                     No active loan...
@@ -60,12 +60,12 @@ function ActiveLoan() {
 
             ):(
                 <div>
-                <div className='bg-gray-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                <div className='bg-green-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
 
                 <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
 
                 <div className='lg:flex grid items-center justify-between gap-2'>
-                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span className={`font-medium ${active.status === "pending" ? "text-yellow-500" : active.status === "approved" ? "text-green-600" :"text-red-500"} text-yellow-500`}> Pending</span></p>
+                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span className={`font-normal ${active.status === "pending" ? "text-yellow-700 bg-gradient-to-r from-yellow-100 to-yellow-200 py-1 px-2 rounded-xl" : active.status === "approved" ? "text-green-600 py-1 px-2 rounded-xl bg-gradient-to-r from-green-100 via-green-200 to-green-300" :"text-red-500"}`}> {active.status}</span></p>
                     <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Repayment Status: <span className='font-medium'> {active.durationWeeks} Weeks</span></p>
                      
                 </div>
@@ -95,7 +95,7 @@ function ActiveLoan() {
 
 
                 {showMore && (
-                <div className="bg-gray-50 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                <div className="bg-green-100 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Processing Fee: <span className="font-medium">{formatCurrency(active.processingFee)}</span></p>
 

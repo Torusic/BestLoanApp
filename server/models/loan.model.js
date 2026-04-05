@@ -72,10 +72,15 @@ const loanSchema = new mongoose.Schema(
     type: Number,
     default: 0
     },
-    
-
-    
-
+    isDisbursed: {
+      type: Boolean,
+      default: false
+    },
+    disbursedAt: Date,
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
     repaymentStatus: {
       type: String,
       enum: ["not_started", "paying", "completed", "overdue"],

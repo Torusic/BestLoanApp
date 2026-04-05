@@ -2,6 +2,7 @@ import { request } from "express";
 import LoanModel from "../models/loan.model.js";
 import UserModel from "../models/user.model.js";
 import bcryptjs from "bcryptjs"
+import mongoose from "mongoose";
 
 //Apply loan
 export async function applyLoanOnline(req,res){
@@ -158,133 +159,85 @@ export async function applyLoanViaAgent(req,res) {
     
 }
 
-export async function submitProcessingFee(req, res) {
-    try {
-        const userId = req.userId;
-        const { mpesaCode } = req.body;
+export async function approveLoan(req, res) {
+  try {
+    const { loanId } = req.body;
+    const adminId = req.userId; 
 
-        // 1. Validate format (Mpesa codes are usually 10 chars)
-        if (!mpesaCode || mpesaCode.length < 8) {
-            return res.status(400).json({
-                message: "Invalid Mpesa code format",
-                error: true,
-                success: false
-            });
-        }
-
-        // 2. Prevent duplicate Mpesa codes
-        const existingCode = await LoanModel.findOne({ mpesaCode });
-        if (existingCode) {
-            return res.status(400).json({
-                message: "This Mpesa code has already been used",
-                error: true,
-                success: false
-            });
-        }
-
-        // 3. Find user's active loan
-        const loan = await LoanModel.findOne({
-            user: userId,
-            status: "pending"
-        });
-
-        if (!loan) {
-            return res.status(404).json({
-                message: "No pending loan found",
-                error: true,
-                success: false
-            });
-        }
-
-        if (loan.feeStatus === "paid" || loan.feeStatus === "verified") {
-            return res.status(400).json({
-                message: "Processing fee already submitted",
-                error: true,
-                success: false
-            });
-        }
-
-        // 4. Save Mpesa code
-        loan.mpesaCode = mpesaCode.toUpperCase();
-        loan.isFeePaid = true;
-        loan.feeStatus = "paid";
-
-        await loan.save();
-
-        return res.status(200).json({
-            message: "Processing fee submitted. Awaiting admin verification.",
-            success: true,
-            error: false,
-            data: loan
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        });
+    if (!mongoose.Types.ObjectId.isValid(loanId)) {
+      return res.status(400).json({ message: "Invalid loan ID", error: true, success: false });
     }
-}
-//verfy processing fee
-export async function verifyProcessingFee(req,res) {
-    try {
-        const {mpesaCode,action}=req.body
 
+    const loan = await LoanModel.findById(loanId).populate("user");
+    if (!loan) return res.status(404).json({ message: "Loan not found", error: true, success: false });
 
-        const loan=await LoanModel.findOne({
-            mpesaCode:mpesaCode,
-            feeStatus:'paid'
-        })
-        if(!loan){
-            return res.status(400).json({
-                message: "No pending payment found for this code",
-                success: false
-            })
-        }
-        if(action==='approve'){
-            loan.feeStatus='verified',
-            loan.paymentVerified=true,
-            loan.status="approved"
-
-            //const interestRate = 0.1; // example 10% interest
-            //loan.totalRepayment = loan.amount + loan.amount * interestRate;
-            loan.totalRepayment = loan.amount 
-            loan.balance = loan.totalRepayment;
-
-         
-            const now = new Date();
-            loan.dueDate = new Date(now.getTime() + loan.durationWeeks * 7 * 24 * 60 * 60 * 1000);
-            loan.repaymentStatus = "not_started";
-        
-        } else if (action === "reject") {
-            loan.feeStatus = "rejected";
-            loan.isFeePaid = false;
-            loan.paymentVerified = false;
-        } else {
-            return res.status(400).json({
-                message: "Invalid action",
-                success: false
-            });
-        }
-        await loan.save()
-
-         return res.status(200).json({
-            message: `Fee ${action}d successfully`,
-            success: true,
-            data: loan
-        });
-        
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        });
-        
+    if (loan.status === "approved") {
+      return res.status(400).json({ message: "Loan is already approved", error: true, success: false });
     }
-    
+
+    loan.status = "approved";
+    loan.approvedBy = adminId;
+
+    await loan.save();
+
+    return res.status(200).json({
+      message: "Loan approved successfully",
+      success: true,
+      data: loan
+    });
+
+  } catch (error) {
+    console.log("Approve Loan Error:", error);
+    return res.status(500).json({ message: error.message || error, error: true, success: false });
+  }
 }
+
+
+export async function disburseLoan(req, res) {
+  try {
+    const { loanId } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(loanId)) {
+      return res.status(400).json({ message: "Invalid loan ID", error: true, success: false });
+    }
+
+    const loan = await LoanModel.findById(loanId).populate("user");
+    if (!loan) return res.status(404).json({ message: "Loan not found", error: true, success: false });
+
+    if (loan.isDisbursed) {
+      return res.status(400).json({ message: "Loan has already been disbursed", error: true, success: false });
+    }
+
+    if (loan.status !== "approved") {
+      return res.status(400).json({ message: "Loan must be approved before disbursement", error: true, success: false });
+    }
+
+  
+    loan.isDisbursed = true;
+    loan.disbursedAt = new Date();
+
+    loan.totalRepayment = loan.amount 
+    loan.amountPaid = 0;
+    loan.balance = loan.totalRepayment;
+
+
+    loan.repaymentStatus = "paying";
+    loan.dueDate = new Date(Date.now() + loan.durationWeeks * 7 * 24 * 60 * 60 * 1000); // duration in weeks
+
+    await loan.save();
+
+    return res.status(200).json({
+      message: "Loan disbursed successfully and repayment fields updated",
+      success: true,
+      data: loan
+    });
+
+  } catch (error) {
+    console.log("Disburse Loan Error:", error);
+    return res.status(500).json({ message: error.message || error, error: true, success: false });
+  }
+}
+
 //admin get all loans
 export async function getAllLoans(req,res){
     try {
