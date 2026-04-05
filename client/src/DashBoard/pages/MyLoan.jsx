@@ -55,7 +55,7 @@ function MyLoan() {
        <section className=''>
            <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
  
-              <div className='bg-white p-2 rounded-lg '>
+              <div className='bg-green p-2 rounded-lg '>
                     <div className='flex items-center justify-between'>
                      <p className='text-lg font-medium text-gray-500 my-2'> Loan</p>
                      <div className='my-4 flex justify-center items-center w-fit ml-auto'>
@@ -70,7 +70,7 @@ function MyLoan() {
                    </div>
    
                ):(
-                   <div>
+                   <div className='bg-green-50'>
                                <div className='items-center justify-between gap-2 my-2'>
                                 <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2  rounded-xl shadow-md '>
                                     
@@ -113,7 +113,7 @@ function MyLoan() {
                     
                     
                             </div>
-                   <div className='bg-green-100 p-2 my-4 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                   <div className='bg-green-100 p-2 my-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
    
@@ -133,7 +133,7 @@ function MyLoan() {
                    )}
                    <div className=' grid'>
 
-                <div className="bg-green-50 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                <div className="bg-green-100 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Processing Fee: <span className="font-medium">{formatCurrency(active.processingFee)}</span></p>
 
