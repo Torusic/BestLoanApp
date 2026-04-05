@@ -126,12 +126,15 @@ function MyLoan() {
                    
                </div>
 
-                    {!active.amount && (
-                   <button onClick={()=>setFee(true)} className="bg-blue-600 text-sm text-white px-4 py-2  rounded-lg">
-                        Pay Loan: ({formatCurrency(active.amount)})
-                   </button>
-                   )}
-                   <div className=' grid'>
+                {active.isDisbursed && active.balance > 0 && (
+                <button
+                    onClick={() => setFee(true)} // later you can change to repayment modal
+                    className="bg-blue-500 hover:bg-blue-600 text-sm text-white px-4 py-2 rounded-lg transition"
+                >
+                    Pay Loan ({formatCurrency(active.balance)})
+                </button>
+                )}
+                <div className=' grid'>
 
                 <div className="bg-green-100 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
                     
