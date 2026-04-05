@@ -8,6 +8,7 @@ import { MdAttachMoney } from 'react-icons/md'
 import { FaRegClock } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { LuLoader } from 'react-icons/lu'
+import ProcessingFee from '../ProcessingFee'
 
 function MyLoan() {
   
