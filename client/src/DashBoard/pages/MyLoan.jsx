@@ -113,7 +113,7 @@ function MyLoan() {
                     
                     
                             </div>
-                   <div className='bg-green-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                   <div className='bg-green-100 p-2 my-4 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
    
@@ -132,15 +132,7 @@ function MyLoan() {
                    </button>
                    )}
                    <div className=' grid'>
-                                       <button 
-                onClick={() => setShowMore(!showMore)}
-                className="text-blue-600 text-xs mt-2 w-fit"
-                >
-                {showMore ? "View Less" : "View More"}
-                </button>
 
-
-                {showMore && (
                 <div className="bg-green-50 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Processing Fee: <span className="font-medium">{formatCurrency(active.processingFee)}</span></p>
@@ -148,9 +140,8 @@ function MyLoan() {
                     <p>Fee Status: 
                     <span className="font-medium capitalize"> {active.feeStatus}</span>
                     </p>
-
-                    <p>Payment Verified: 
-                    <span className="font-medium"> {active.paymentVerified ? "Yes" : "No"}</span>
+                    <p>Disbursed: 
+                    <span className="font-medium"> {active.isDisbursed ? "Yes" : "No"}</span>
                     </p>
 
                     <p>Total Repayment: 
@@ -170,8 +161,7 @@ function MyLoan() {
                     </p>
 
                 </div>
-                )}
-                   
+             
                     
                    </div>
 

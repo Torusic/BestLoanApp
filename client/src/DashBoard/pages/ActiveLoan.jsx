@@ -103,8 +103,8 @@ function ActiveLoan() {
                     <span className="font-medium capitalize"> {active.feeStatus}</span>
                     </p>
 
-                    <p>Payment Verified: 
-                    <span className="font-medium"> {active.paymentVerified ? "Yes" : "No"}</span>
+                    <p>Disbursed: 
+                    <span className="font-medium"> {active.isDisbursed ? "Yes" : "No"}</span>
                     </p>
 
                     <p>Total Repayment: 
