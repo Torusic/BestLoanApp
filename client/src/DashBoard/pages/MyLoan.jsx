@@ -126,6 +126,19 @@ function MyLoan() {
                    
                </div>
 
+
+                <div className=' grid'>
+
+                <div className="bg-green-100 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                    
+                    <p>Disbursed: 
+                    <span className="font-medium"> {active.isDisbursed ? "Yes" : "No"}</span>
+                    </p>
+
+                    <p>Repayment Status: 
+                    <span className="font-medium capitalize"> {active.repaymentStatus}</span>
+                    </p>
+
                 {active.isDisbursed && active.balance > 0 && (
                 <button
                     onClick={() => setFee(true)} // later you can change to repayment modal
@@ -134,34 +147,6 @@ function MyLoan() {
                     Pay Loan ({formatCurrency(active.balance)})
                 </button>
                 )}
-                <div className=' grid'>
-
-                <div className="bg-green-100 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
-                    
-                    <p>Processing Fee: <span className="font-medium">{formatCurrency(active.processingFee)}</span></p>
-
-                    <p>Fee Status: 
-                    <span className="font-medium capitalize"> {active.feeStatus}</span>
-                    </p>
-                    <p>Disbursed: 
-                    <span className="font-medium"> {active.isDisbursed ? "Yes" : "No"}</span>
-                    </p>
-
-                    <p>Total Repayment: 
-                    <span className="font-medium"> {formatCurrency(active.totalRepayment)}</span>
-                    </p>
-
-                    <p>Amount Paid: 
-                    <span className="font-medium"> {formatCurrency(active.amountPaid)}</span>
-                    </p>
-
-                    <p>Balance: 
-                    <span className="font-medium"> {formatCurrency(active.balance)}</span>
-                    </p>
-
-                    <p>Repayment Status: 
-                    <span className="font-medium capitalize"> {active.repaymentStatus}</span>
-                    </p>
 
                 </div>
              
