@@ -126,9 +126,9 @@ function MyLoan() {
                    
                </div>
 
-                <div className=' grid bg-gray-50 p-2'>
+                <div className=' gri'>
 
-                <div className="bg-whete p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                <div className="bg-gray-50 p-2 rounded text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Disbursed: 
                     <span className="font-medium"> {active.isDisbursed ? "Yes" : "No"}</span>
