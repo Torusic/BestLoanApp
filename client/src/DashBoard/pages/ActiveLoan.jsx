@@ -60,7 +60,7 @@ function ActiveLoan() {
 
             ):(
                 <div>
-                <div className='bg-green-100 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                <div className='bg-gray-50 p-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
 
                 <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
 
@@ -95,7 +95,7 @@ function ActiveLoan() {
 
 
                 {showMore && (
-                <div className="bg-green-100 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                <div className="bg-gray-50 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Processing Fee: <span className="font-medium">{formatCurrency(active.processingFee)}</span></p>
 

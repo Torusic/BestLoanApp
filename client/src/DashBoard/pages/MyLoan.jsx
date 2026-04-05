@@ -70,7 +70,7 @@ function MyLoan() {
                    </div>
    
                ):(
-                   <div className='bg-green-50 p-1 rounded-xl'>
+                   <div className='bg-white '>
                                <div className='items-center justify-between gap-2 my-2'>
                                 <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2  rounded-xl shadow-md '>
                                     
@@ -113,7 +113,7 @@ function MyLoan() {
                     
                     
                             </div>
-                   <div className='bg-green-100 p-2 my-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                   <div className='bg-gray-50 p-2 my-2 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
    
@@ -129,7 +129,7 @@ function MyLoan() {
 
                 <div className=' grid'>
 
-                <div className="bg-green-100 p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
+                <div className="bg-whete p-2 rounded mt-2 text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Disbursed: 
                     <span className="font-medium"> {active.isDisbursed ? "Yes" : "No"}</span>
