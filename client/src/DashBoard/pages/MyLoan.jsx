@@ -53,7 +53,7 @@ function MyLoan() {
        }).format(num || 0)
      return (
        <section className=''>
-           <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
+           <div className='w-full grid bg-gray-50  p-1 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
  
               <div className='bg-green p-2 rounded-lg '>
                     <div className='flex items-center justify-between'>
@@ -70,11 +70,11 @@ function MyLoan() {
                    </div>
    
                ):(
-                   <div className='bg-white '>
+                   <div className='bg-white p-2 '>
                                <div className='items-center justify-between gap-2 my-2'>
                                 <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2  rounded-xl shadow-md '>
                                     
-                                    <div className='flex items-center gap-2'>
+                                    <div className='flex items-center gap-2 '>
                                         <MdAttachMoney size={40} className='text-white' />
                     
                                         <div className='grid'>
