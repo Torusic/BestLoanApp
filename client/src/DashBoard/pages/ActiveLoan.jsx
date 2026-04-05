@@ -52,7 +52,7 @@ function ActiveLoan() {
     <section className=''>
         <div className='w-full grid bg-gray-50  p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
            <p className='text-sm font-medium text-gray-500 my-2'> My Active loans</p>
-           <div className='bg-green-50 p-2 rounded-lg '>
+           <div className='bg-white p-2 rounded-lg '>
                                {!active ?(
                 <div className='text-gray-900 flex items-center justify-center'>
                     No active loan...
