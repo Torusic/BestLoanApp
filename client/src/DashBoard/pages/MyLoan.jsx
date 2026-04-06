@@ -70,7 +70,7 @@ function MyLoan() {
                    </div>
    
                ):(
-                   <div className='bg-white p-2 '>
+                   <div className='bg-gray-700 p-2 '>
                                <div className='items-center justify-between gap-2 my-2'>
                                 <div className='shadow-md bg-gradient-to-r from-green-400 via-green-500 to-green-600 my-2 p-2  rounded-xl shadow-md '>
                                     
@@ -113,7 +113,7 @@ function MyLoan() {
                     
                     
                             </div>
-                   <div className='bg-gray-900 p-2 my-4 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                   <div className='bg-gray-900 text-white p-2 my-4 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
    
