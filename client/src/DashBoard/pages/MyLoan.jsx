@@ -53,9 +53,9 @@ function MyLoan() {
        }).format(num || 0)
      return (
        <section className=''>
-           <div className='w-full grid bg-gray-500  max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
+           <div className='w-full grid bg-gray-700  max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
  
-              <div className='bg-white p-2 rounded-lg '>
+              <div className='bg-gray-900 p-2 rounded-lg '>
                     <div className='flex items-center justify-between'>
                      <p className='text-lg font-medium text-gray-500 my-2'> Loan</p>
                      <div className='my-4 flex justify-center items-center w-fit ml-auto'>
@@ -65,7 +65,7 @@ function MyLoan() {
                     </div>
                     </div>
                                   {!active ?(
-                   <div className='text-gray-700 flex font-semibold rounded-lg bg-gray-100 text-xs p-2 lg:text-sm font-normal  items-center justify-center'>
+                   <div className='text-gray-700 flex font-semibold rounded-lg bg-gray-700 text-xs p-2 lg:text-sm font-normal  items-center justify-center'>
                     No Loan
                    </div>
    
@@ -113,7 +113,7 @@ function MyLoan() {
                     
                     
                             </div>
-                   <div className='bg-gray-50 p-2 my-4 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
+                   <div className='bg-gray-900 p-2 my-4 rounded-lg text-xs lg:text-sm md:text-sm grid gap-2'>
    
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
    
@@ -128,7 +128,7 @@ function MyLoan() {
 
                 <div className=' gri'>
 
-                <div className="bg-gray-50 p-2 rounded text-xs lg:text-sm md:text-sm grid gap-2">
+                <div className="bg-gray-700 p-2 rounded text-xs lg:text-sm md:text-sm grid gap-2">
                     
                     <p>Disbursed: 
                     <span className="font-medium"> {active.isDisbursed ? "Yes" : "No"}</span>
