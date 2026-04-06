@@ -32,8 +32,8 @@ function ApplyLoan() {
   const durationPercent = ((itemCount - 4) / (24 - 4)) * 100;
 
   return (
-    <section className="flex items-center justify-center  bg-gray-100 p-2">
-      <div className="bg-white w-full max-w-lg md:max-w-5xl lg:max-w-7xl p-2 rounded-2xl flex flex-col items-center justify-center space-y-6">
+    <section className="flex items-center justify-center  bg-gray-700 p-2">
+      <div className="bg-gray-800 w-full max-w-lg md:max-w-5xl lg:max-w-7xl p-2 text-white rounded-2xl flex flex-col items-center justify-center space-y-6">
         
 
 
@@ -56,7 +56,7 @@ function ApplyLoan() {
             Duration <p className="italic">(weeks)</p>
           </label>
 
-          <div className="flex items-center bg-gray-100 px-4 gap-4 py-2 rounded-lg">
+          <div className="flex items-center bg-gray-900 px-4 gap-4 py-2 rounded-lg">
             <button onClick={decrement} className="text-gray-500 cursor-pointer text-xl">
               &minus;
             </button>
@@ -74,7 +74,7 @@ function ApplyLoan() {
           </div>
 
           {/* Duration Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div className="w-full bg-gray-900 rounded-full h-2 mt-2">
             <div
               className="bg-green-500 h-2 rounded-full transition-all duration-200"
               style={{ width: `${durationPercent}%` }}
@@ -83,7 +83,7 @@ function ApplyLoan() {
         </div>
 
         {/* Loan Summary Panel */}
-        <div className="w-full bg-gray-50 p-4 rounded-lg shadow-inner text-center mt-4">
+        <div className="w-full bg-gray-700 p-4 rounded-lg shadow-inner text-center mt-4">
           <p className="text-gray-700 md:text-base lg:text-lg">
             You are applying for <span className="font-semibold">{amount || 0}</span> currency units
             for <span className="font-semibold">{itemCount}</span> weeks.
@@ -97,7 +97,7 @@ function ApplyLoan() {
             onClick={handleApply}
             disabled={!amount || amount <= 0}
             className={`p-2 w-full rounded-lg text-white font-medium ${
-              !amount || amount <= 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500'
+              !amount || amount <= 0 ? 'bg-gray-00 cursor-not-allowed' : 'bg-green-500'
             }`}
           >
             Apply
