@@ -53,9 +53,9 @@ function MyLoan() {
        }).format(num || 0)
      return (
        <section className=''>
-           <div className='w-full grid bg-gray-50  p-1 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
+           <div className='w-full grid bg-gray-500  max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded-lg '>
  
-              <div className='bg-green p-2 rounded-lg '>
+              <div className='bg-white p-2 rounded-lg '>
                     <div className='flex items-center justify-between'>
                      <p className='text-lg font-medium text-gray-500 my-2'> Loan</p>
                      <div className='my-4 flex justify-center items-center w-fit ml-auto'>

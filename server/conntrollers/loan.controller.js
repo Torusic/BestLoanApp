@@ -161,91 +161,97 @@ export async function applyLoanViaAgent(req,res) {
 
 export async function approveLoan(req, res) {
   try {
-    const { loanId } = req.body;
-    const adminId = req.userId; 
+    const { loanId } = req.body
+    const adminId = req.userId
 
-    if (!mongoose.Types.ObjectId.isValid(loanId)) {
-      return res.status(400).json({ message: "Invalid loan ID", error: true, success: false });
+    const loan = await LoanModel.findById(loanId).populate('user') // ✅ populate
+
+    if (!loan) {
+      return res.status(404).json({ message: "Loan not found", success: false })
     }
-
-    const loan = await LoanModel.findById(loanId).populate("user");
-    if (!loan) return res.status(404).json({ message: "Loan not found", error: true, success: false });
 
     if (loan.status === "approved") {
-      return res.status(400).json({ message: "Loan is already approved", error: true, success: false });
+      return res.status(400).json({ message: "Loan already approved" })
     }
 
-    loan.status = "approved";
-    loan.approvedBy = adminId;
+    loan.status = "approved"
+    loan.approvedBy = adminId
 
-    await loan.save();
+    await loan.save()
 
     return res.status(200).json({
       message: "Loan approved successfully",
       success: true,
       data: loan
-    });
+    })
 
   } catch (error) {
-    console.log("Approve Loan Error:", error);
-    return res.status(500).json({ message: error.message || error, error: true, success: false });
+    return res.status(500).json({ message: error.message || error })
   }
 }
 
 
 export async function disburseLoan(req, res) {
   try {
-    const { loanId } = req.body;
+    const { loanId } = req.body
 
-    if (!mongoose.Types.ObjectId.isValid(loanId)) {
-      return res.status(400).json({ message: "Invalid loan ID", error: true, success: false });
-    }
+    const loan = await LoanModel.findById(loanId)
 
-    const loan = await LoanModel.findById(loanId).populate("user");
-    if (!loan) return res.status(404).json({ message: "Loan not found", error: true, success: false });
-
-    if (loan.isDisbursed) {
-      return res.status(400).json({ message: "Loan has already been disbursed", error: true, success: false });
+    if (!loan) {
+      return res.status(404).json({
+        message: "Loan not found"
+      })
     }
 
     if (loan.status !== "approved") {
-      return res.status(400).json({ message: "Loan must be approved before disbursement", error: true, success: false });
+      return res.status(400).json({
+        message: "Loan must be approved first"
+      })
     }
 
-  
-    loan.isDisbursed = true;
-    loan.disbursedAt = new Date();
+    if (loan.isDisbursed) {
+      return res.status(400).json({
+        message: "Already disbursed"
+      })
+    }
 
-    loan.totalRepayment = loan.amount 
-    loan.amountPaid = 0;
-    loan.balance = loan.totalRepayment;
+    loan.isDisbursed = true
+    loan.disbursedAt = new Date()
 
+    loan.totalRepayment = loan.amount
+    loan.amountPaid = 0
+    loan.balance = loan.totalRepayment
 
-    loan.repaymentStatus = "paying";
-    loan.dueDate = new Date(Date.now() + loan.durationWeeks * 7 * 24 * 60 * 60 * 1000); // duration in weeks
+    loan.repaymentStatus = "paying"
 
-    await loan.save();
+    loan.dueDate = new Date(
+      Date.now() + loan.durationWeeks * 7 * 24 * 60 * 60 * 1000
+    )
+
+    await loan.save()
 
     return res.status(200).json({
-      message: "Loan disbursed successfully and repayment fields updated",
+      message: "Loan disbursed successfully",
       success: true,
       data: loan
-    });
+    })
 
   } catch (error) {
-    console.log("Disburse Loan Error:", error);
-    return res.status(500).json({ message: error.message || error, error: true, success: false });
+    return res.status(500).json({
+      message: error.message || error
+    })
   }
 }
 
-//admin get all loans
+// getAllLoans
 export async function getAllLoans(req,res){
     try {
-        const adminId=req.userId
+        const loans = await LoanModel.find()
+            .populate('agent', 'name email status nationalId')
+            .populate('user', 'name email phone nationalId') // ✅ populate user info
+            .sort({ createdAt: -1 })
 
-        const loans=await LoanModel.find().populate('agent','name email status nationalId').populate('user','name status nationalId').sort({createdAt:-1})
-
-        if(!loans){
+        if (!loans || loans.length === 0) {
             return res.status(400).json({
                 message:"No loans available",
                 error:true,
@@ -259,14 +265,12 @@ export async function getAllLoans(req,res){
             success:true,
             data:loans
         })
-        
     } catch (error) {
         return res.status(500).json({
             message:error.message||error,
             error:true,
             success:false
         })
-        
     }
 }
 export async function myLoan(req, res) {

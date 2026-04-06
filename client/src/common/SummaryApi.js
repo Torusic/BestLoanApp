@@ -1,5 +1,5 @@
-export const baseURL = "https://bestloanapp.onrender.com";
-//export const baseURL = "http://localhost:5000";
+//export const baseURL = "https://bestloanapp.onrender.com";
+export const baseURL = "http://localhost:5000";
 
 const SummaryApi={
     register:{
@@ -31,6 +31,16 @@ const SummaryApi={
     myLoan:{
         url:"/api/loan/activeLoan",
         method:'get'
+
+    },
+    approve:{
+        url:"/api/loan/approve",
+        method:"post"
+
+    },
+        disburse:{
+        url:"/api/loan/disburse",
+        method:"post"
 
     },
     makeProcessingFee:{

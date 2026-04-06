@@ -128,6 +128,7 @@ export const mpesaCallback = async (req, res) => {
       loan.mpesaCode = mpesaCode;
       loan.isFeePaid = true;
       loan.feeStatus = "paid"; 
+       loan.status = "awaiting_approval";
       await loan.save();
 
       return res.status(200).json({ message: "Processing fee recorded successfully" });

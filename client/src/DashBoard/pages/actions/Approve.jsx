@@ -1,38 +1,78 @@
-import React from 'react'
-import { IoClose } from 'react-icons/io5'
+import React, { useState } from 'react'
+import Axios from '../../../utils/Axios'
+import SummaryApi from '../../../common/SummaryApi'
+import toast from 'react-hot-toast'
+import AxiosToastError from '../../../utils/AxiosToastError'
+import { LuLoader } from 'react-icons/lu'
 
-function Approve({close}) {
+function Approve({ loan, close, fetch }) {
+  const [loading, setLoading] = useState(false)
+
+  const handleApprove = async () => {
+  try {
+    setLoading(true)
+
+    const response = await Axios({
+      ...SummaryApi.approve,
+      data: {
+        loanId: loan._id
+      }
+    })
+
+    if (response.data.success) {
+      toast.success("Approved ✅")
+      fetch()
+      close()
+    }
+
+  } catch (error) {
+    AxiosToastError(error)
+  } finally {
+    setLoading(false)
+  }
+}
+
   return (
-    <section className='bg-gray-900/70  p-8 fixed bottom-0 top-0 right-0 left-0 flex items-center  justify-center'>
-        <div className='md:max-w-md bg-white md:w-full lg:max-w-lg lg:w-full max-w-sm w-full p-7 rounded-lg shadow-2xl'>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 z-50">
+      
+      <div className="bg-white rounded-lg  p-6 max-w-sm w-full lg:max-w-lg lg:w-full md:max-w-md mdw-full shadow-lg">
 
-            <div className='flex items-center justify-between '>
-                <p className='lgtext-sm text-xs font-semibold text-gray-700'>Loan Approval</p>
-                <IoClose onClick={close}/>
-            </div>
-            <div className='my-5 grid items-center justify-between gap-2'>
-                <p className='lg:text-sm text-sm font-normal text-gray-900'>
-                    Are you Sure you want to approve ?
-                 </p>
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">
+          Approve Loan
+        </h2>
 
-                 <p className='lg:text-sm text-xs italic font-semibold text-gray-900'>
-                    (make sure mpesa code is valid)
-                 </p>
-            </div>
+        <div className="text-sm text-gray-600 mb-4">
+        <p><strong>Customer:</strong> {loan?.user?.name || "Loading..."}</p>
+        <p><strong>Amount:</strong> KES {loan?.amount || 0}</p>
+        <p><strong>Duration:</strong> {loan?.durationWeeks || 0} weeks</p>
+        </div>
 
-            <div className='w-fit ml-auto flex justify-between gap-2'>
-                <button onClick={close} className='border-gray-900 border p-2 text-xs lg:text-sm cursor-pointer text-black font-semibold rounded'>
-                    Cancel
-                </button>
+        <p className="text-xs text-gray-500 mb-4">
+          Are you sure you want to approve this loan?
+        </p>
 
-                 <button className='bg-gray-900 text-xs lg:text-sm cursor-pointer text-white font-semibold p-2 rounded'>
-                    Approve
-                </button>
-            </div>
+        <div className="flex justify-end gap-2">
+
+          <button
+            onClick={close}
+            className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg"
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={handleApprove}
+            disabled={loading}
+            className="px-3 py-1 bg-gray-800 text-white rounded-lg flex items-center gap-2"
+          >
+            {loading && <LuLoader className="animate-spin" />}
+            {loading ? "Approving..." : "Confirm"}
+          </button>
 
         </div>
 
-    </section>
+      </div>
+    </div>
   )
 }
 

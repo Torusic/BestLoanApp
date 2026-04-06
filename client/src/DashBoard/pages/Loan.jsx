@@ -7,12 +7,15 @@ import AxiosToastError from '../../utils/AxiosToastError'
 import { LuLoader } from "react-icons/lu"
 import { FaInfoCircle } from 'react-icons/fa'
 import Approve from './actions/Approve'
+import Disburse from './actions/Disburse'
 
 function Loan() {
   const [customer, setCustomer] = useState(false)
   const [approve, setApprove] = useState(false)
   const [loans, setLoans] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedLoan, setSelectedLoan] = useState(null)
+const [disburse, setDisburse] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(1)
   const loansPerPage = 10
@@ -98,9 +101,9 @@ function Loan() {
             Verify the M-Pesa code before approving or rejecting.
           </p>
         </div>
-              <div className="overflow-x-auto mt-30 h-full overflow-y-auto scrollbar-hidden">
-                <table className='min-w-full text-sm'>
-                  <thead className='bg-gray-200 text-xs text-gray-600'>
+              <div className="overflow-x-auto  mt-30 h-full overflow-y-auto scrollbar-hidden">
+                <table className='min-w-full '>
+                  <thead className='bg-gray-200 text-xs  text-gray-600'>
                     <tr>
                       <th className="px-4 py-3 text-left">Customer</th>
                       <th className="px-4 py-3 hidden md:table-cell">ID</th>
@@ -112,6 +115,7 @@ function Loan() {
                       <th className="px-4 py-3 hidden lg:table-cell">Fee</th>
                       <th className="px-4 py-3 hidden lg:table-cell">Fee Status</th>
                       <th className="px-4 py-3 hidden lg:table-cell">Due Date</th>
+                          <th className="px-4 py-3 hidden lg:table-cell">Disbursed</th>
                       <th className="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
@@ -162,7 +166,7 @@ function Loan() {
 
                         <td className="px-4 py-3 hidden lg:table-cell">
                           <span className={`text-xs font-semibold ${
-                            loan.feeStatus === "verified"
+                            loan.feeStatus === "paid"
                               ? "text-green-600"
                               : "text-yellow-500"
                           }`}>
@@ -173,24 +177,50 @@ function Loan() {
                         <td className="px-4 py-3 hidden lg:table-cell">
                           {formatDate(loan.dueDate)}
                         </td>
+                        <td>
+                          <span className="text-xs text-gray-500">
+                            {String(loan.isDisbursed)}
+                          </span>
+                        </td>
 
                         <td className="px-4 py-3">
                           <div className="flex gap-2">
-                            <button
-                              onClick={() => setApprove(true)}
-                              className="px-3 py-1 text-xs cursor-pointer bg-green-500 text-white rounded-lg"
-                            >
-                              Approve
-                            </button>
 
-                            <button
-                              className="px-3 py-1 text-xs cursor-pointer bg-red-500 text-white rounded-lg"
-                            >
-                              Reject
-                            </button>
+                            {/* APPROVE */}
+                            {(loan.status === "pending" || loan.status === "awaiting_approval") && (
+                              <button
+                                onClick={() => {
+                                  setSelectedLoan(loan)
+                                  setApprove(true)
+                                }}
+                                className="px-3 py-1 text-xs cursor-pointer bg-green-500 text-white rounded-lg"
+                              >
+                                Approve
+                              </button>
+                            )}
+
+                            {/* DISBURSE */}
+                            {loan.status === "approved" && !loan.isDisbursed && (
+                              <button
+                                onClick={() => {
+                                  setSelectedLoan(loan)
+                                  setDisburse(true)
+                                }}
+                                className="px-3 py-1 text-xs cursor-pointer bg-blue-600 text-white rounded-lg"
+                              >
+                                Disburse
+                              </button>
+                            )}
+
+                            {/* REJECT */}
+                            {loan.status !== "approved" && (
+                              <button className="px-3 py-1 text-xs cursor-pointer bg-red-500 text-white rounded-lg">
+                                Reject
+                              </button>
+                            )}
+
                           </div>
                         </td>
-
                       </tr>
                     ))}
                   </tbody>
@@ -247,9 +277,19 @@ function Loan() {
 
       {approve && (
         <Approve
-          close={() => setApprove(false)}
+          loan={selectedLoan} 
+          close={() => setApprove(false)} 
+          fetch={fetchLoans} 
         />
       )}
+      {disburse && (
+        <Disburse loan={selectedLoan} 
+          close={() => setDisburse(false)} 
+          fetch={fetchLoans} 
+          />
+      )
+
+      }
     </section>
   )
 }
