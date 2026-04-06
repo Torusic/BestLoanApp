@@ -7,10 +7,11 @@ import ActiveLoan from './ActiveLoan';
 import { Link } from 'react-router-dom';
 
 
+
 function ClientDashboard() {
   
   return (
-   <section className='flex items-center justify-center p-1 bg-gray-100'>
+   <section className='flex items-center justify-center p-1 '>
     <div className='w-full grid bg-gray-50 p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded '>
         <div className='flex items-center justify-between'>
             <div>
@@ -22,7 +23,7 @@ function ClientDashboard() {
             <button className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 px-6 rounded-2xl shadow-md transition-colors">
             <Link to={"/clientStats/apply"}>Apply Loan</Link>
             </button>
-
+    \
         </div>
         </div>
         
