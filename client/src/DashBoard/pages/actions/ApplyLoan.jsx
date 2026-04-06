@@ -75,7 +75,7 @@ function ApplyLoan() {
           value={apply.amount}
           onChange={handleChange}
           placeholder="0.00"
-          className="w-full text-center text-4xl md:text-4xl lg:text-5xl py-4 px-6 rounded-lg outline-none text-white bg-gray-900"
+          className="w-full text-center text-4xl md:text-4xl lg:text-5xl py-4 px-6 rounded-lg outline-none text-white bg-gray-800"
         />
         {error && <p className="text-red-500 text-sm italic mt-1">{error}</p>}
 
