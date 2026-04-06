@@ -65,7 +65,7 @@ function ApplyLoan() {
               type="number"
               value={itemCount}
               readOnly
-              className="w-12 text-center bg-transparent outline-none text-gray-700 font-semibold"
+              className="w-12 text-center bg-transparent outline-none text-gray-500 font-semibold"
             />
 
             <button onClick={increment} className="text-gray-500 cursor-pointer text-xl">
@@ -84,7 +84,7 @@ function ApplyLoan() {
 
         {/* Loan Summary Panel */}
         <div className="w-full bg-gray-700 p-4 rounded-lg text-white shadow-inner text-center mt-4">
-          <p className="text-gray-700 md:text-base lg:text-lg">
+          <p className="text-white md:text-base lg:text-lg">
             You are applying for <span className="font-semibold">{amount || 0}</span> currency units
             for <span className="font-semibold">{itemCount}</span> weeks.
           </p>
@@ -97,7 +97,7 @@ function ApplyLoan() {
             onClick={handleApply}
             disabled={!amount || amount <= 0}
             className={`p-2 w-full rounded-lg text-white font-medium ${
-              !amount || amount <= 0 ? 'bg-gray-100 cursor-not-allowed' : 'bg-green-500'
+              !amount || amount <= 0 ? 'bg-gray-700 cursor-not-allowed' : 'bg-green-500'
             }`}
           >
             Apply

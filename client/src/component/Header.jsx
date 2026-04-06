@@ -14,7 +14,7 @@ function Header() {
           <ul className='flex items-center justify-between    lg:text-sm text-xs gap-5'>
 
             
-            <li className='font-semibold border border-green-400 px-3 py-1 cursor-pointer'><Link to={'/'}>Learn more</Link></li>
+            <li className='font-semibold border text-white border-green-400 px-3 py-1 cursor-pointer'><Link to={'/'}>Learn more</Link></li>
           </ul>
 
         </div>
