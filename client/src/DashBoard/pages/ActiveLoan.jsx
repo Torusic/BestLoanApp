@@ -54,7 +54,7 @@ function ActiveLoan() {
            <p className='text-sm font-medium text-gray-500 my-2'> My Active loans</p>
            <div className='bg-gray-700 p-2 rounded-lg '>
                                {!active ?(
-                <div className='text-gray-900 flex items-center justify-center'>
+                <div className='text-gray-200 flex items-center justify-center'>
                     No active loan...
                 </div>
 
