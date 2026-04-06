@@ -129,7 +129,7 @@ function MyLoan() {
                 <div className=' grid'>
                     
                {!active.isFeePaid && (
-                <button onClick={()=>setFee(true)} className="bg-blue-500 text-sm text-white px-4 py-2  rounded">
+                <button onClick={()=>setFee(true)} className="bg-blue-500 text-sm text-white px-4 py-2 my-1 rounded">
                      Pay Processing Fee: ({formatCurrency(active.processingFee)})
                 </button>
                 )}
