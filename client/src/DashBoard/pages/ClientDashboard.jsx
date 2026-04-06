@@ -12,11 +12,11 @@ function ClientDashboard() {
   
   return (
    <section className='flex items-center justify-center p-1 '>
-    <div className='w-full grid bg-gray-50 p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded '>
+    <div className='w-full grid bg-gray-900 p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl md:w-full rounded '>
         <div className='flex items-center justify-between'>
             <div>
-         <p className='text-gray-900 my-1 font-semibold text-md md:text-sm lg:text-lg '>Home</p>
-        <p className='text-gray-900 mb-1 text-sm md:text-sm lg:text-lg '>Overview</p>
+         <p className='text-white my-1 font-semibold text-md md:text-sm lg:text-lg '>Home</p>
+        <p className='text-white mb-1 text-sm md:text-sm lg:text-lg '>Overview</p>
             </div>
 
         <div className='my-4 flex justify-center items-center'>

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 function Header() {
    
   return (
-    <section className='top-0  bg-white   sticky shadow-sm h-15'>
+    <section className='top-0  bg-gray-800   sticky shadow-sm h-15'>
         <div className='px-5 py-1 flex items-center justify-between'>
           <img src={logo} width={50} height={50} alt="" />
 
