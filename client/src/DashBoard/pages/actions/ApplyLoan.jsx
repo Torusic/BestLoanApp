@@ -32,7 +32,7 @@ function ApplyLoan() {
   const durationPercent = ((itemCount - 4) / (24 - 4)) * 100;
 
   return (
-    <section className="flex items-center justify-center  bg-gray-700 p-2">
+    <section className="flex items-center justify-center  bg-gray-800 rounded-2xl p-2">
       <div className="bg-gray-800 w-full max-w-lg md:max-w-5xl lg:max-w-7xl p-2 text-white rounded-2xl flex flex-col items-center justify-center space-y-6">
         
 
@@ -52,7 +52,7 @@ function ApplyLoan() {
 
         {/* Duration Selector */}
         <div className="w-full flex flex-col items-center space-y-2">
-          <label className="flex items-center text-sm gap-1 text-gray-600">
+          <label className="flex items-center text-sm gap-1 text-gray-500">
             Duration <p className="italic">(weeks)</p>
           </label>
 
@@ -83,7 +83,7 @@ function ApplyLoan() {
         </div>
 
         {/* Loan Summary Panel */}
-        <div className="w-full bg-gray-700 p-4 rounded-lg text-white shadow-inner text-center mt-4">
+        <div className="w-full bg-gray-900 p-4 rounded-lg text-white shadow-inner text-center mt-4">
           <p className="text-white md:text-base lg:text-lg">
             You are applying for <span className="font-semibold">{amount || 0}</span> currency units
             for <span className="font-semibold">{itemCount}</span> weeks.

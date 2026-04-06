@@ -13,7 +13,7 @@ function ClientStats() {
         <div className="hidden lg:block w-64">
           <SideBar />
         </div>
-        <div className="flex-1 bg-gray-800 p-2 overflow-y-auto scrollbar-hidden h-full">
+        <div className="flex-1 bg-gray-900 p-2 overflow-y-auto scrollbar-hidden h-full">
           <Outlet />
         </div>
       </div>
