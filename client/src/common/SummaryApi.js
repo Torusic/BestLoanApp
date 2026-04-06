@@ -28,6 +28,11 @@ const SummaryApi={
         url:'/api/loan/agent/apply',
         method:"post"
     },
+    apply:{
+        url:'/api/loan/apply',
+        method:"post"
+
+    },
     myLoan:{
         url:"/api/loan/activeLoan",
         method:'get'

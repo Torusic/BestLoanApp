@@ -34,16 +34,16 @@ function ProcessingFee({ loan, onClose, refresh }) {
 
   return (
     <div className="fixed inset-0 bg-gray-900/70 flex items-center justify-center p-4">
-      <div className="bg-white p-4 rounded lg:max-w-lg lg:w-full md:max-w-md md:w-full max-w-sm w-full">
+      <div className="bg-gray-700 p-4 rounded lg:max-w-lg lg:w-full md:max-w-md md:w-full max-w-sm w-full">
 
-        <h2 className="lg:text-lg md:text-sm text-xs font-semibold mb-2">
+        <h2 className="lg:text-lg text-green-400 md:text-sm text-xs font-semibold mb-2">
           Pay Processing Fee
         </h2>
 
-        <p className="text-sm mb-4 ">
+        <p className="text-sm mb-4 text-white ">
 
           Amount: <strong>Ksh {loan.processingFee}</strong>
-          <p className="text-xs my-2 text-gray-600 " >(You will recieve an STK push to complete payment)</p>
+          <p className="text-xs my-2 text-gray-200 " >(You will recieve an STK push to complete payment)</p>
         </p>
 
         <button
@@ -56,7 +56,7 @@ function ProcessingFee({ loan, onClose, refresh }) {
 
         <button
           onClick={onClose}
-          className="mt-2 text-sm text-gray-500 w-full"
+          className="mt-2 text-sm text-gray-300 w-full"
         >
           Cancel
         </button>

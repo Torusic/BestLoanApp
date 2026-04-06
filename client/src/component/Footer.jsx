@@ -74,7 +74,7 @@ function Footer() {
   ]
 
   return (
-    <section className="sticky bottom-0 z-50 bg-gray-600 border-t border-gray-700 shadow-lg px-4 py-1 rounded-t-2xl">
+    <section className="sticky bottom-0 z-50 bg-gray-800 border-t border-gray-900 shadow-lg px-4 py-1 rounded-t-2xl">
 
       <div className="flex items-center justify-between">
 {navItems

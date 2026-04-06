@@ -118,7 +118,7 @@ function MyLoan() {
                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
    
                    <div className='lg:flex grid items-center justify-between gap-2'>
-                       <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span  className={`font-normal ${active.status === "pending" ? "text-yellow-700 bg-gradient-to-r from-yellow-100 to-yellow-200 py-1 px-2 rounded-xl" : active.status === "approved" ? "text-green-600 py-1 px-2 rounded-xl bg-gradient-to-r from-green-100 via-green-200 to-green-300" :"text-red-500"}`}> {active.status}</span></p>
+                       <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span  className={`font-semibold ${active.status === "pending" ? "text-yellow-600 bg-gradient-to-r from-yellow-100 to-yellow-200 py-1 px-2 rounded-xl" : active.status === "approved" ? "text-green-600 py-1 px-2 rounded-xl bg-gradient-to-r from-green-100 via-green-200 to-green-300" :"text-red-500"}`}> {active.status}</span></p>
                        <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Repayment Period: <span className='font-medium'> {active.durationWeeks} Weeks</span></p>
                         
                    </div>
