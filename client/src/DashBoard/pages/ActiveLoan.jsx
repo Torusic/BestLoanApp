@@ -77,7 +77,7 @@ function ActiveLoan() {
                <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Processing Fee: <span className='font-medium'> {active.isFeePaid ? "Paid" : "Not Paid"}</span></p>
 
                {!active.isFeePaid && (
-                <button onClick={()=>setFee(true)} className="bg-blue-500 text-sm text-white px-4 py-2  rounded">
+                <button onClick={()=>setFee(true)} className="bg-blue-500 text-sm text-white px-4 py-2 my-1 rounded">
                      Pay Processing Fee: ({formatCurrency(active.processingFee)})
                 </button>
                 )}
