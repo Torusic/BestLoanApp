@@ -86,7 +86,7 @@ function Footer() {
         key={index}
         to={item.path}
         className={`flex flex-col items-center justify-center flex-1 py-2 rounded-xl transition-all ${
-          isActive ? "text-green-600" : "text-gray-500 hover:text-green-500"
+          isActive ? "text-green-600" : "text-white hover:text-green-500"
         }`}
       >
         <div className={`p-2 rounded-lg ${isActive ? "bg-green-50" : ""}`}>
