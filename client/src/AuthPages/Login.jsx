@@ -73,11 +73,11 @@ const handleChange = (e) => {
 
   return (
     <section className='  flex items-center justify-center px-7 py-40'>
-        <div className='max-w-md w-full items-center  bg-white shadow-md p-3 rounded-xl'>
+        <div className='max-w-md w-full items-center  bg-gray-800  shadow-xl p-3 rounded-xl'>
         <div className='grid items-center  gap-2 p-2'>
             <p className='text-sm font-semibold text-green-400'>Login</p>
 
-            <form action="" onSubmit={handleSubmit}>
+            <form className='text-white' action="" onSubmit={handleSubmit}>
               <div className='grid items-center mt-4 gap-4 p-2'>
                 <div className='grid lg:text-sm text-xs gap-2'>
                     <label htmlFor="">Phone:</label>
@@ -87,7 +87,7 @@ const handleChange = (e) => {
                     onChange={handleChange}
                     value={data.phone}
                      placeholder='Enter name' 
-                     className='bg-gray-100 p-2 outline-none rounded-lg hover:border hover:border-green-300' />
+                     className='bg-gray-100 p-2  text-gray-800 outline-none rounded-lg hover:border hover:border-green-300' />
 
                 </div>
                 <div className='grid lg:text-sm text-xs gap-2'>
@@ -101,7 +101,7 @@ const handleChange = (e) => {
                     value={data.password}
                     onChange={handleChange}
                      placeholder='Enter password' 
-                     className=' p-2 outline-none rounded-lg w-full' />
+                     className=' p-2 outline-none text-gray-800 rounded-lg w-full' />
 
                      <span onClick={() => setShowPassword(prev => !prev)} className="cursor-pointer text-gray-500">
                        {showPassword ? <FaEye /> : <FaEyeSlash />}

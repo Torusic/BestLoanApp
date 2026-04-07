@@ -65,7 +65,7 @@ function ActiveLoan() {
                 <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Loan Amount: <span className='font-medium'> {formatCurrency(active.amount)}</span></p>
 
                 <div className='lg:flex grid items-center justify-between gap-2'>
-                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span className={`font-normal ${active.status === "pending" ? "text-yellow-700 bg-gradient-to-r from-yellow-100 to-yellow-200 py-1 px-2 rounded-xl" : active.status === "approved" ? "text-green-600 py-1 px-2 rounded-xl bg-gradient-to-r from-green-100 via-green-200 to-green-300" :"text-red-500"}`}> {active.status}</span></p>
+                    <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Status: <span className={`font-semibold ${active.status === "pending" ? "text-yellow-700  bg-gradient-to-r from-yellow-100 to-yellow-200 py-1 px-2 rounded-xl" : active.status === "approved" ? "text-green-600 py-1 px-2 rounded-xl bg-gradient-to-r from-green-100 via-green-200 to-green-300": active.status === "disbursed" ? "text-blue-600 py-1 px-2 rounded-xl bg-gradient-to-r font-semibold from-blue-200 via-blue-300 to-blue-400" :"text-red-500"}`}> {active.status}</span></p>
                     <p className='flex  w-fit mr-auto items-center justify-center gap-2'>Repayment Status: <span className='font-medium'> {active.durationWeeks} Weeks</span></p>
                      
                 </div>
@@ -74,7 +74,8 @@ function ActiveLoan() {
             </div>
             <div className='p-2 grid items-center gap-2 mt-2'>
 
-               <p className='flex   w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Processing Fee: <span className='font-medium'> {active.isFeePaid ? "Paid" : "Not Paid"}</span></p>
+                <p className='flex  my-2 text-white  w-fit mr-auto text-xs lg:text-sm md:text-sm  items-center justify-center gap-2'>Processing Fee: <span className={`font-medium  ${active.isFeePaid ? "text-green-500" : "text-red-500"} `}>  {active.isFeePaid ? "Paid" : "Not Paid"}</span></p>
+
 
                {!active.isFeePaid && (
                 <button onClick={()=>setFee(true)} className="bg-blue-500 text-sm text-white px-4 py-2 my-1 rounded">

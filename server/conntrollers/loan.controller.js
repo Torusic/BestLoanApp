@@ -5,160 +5,161 @@ import bcryptjs from "bcryptjs"
 import mongoose from "mongoose";
 
 //Apply loan
-export async function applyLoanOnline(req,res){
+export async function applyLoanOnline(req, res) {
     try {
-        const clientId=req.userId;
-        const{amount,durationWeeks}=req.body;
+        const clientId = req.userId;
+        const { amount, durationWeeks } = req.body;
 
-        if(amount<5000 || amount>95000){
+        if (amount < 5000 || amount > 95000) {
             return res.status(400).json({
-                message:'Inavalid amount',
-                error:true,
-                success:false
-            })
+                message: 'Invalid amount',
+                error: true,
+                success: false
+            });
         }
-        if(durationWeeks<4 || durationWeeks>24){
+
+        if (durationWeeks < 4 || durationWeeks > 24) {
             return res.status(400).json({
-                message:'Inavalid duration',
-                error:true,
-                success:false
-            })
-
+                message: 'Invalid duration',
+                error: true,
+                success: false
+            });
         }
-        //prevent multiple loans
-        const loanActive=await LoanModel.findOne({user:clientId,status:{ $in: ["pending", "approved"] }})
 
-        if(loanActive){
+        // Check for any active loan or loan with balance > 0
+        const loanActive = await LoanModel.findOne({
+            user: clientId,
+            $or: [
+                { status: { $in: ["pending", "approved", "disbursed"] } },
+                { balance: { $gt: 0 } }
+            ]
+        });
+
+        if (loanActive) {
             return res.status(400).json({
-                message:"Loan Is Active...Wait as we process after 24 hours",
-                error:true,
-                success:false
-        })
-
+                message: "You have an active or unpaid loan. Please clear it before applying for a new loan.",
+                error: true,
+                success: false
+            });
         }
-        const createLoan=await LoanModel.create({
-            user:clientId,
+
+        const createLoan = await LoanModel.create({
+            user: clientId,
             amount,
             durationWeeks,
-            
-        })
-        await createLoan.save()
+        });
+
+        await createLoan.save();
 
         return res.status(200).json({
-            message:"Loan request Submitted",
-            error:false,
-            success:true,
-            data:createLoan
-        })
+            message: "Loan request submitted",
+            error: false,
+            success: true,
+            data: createLoan
+        });
 
-        
     } catch (error) {
         return res.status(500).json({
-            message:error.message||error,
-            error:true,
-            success:false
-        })
-        
+            message: error.message || error,
+            error: true,
+            success: false
+        });
     }
 }
 //apply loan via agent
-export async function applyLoanViaAgent(req,res) {
+export async function applyLoanViaAgent(req, res) {
     try {
-        const agentId=req.userId;
-        const{name,email,phone,nationalId, amount, durationWeeks,mpesaCode}=req.body
+        const agentId = req.userId;
+        const { name, email, phone, nationalId, amount, durationWeeks, mpesaCode } = req.body;
 
-        //check if user exists
-        let client=await UserModel.findOne({nationalId});
+        // Check if user exists
+        let client = await UserModel.findOne({ nationalId });
 
-       if(!client){
-         const hashedPassword = await  bcryptjs.hash("1234", 10);
+        if (!client) {
+            const hashedPassword = await bcryptjs.hash("1234", 10);
+            client = await UserModel.create({
+                name,
+                email,
+                phone,
+                nationalId,
+                password: hashedPassword,
+                role: 'client'
+            });
+        }
 
-         client = await UserModel.create({
-            name,
-            email,
-            phone,
-            nationalId,
-            password:hashedPassword,
-            role:'client'
-            
-        })
-
-
-       }
-       if (amount < 5000 || amount > 95000) {
+        if (amount < 5000 || amount > 95000) {
             return res.status(400).json({
                 message: "Invalid amount",
                 error: true,
                 success: false
             });
-            }
+        }
 
-            if (durationWeeks < 4 || durationWeeks > 24) {
+        if (durationWeeks < 4 || durationWeeks > 24) {
             return res.status(400).json({
                 message: "Invalid duration",
                 error: true,
                 success: false
             });
-            }
-
-        //prevent multiple loans
-        const loanActive=await LoanModel.findOne({user:client._id,status:{ $in: ["pending", "approved"] }})
-
-        if(loanActive){
-            return res.status(400).json({
-                message:"Loan Is Active...Wait as we process after 24 hours",
-                error:true,
-                success:false
-        })
-
-        }
-        if(!mpesaCode){
-            return res.status(400).json({
-                message:"Enter a valid code !!!",
-                error:true,
-                success:false
-            })
         }
 
-      const existingMpesacode=await LoanModel.findOne({mpesaCode})
-      if(existingMpesacode){
+        // Check for any active loan or unpaid loan
+        const loanActive = await LoanModel.findOne({
+            user: client._id,
+            $or: [
+                { status: { $in: ["pending", "approved", "disbursed"] } },
+                { balance: { $gt: 0 } }
+            ]
+        });
+
+        if (loanActive) {
             return res.status(400).json({
-                message:"Enter a valid code !!!",
-                error:true,
-                success:false
-            })
+                message: "Client has an active or unpaid loan. Cannot apply for a new one.",
+                error: true,
+                success: false
+            });
         }
-        //create loan
-         const loan = await LoanModel.create({
+
+        if (!mpesaCode) {
+            return res.status(400).json({
+                message: "Enter a valid MPESA code!",
+                error: true,
+                success: false
+            });
+        }
+
+        const existingMpesacode = await LoanModel.findOne({ mpesaCode });
+        if (existingMpesacode) {
+            return res.status(400).json({
+                message: "MPESA code already used!",
+                error: true,
+                success: false
+            });
+        }
+
+        const loan = await LoanModel.create({
             user: client._id,
             agent: agentId,
             amount,
             durationWeeks,
             mpesaCode
-    });
+        });
 
-   
-       
+        return res.status(200).json({
+            message: "Loan via agent submitted successfully",
+            error: false,
+            success: true,
+            data: loan
+        });
 
-    return res.status(200).json({
-        message:"Loan via agent submitted successfully",
-        error:false,
-        success:true,
-        data:loan
-    })
-    
-        
-       
     } catch (error) {
         return res.status(500).json({
-            message:error.message||error,
-            error:true,
-            success:false
-        })
+            message: error.message || error,
+            error: true,
+            success: false
+        });
     }
-    
 }
-
 export async function approveLoan(req, res) {
   try {
     const { loanId } = req.body
@@ -217,6 +218,7 @@ export async function disburseLoan(req, res) {
 
     loan.isDisbursed = true
     loan.disbursedAt = new Date()
+    loan.status="disbursed"
 
     loan.totalRepayment = loan.amount
     loan.amountPaid = 0
@@ -279,7 +281,7 @@ export async function myLoan(req, res) {
 
         const loan = await LoanModel.findOne({
             user: userId,
-            status: { $in: ["pending", "approved"] }
+            status: { $in: ["pending", "approved","disbursed"] }
         }).sort({ createdAt: -1 });
 
         if (!loan) {

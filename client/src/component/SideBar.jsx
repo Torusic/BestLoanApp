@@ -1,6 +1,7 @@
 import React from 'react'
-import { FaMoneyBillWave } from 'react-icons/fa'
+import { FaHistory, FaMoneyBillWave } from 'react-icons/fa'
 import { GiReceiveMoney } from 'react-icons/gi'
+import { GrMoney } from 'react-icons/gr'
 import { IoPeople, IoSettings } from 'react-icons/io5'
 import { MdDashboard, MdHome } from 'react-icons/md'
 import { Link, useLocation } from 'react-router-dom'
@@ -49,24 +50,42 @@ function SideBar() {
       path: "/clientStats/clientDashboard",
       roles:['client']
     },
-    ,
+    
+        {
+          name: "My-Loan",
+              icon: <GrMoney size={20} />,
+              path: "/clientStats/myLoan",
+              roles:['client']
+    
+        },
+    
      {
       name: "Apply",
       icon: <FaMoneyBillWave size={30} />,
       path: "/clientStats/apply",
       roles:['client']
     },
+
+    
+                {
+              name: "History",
+              icon: <FaHistory size={20} />,
+              path: "/clientStats/apply",
+              roles:['client']
+            },
+    
+    
   ]
 
   return (
 
-      <aside className="hidden  fixed top-16 lg:flex flex-col w-64 h-screen bg-white border-r border-gray-100 shadow-sm p-4">
+      <aside className="hidden  fixed top-16 lg:flex flex-col w-64 h-screen bg-gray-800  border-r border-gray-900 shadow-sm p-4">
 
       <div className="mb-8">
-        <h1 className="text-lg font-bold text-gray-800">
+        <h1 className="text-lg font-bold text-white">
           Best Loan Offers
         </h1>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-white">
          
         </p>
       </div>
@@ -83,7 +102,7 @@ function SideBar() {
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                 isActive
                   ? "bg-green-50 text-green-600 font-semibold"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-green-500"
+                  : "text-white hover:bg-gray-50 hover:text-green-500"
               }`}
             >
               <span className="text-lg">

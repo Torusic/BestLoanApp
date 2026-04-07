@@ -115,7 +115,7 @@ const [disburse, setDisburse] = useState(false)
                       <th className="px-4 py-3 hidden lg:table-cell">Fee</th>
                       <th className="px-4 py-3 hidden lg:table-cell">Fee Status</th>
                       <th className="px-4 py-3 hidden lg:table-cell">Due Date</th>
-                          <th className="px-4 py-3 hidden lg:table-cell">Disbursed</th>
+                          <th className="px-4 py-3 lg:table-cell">Disbursed</th>
                       <th className="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
@@ -149,13 +149,7 @@ const [disburse, setDisburse] = useState(false)
                         </td>
 
                         <td className="px-4 py-3">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            loan.status === "approved"
-                              ? "bg-green-100 text-green-600"
-                              : loan.status === "rejected"
-                              ? "bg-red-100 text-red-600"
-                              : "bg-yellow-100 text-yellow-600"
-                          }`}>
+                          <span className={`font-semibold ${loan.status === "pending" ? "text-yellow-700 bg-gradient-to-r from-yellow-100 to-yellow-200 py-1 px-2 rounded-xl" : loan.status === "approved" ? "text-green-600 py-1 px-2 rounded-xl bg-gradient-to-r from-green-100 via-green-200 to-green-300": loan.status === "disbursed" ? "text-blue-600 py-1 px-2 rounded-xl bg-gradient-to-r font-semibold from-blue-200 via-blue-300 to-blue-400" :"text-red-500"}`}>
                             {loan.status}
                           </span>
                         </td>
