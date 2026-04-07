@@ -31,7 +31,7 @@ const Home = () => {
               <Link to={'/register'}>Get Started</Link>
             </button>
 
-            <button className="px-6 py-3 border border-gray-300 hover:border-green-500 text-gray-700 hover:text-green-600 rounded-xl font-semibold transition">
+            <button className="px-6 py-3 border border-gray-300 hover:border-green-500 text-white hover:text-green-600 rounded-xl font-semibold transition">
               <Link to={'/login'}>Login</Link>
             </button>
           </div>
