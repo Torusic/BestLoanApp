@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const Home = () => {
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-700 via-gray-600 to-gray-800 flex items-center justify-center">
+    <section className="min-h-screen bg-gray-900 flex items-center justify-center">
       
       <div className="max-w-6xl w-full px-6 py-12 grid lg:grid-cols-2 gap-10 items-center">
         
@@ -14,12 +14,12 @@ const Home = () => {
           </p>
           
 
-          <h1 className="mt-3 text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+          <h1 className="mt-3 text-4xl lg:text-5xl font-bold text-white leading-tight">
             Smart Loans. <br />
             <span className="text-green-500">Better Opportunities.</span>
           </h1>
 
-          <p className="mt-6 text-white0 text-lg leading-relaxed max-w-xl">
+          <p className="mt-6 text-white text-lg leading-relaxed max-w-xl">
             Best Loan Offers is a simple and secure platform for applying,
             managing, and tracking loans—built to make lending fast,
             transparent, and easy for clients, agents, and admins.
@@ -44,7 +44,7 @@ const Home = () => {
           </h3>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-70 rounded-xl">
+            <div className="p-4 bg-gray-700 rounded-xl">
               <p className="text-sm text-white">Total Clients</p>
               <p className="text-xl font-bold text-white">1,250</p>
             </div>
@@ -54,7 +54,7 @@ const Home = () => {
               <p className="text-xl font-bold text-green-500">680</p>
             </div>
 
-            <div className="p-4 bg-gray-70 rounded-xl">
+            <div className="p-4 bg-gray-700 rounded-xl">
               <p className="text-sm text-white">Pending</p>
               <p className="text-xl font-bold text-yellow-500">145</p>
             </div>
