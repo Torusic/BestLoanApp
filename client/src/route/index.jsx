@@ -31,14 +31,15 @@ const router=createBrowserRouter([
             path:'adminStats',
             element:<AdminStats/>,
             children:[{
+                index:true,
                 path:'adminDashboard',
                 element:<AdminDashboard/>
             },
-            {
+            {    index:true,
                 path:'loans',
                 element:<Loan/>
             },
-            {
+            {   index:true,
                 path:'customers',
                 element:<Customers/>
             }
@@ -48,9 +49,11 @@ const router=createBrowserRouter([
             path:'clientStats',
             element:<ClientStats/>,
             children:[{
+                index:true,
                 path:"clientDashboard",
                 element:<ClientDashboard/>
             },{
+                index:true,
                 path:"myloan",
                 element:<MyLoan/>
 

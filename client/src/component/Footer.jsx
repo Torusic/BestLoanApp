@@ -52,7 +52,7 @@ function Footer() {
     {
       name: "My-Loan",
           icon: <GrMoney size={20} />,
-          path: "/clientStats/myLoan",
+          path: "/clientStats/myloan",
           roles:['client']
 
     },
