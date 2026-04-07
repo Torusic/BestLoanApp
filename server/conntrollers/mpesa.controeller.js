@@ -70,7 +70,7 @@ export async function makeProcessingFee(req, res) {
         PartyB: mpesaShortCode,
         PhoneNumber: `254${clientPhone}`,
         CallBackURL: "https://bestloanapp.onrender.com/api/mpesa/callback",
-        AccountReference: loan.user._id.toString(),
+        AccountReference: loan.user.name.toString(),
         TransactionDesc: "Loan Processing Fee"
       },
       {
