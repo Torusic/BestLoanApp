@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const Home = () => {
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
+    <section className="min-h-screen bg-gradient-to-br from-gray-700 via-gray-600 to-gray-800 flex items-center justify-center">
       
       <div className="max-w-6xl w-full px-6 py-12 grid lg:grid-cols-2 gap-10 items-center">
         
@@ -19,7 +19,7 @@ const Home = () => {
             <span className="text-green-500">Better Opportunities.</span>
           </h1>
 
-          <p className="mt-6 text-gray-600 text-lg leading-relaxed max-w-xl">
+          <p className="mt-6 text-white0 text-lg leading-relaxed max-w-xl">
             Best Loan Offers is a simple and secure platform for applying,
             managing, and tracking loans—built to make lending fast,
             transparent, and easy for clients, agents, and admins.
@@ -38,29 +38,29 @@ const Home = () => {
         </div>
 
         {/* RIGHT SIDE (CARD / MOCK DASHBOARD) */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-6 0">
           <h3 className="text-gray-800 font-semibold mb-4">
             Dashboard Overview
           </h3>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <p className="text-sm text-gray-500">Total Clients</p>
-              <p className="text-xl font-bold text-gray-800">1,250</p>
+            <div className="p-4 bg-gray-70 rounded-xl">
+              <p className="text-sm text-white">Total Clients</p>
+              <p className="text-xl font-bold text-white">1,250</p>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <p className="text-sm text-gray-500">Loans Approved</p>
+            <div className="p-4 bg-gray-700 rounded-xl">
+              <p className="text-sm text-white">Loans Approved</p>
               <p className="text-xl font-bold text-green-500">680</p>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <p className="text-sm text-gray-500">Pending</p>
+            <div className="p-4 bg-gray-70 rounded-xl">
+              <p className="text-sm text-white">Pending</p>
               <p className="text-xl font-bold text-yellow-500">145</p>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <p className="text-sm text-gray-500">Overdue</p>
+            <div className="p-4 bg-gray-700 rounded-xl">
+              <p className="text-sm text-white">Overdue</p>
               <p className="text-xl font-bold text-red-500">75</p>
             </div>
           </div>
