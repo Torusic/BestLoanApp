@@ -78,7 +78,7 @@ const [disburse, setDisburse] = useState(false)
             </div>
           ) : (
             <>
-                    <div className='fixed top-15 right-0 text-white left-0 lg:left-65 bg-gray-700 mb-2 p-2 rounded-sm'>
+                    <div className='fixed top-15 right-0 text-white left-0 lg:left-65 bg-gray-800 mb-2 p-2 rounded-sm'>
           <div className='flex items-center justify-between mb-6'>
             <h2 className='text-xl font-bold text-white'>Loans</h2>
 
@@ -91,7 +91,7 @@ const [disburse, setDisburse] = useState(false)
             </button>
           </div>
 
-          <div className='bg-gray-600 flex items-center justify-between text-gray-50 mx-2 text-xs rounded  p-2'>
+          <div className='bg-gray-700 flex items-center justify-between text-gray-50 mx-2 text-xs rounded  p-2'>
             <input type="text"  placeholder='search fo loan' className='outline-none'/>
             <IoSearch/>
           </div>
@@ -102,8 +102,8 @@ const [disburse, setDisburse] = useState(false)
           </p>
         </div>
               <div className="overflow-x-auto  mt-35 h-full overflow-y-auto scrollbar-hidden">
-                <table className='min-w-full '>
-                  <thead className='bg-gray-700 text-xs  text-white rounded'>
+                <table className='min-w-full  '>
+                  <thead className='bg-gray-900 text-xs  text-white rounded'>
                     <tr>
                       <th className="px-4 py-3 text-left">Customer</th>
                       <th className="px-4 py-3 hidden md:table-cell">ID</th>
@@ -122,7 +122,7 @@ const [disburse, setDisburse] = useState(false)
 
                   <tbody className='text-xs text-white'>
                     {currentLoans.map((loan) => (
-                      <tr key={loan._id} className='hover:bg-gray-900'>
+                      <tr key={loan._id} className='hover:bg-green-900'>
 
                         <td className="px-4 py-3 font-medium">
                           {loan.user?.name}
@@ -226,7 +226,7 @@ const [disburse, setDisburse] = useState(false)
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-40"
+                  className="px-3 py-1 bg-gray-950 rounded text-white disabled:opacity-40"
                 >
                   Prev
                 </button>
@@ -250,7 +250,7 @@ const [disburse, setDisburse] = useState(false)
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 bg-gray-200 rounded disabled:opacity-40"
+                  className="px-3 py-1 bg-gray-950 rounded text-white disabled:opacity-40"
                 >
                   Next
                 </button>
