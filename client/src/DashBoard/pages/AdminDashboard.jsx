@@ -43,7 +43,7 @@ const AdminDashboard = () => {
     }).format(num || 0)
 
   return (
-    <section className="min-h-screen p-1 bg-gradient-to-br from-gray-50 to-gray-100 lg:p-8">
+    <section className="min-h-screen p-1 bg-gray-900 lg:p-8">
 
       <div className="w-full">
 
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
           <div>
 
             <div className="mb-4">
-              <h1 className="text-md lg:text-3xl font-semibold text-gray-800 tracking-tight">
+              <h1 className="text-md lg:text-3xl font-semibold text-gray-400 tracking-tight">
                 Admin Dashboard
               </h1>
               <p className="text-gray-400 lg:text-sm text-xs md:text-sm">
@@ -73,15 +73,15 @@ const AdminDashboard = () => {
 
             <div className='grid grid-cols-2 gap-3 my-3'>
 
-              <div className='bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition'>
-                <p className="text-sm text-gray-500 font-medium">Total Amount Repaid</p>
+              <div className='bg-gray-800 backdrop-blur-sm lg:p-6 p-5 e rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition'>
+                <p className="text-sm text-gray-50 font-medium">Total Amount Repaid</p>
                 <h2 className="text-xl font-bold text-emerald-500 mt-1">
                   {formatCurrency(stats?.totalAmountRepaid)}
                 </h2>
               </div>
 
-              <div className='bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition'>
-                <p className="text-sm text-gray-500 font-medium">Total Overdue Amount</p>
+              <div className='bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition'>
+                <p className="text-sm text-gray-50 font-medium">Total Overdue Amount</p>
                 <h2 className="text-xl font-bold text-rose-500 mt-1">
                   {formatCurrency(stats?.totalOverdueAmount)}
                 </h2>
@@ -91,36 +91,36 @@ const AdminDashboard = () => {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition flex justify-between items-center">
+              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-500">Total Clients</p>
-                  <h2 className="text-xl font-bold text-gray-800 mt-1">
+                  <p className="text-sm text-gray-50">Total Clients</p>
+                  <h2 className="text-xl font-bold text-gray-50 mt-1">
                     {stats?.totalClients}
                   </h2>
                 </div>
                 <IoIosPersonAdd className='text-emerald-500 text-2xl' />
               </div>
 
-              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition">
-                <p className="text-sm text-gray-500">Total Agents</p>
+              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition">
+                <p className="text-sm text-gray-50">Total Agents</p>
                 <h2 className="text-xl font-bold text-indigo-500 mt-1">
                   {stats?.totalAgents}
                 </h2>
               </div>
 
-              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition flex justify-between items-center">
+              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-500">Loans Approved</p>
-                  <h2 className="text-xl font-bold text-gray-800 mt-1">
+                  <p className="text-sm text-gray-100">Loans Approved</p>
+                  <h2 className="text-xl font-bold text-gray-400 mt-1">
                     {stats?.loansApproved}
                   </h2>
                 </div>
                 <FcApproval className='text-xl' />
               </div>
 
-              <div className="bg-white/80 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-200/50 hover:shadow-lg transition flex justify-between items-center">
+              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-500">Loans Pending</p>
+                  <p className="text-sm text-gray-50">Loans Pending</p>
                   <h2 className="text-xl font-bold text-amber-500 mt-1">
                     {stats?.loansPending}
                   </h2>
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
 
             </div>
 
-            <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border border-gray-200/50 p-4 overflow-x-auto hover:shadow-lg transition">
+            <div className="mt-8 bg-gradient-to-r from-gray-900 to-gray-950  backdrop-blur-sm rounded-2xl shadow-md border border-gray-800/60 p-4 overflow-x-auto hover:shadow-lg transition">
               <div className='flex items-center justify-between my-2'>
                 <h3 className="lg:text-lg md:text-sm text-xs  font-semibold text-gray-800 mb-4">
                   Agent Performance
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
 
               <table className="min-w-full text-xs text-left">
 
-                <thead className="bg-gray-50/70 text-gray-500 uppercase tracking-wide text-[11px]">
+                <thead className="bg-gray-800/70 text-gray-50 uppercase tracking-wide text-[11px]">
                   <tr>
                     <th className="px-4 py-3">Agent Name</th>
                     <th className="px-4 py-3">Total Loans</th>
@@ -163,10 +163,10 @@ const AdminDashboard = () => {
                     stats.agentStats.slice(0, 5).map((agent) => (
                       <tr
                         key={agent.agentId}
-                        className="border-t border-gray-100/60 hover:bg-gray-50/60 transition"
+                        className="border-t border-gray-800/60 bg-gray-800 hover:bg-gray-800/60 transition"
                       >
-                        <td className="px-4 py-2 text-gray-700">{agent.name}</td>
-                        <td className="px-4 py-2 text-gray-600">{agent.totalLoans}</td>
+                        <td className="px-4 py-2 text-gray-50">{agent.name}</td>
+                        <td className="px-4 py-2 text-gray-100">{agent.totalLoans}</td>
                         <td className="px-4 py-2 text-emerald-600 font-semibold">
                           {formatCurrency(agent.totalAmountIssued)}
                         </td>

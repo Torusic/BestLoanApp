@@ -66,8 +66,8 @@ const [disburse, setDisburse] = useState(false)
   }
 
   return (
-    <section className='bg-gray-100  overflow-y-auto scrollbar-hidden'>
-      <div className='bg-white p-2 lg:p-6 max-w-7xl mx-auto rounded-2xl shadow-sm'>
+    <section className='bg-gray-800  overflow-y-auto scrollbar-hidden'>
+      <div className='bg-gray-800 p-2 lg:p-6 max-w-7xl mx-auto rounded-2xl shadow-sm'>
 
 
 
@@ -78,9 +78,9 @@ const [disburse, setDisburse] = useState(false)
             </div>
           ) : (
             <>
-                    <div className='fixed top-15 right-0 left-0 lg:left-65 bg-white mb-2 p-2 rounded-sm'>
+                    <div className='fixed top-15 right-0 text-white left-0 lg:left-65 bg-gray-700 mb-2 p-2 rounded-sm'>
           <div className='flex items-center justify-between mb-6'>
-            <h2 className='text-xl font-bold text-gray-800'>Loans</h2>
+            <h2 className='text-xl font-bold text-white'>Loans</h2>
 
             <button
               onClick={() => setCustomer(true)}
@@ -91,8 +91,8 @@ const [disburse, setDisburse] = useState(false)
             </button>
           </div>
 
-          <div className='bg-gray-100 flex items-center justify-between mx-2 text-xs rounded  p-2'>
-            <input type="text"  placeholder='search fo loan'/>
+          <div className='bg-gray-600 flex items-center justify-between text-gray-50 mx-2 text-xs rounded  p-2'>
+            <input type="text"  placeholder='search fo loan' className='outline-none'/>
             <IoSearch/>
           </div>
 
@@ -101,9 +101,9 @@ const [disburse, setDisburse] = useState(false)
             Verify the M-Pesa code before approving or rejecting.
           </p>
         </div>
-              <div className="overflow-x-auto  mt-30 h-full overflow-y-auto scrollbar-hidden">
+              <div className="overflow-x-auto  mt-35 h-full overflow-y-auto scrollbar-hidden">
                 <table className='min-w-full '>
-                  <thead className='bg-gray-200 text-xs  text-gray-600'>
+                  <thead className='bg-gray-700 text-xs  text-white rounded'>
                     <tr>
                       <th className="px-4 py-3 text-left">Customer</th>
                       <th className="px-4 py-3 hidden md:table-cell">ID</th>
@@ -120,9 +120,9 @@ const [disburse, setDisburse] = useState(false)
                     </tr>
                   </thead>
 
-                  <tbody className='text-xs'>
+                  <tbody className='text-xs text-white'>
                     {currentLoans.map((loan) => (
-                      <tr key={loan._id} className='hover:bg-gray-50'>
+                      <tr key={loan._id} className='hover:bg-gray-900'>
 
                         <td className="px-4 py-3 font-medium">
                           {loan.user?.name}
@@ -144,7 +144,7 @@ const [disburse, setDisburse] = useState(false)
 
                         <td className="px-4 py-3">
                           <span className="bg-gray-900 text-white px-3 py-1 rounded-lg text-xs font-mono">
-                            {loan.mpesaCode}
+                            {loan.mpesaCode||"self"}
                           </span>
                         </td>
 
@@ -172,7 +172,7 @@ const [disburse, setDisburse] = useState(false)
                           {formatDate(loan.dueDate)}
                         </td>
                         <td>
-                          <span className="text-xs text-gray-500">
+                          <span className={`text-xs text-gray-500 ${loan.isDisbursed?"Yes":"No"}`}>
                             {String(loan.isDisbursed)}
                           </span>
                         </td>
