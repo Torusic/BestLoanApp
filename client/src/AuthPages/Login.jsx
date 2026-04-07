@@ -72,7 +72,7 @@ const handleChange = (e) => {
     }
 
   return (
-    <section className='  flex items-center justify-center px-7 py-40'>
+    <section className='  flex items-center justify-center bg-gray-900 px-7 py-40'>
         <div className='max-w-md w-full items-center  bg-gray-800  shadow-xl p-3 rounded-xl'>
         <div className='grid items-center  gap-2 p-2'>
             <p className='text-sm font-semibold text-green-400'>Login</p>
