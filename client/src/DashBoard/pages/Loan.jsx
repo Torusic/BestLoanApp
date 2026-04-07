@@ -78,7 +78,7 @@ const [disburse, setDisburse] = useState(false)
             </div>
           ) : (
             <>
-                    <div className='fixed top-15 right-0 text-white left-0 lg:left-65 bg-gray-800 mb-2 p-2 rounded-sm'>
+                    <div className='fixed top-20 right-0 text-white left-0 lg:left-65 bg-gray-800 mb-2 p-2 rounded-sm'>
           <div className='flex items-center justify-between mb-6'>
             <h2 className='text-xl font-bold text-white'>Loans</h2>
 

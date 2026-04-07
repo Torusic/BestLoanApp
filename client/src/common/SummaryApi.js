@@ -38,6 +38,11 @@ const SummaryApi={
         method:'get'
 
     },
+    myClients:{
+        url:"/api/user/admin/allClients",
+        method:'get'
+
+    },
     approve:{
         url:"/api/loan/approve",
         method:"post"
