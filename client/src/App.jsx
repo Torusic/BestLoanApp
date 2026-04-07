@@ -11,7 +11,7 @@ function App() {
   return (
     <>
     
-    <main className='min-h-[90vh] bg-gray-900'>
+    <main className='min-h-[100vh] bg-gray-900 '>
       <Outlet/>
     </main>
  <Toaster/>
