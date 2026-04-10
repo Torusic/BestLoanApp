@@ -81,7 +81,7 @@ function MyLoan() {
 
             <Link
               to={"/clientStats/apply"}
-              className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 px-6 rounded-2xl"
+              className="bg-green-500 hover:bg-green-600 text-xs text-white font-semibold py-2 mb-2 px-6 rounded-2xl"
             >
               Apply Loan
             </Link>
@@ -98,12 +98,12 @@ function MyLoan() {
 
               <div className='grid gap-2'>
 
-                <div className='bg-green-500 px-2 rounded-xl grid gap-2 items-center py-3'>
+                <div className='bg-green-500 px-2 rounded-xl items-center py-5'>
                   <div className='flex items-center gap-2'>
                     <MdAttachMoney size={40} className='text-white' />
                     <div>
                       <p className='text-white font-semibold'>Total Repayment</p>
-                      <p className='text-white font-bold'>
+                      <p className='text-white text-xl font-bold'>
                         {formatCurrency(active.totalRepayment)}
                       </p>
                     </div>
@@ -112,14 +112,14 @@ function MyLoan() {
 
                 <div className='grid grid-cols-2 gap-2'>
 
-                  <div className='bg-blue-500 p-2 rounded-xl'>
+                  <div className='bg-blue-500 p-3 rounded-xl'>
                     <p className='text-white text-sm'>Amount Repaid</p>
                     <p className='text-white font-bold'>
                       {formatCurrency(active.amountPaid)}
                     </p>
                   </div>
 
-                  <div className='bg-red-500 p-2 rounded-xl'>
+                  <div className='bg-red-500 p-3 rounded-xl'>
                     <p className='text-white text-sm'>Balance</p>
                     <p className='text-white font-bold'>
                       {formatCurrency(active.balance)}
