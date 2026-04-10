@@ -56,7 +56,7 @@ function MyLoan() {
                AxiosToastError(error)
                }
                finally{
-                
+                setLoading(false)
                }
                }
 

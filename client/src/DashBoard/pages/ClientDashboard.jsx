@@ -29,7 +29,7 @@ function ClientDashboard() {
 
   return (
     <section className='flex items-center justify-center p-1'>
-      <div className='w-full grid bg-gray-900 p-2 max-w-4xl lg:max-w-7xl md:max-w-5xl rounded'>
+      <div className='w-full grid bg-gray-900 p-2 max-w-4xl lg:max-w-7xl lg:w-full md:max-w-5xl rounded'>
 
         <div className='flex items-center justify-between'>
           <div>
@@ -46,9 +46,7 @@ function ClientDashboard() {
 
         <div className='items-center justify-between gap-2 my-2'>
 
-          {loading ? (
-            <SkeletonBox />
-          ) : (
+         
             <div className='shadow-md bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 my-2 p-2 rounded-xl'>
               <div className='flex items-center gap-2'>
                 <MdAttachMoney size={40} className='text-gray-100' />
@@ -62,16 +60,10 @@ function ClientDashboard() {
                 </div>
               </div>
             </div>
-          )}
-
+    
           <div className='grid grid-cols-2 items-center justify-between gap-2'>
 
-            {loading ? (
-              <>
-                <SkeletonBox />
-                <SkeletonBox />
-              </>
-            ) : (
+         
               <>
                 <div className='flex items-center gap-2 shadow-md bg-gradient-to-r from-green-400 via-green-400 to-green-500 p-2 rounded-xl'>
                   <GiSandsOfTime size={30} className='text-gray-100' />
@@ -97,13 +89,13 @@ function ClientDashboard() {
                   </div>
                 </div>
               </>
-            )}
+         
 
           </div>
         </div>
 
         <div className='mt-1'>
-          {loading ? <SkeletonActiveLoan /> : <ActiveLoan/> />}
+          <ActiveLoan/>
         </div>
 
       </div>
