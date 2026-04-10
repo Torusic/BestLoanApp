@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import ActiveLoan from './ActiveLoan';
 import Axios from '../../utils/Axios';
 import SummaryApi from '../../common/SummaryApi';
+import toast from 'react-hot-toast';
 
 const SkeletonBox = () => (
   <div className="animate-pulse bg-gray-800 rounded-xl p-4">
@@ -36,6 +37,7 @@ function ClientDashboard() {
         });
 
         if (response.data.success) {
+          toast.success(response.data.message)
           setStats(response.data.data);
         }
 
