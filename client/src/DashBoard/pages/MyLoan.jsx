@@ -98,7 +98,7 @@ function MyLoan() {
 
               <div className='grid gap-2'>
 
-                <div className='bg-green-500 p-2 rounded-xl'>
+                <div className='bg-green-500 px-2 rounded-xl grid gap-2 items-center py-3'>
                   <div className='flex items-center gap-2'>
                     <MdAttachMoney size={40} className='text-white' />
                     <div>
