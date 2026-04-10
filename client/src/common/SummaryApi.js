@@ -38,7 +38,7 @@ const SummaryApi={
         method:'get'
 
     },
-    loanHistory:{
+        loanHistory:{
         url:"/api/loan/history",
         method:'get'
 

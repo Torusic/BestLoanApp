@@ -163,7 +163,7 @@ function MyLoan() {
 
               </div>
 
-              <div className='grid gap-2'>
+              <div className='grid gap-2 text-white text-xs'>
 
                 <p className='text-xs text-white'>
                   Processing Fee:
@@ -187,6 +187,29 @@ function MyLoan() {
                     {active.repaymentStatus}
                   </span>
                 </p>
+                <p>
+                    Fee Status:
+                    <span className='ml-2 font-medium capitalize'>
+                      {active.feeStatus}
+                    </span>
+                  </p>
+
+                  <p>
+                    Disbursed:
+                    <span className='ml-2 font-medium'>
+                      {active.isDisbursed ? 'Yes' : 'No'}
+                    </span>
+                  </p>
+
+
+
+                  <p>
+                    Repayment Status:
+                    <span className='ml-2 font-medium capitalize'>
+                      {active.repaymentStatus}
+                    </span>
+                  </p>
+                
 
               </div>
 

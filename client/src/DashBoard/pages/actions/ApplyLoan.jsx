@@ -99,7 +99,7 @@ function ApplyLoan() {
         <ApplyLoanSkeleton />
       ) : (
 
-        <div className="bg-gray-800 w-full max-w-lg md:max-w-5xl lg:max-w-7xl p-4 text-white rounded-2xl flex flex-col items-center space-y-6">
+        <div className="bg-gray-800 w-full h-ful max-w-lg md:max-w-5xl lg:max-w-7xl p-4 text-white rounded-2xl flex flex-col items-center space-y-6">
 
           <p className="text-lg md:text-xl lg:text-2xl text-gray-400 font-medium text-center">
             Enter Loan Amount
@@ -160,6 +160,7 @@ function ApplyLoan() {
           >
             Apply
           </button>
+          {/* Helpful Tips */} <div className="mt-2 text-center space-y-1"> <p className="text-xs text-gray-400 italic"> Make sure to review your loan duration and amount before applying. </p> <p className="text-xs text-gray-400 italic"> Maximum loan duration is 24 weeks, minimum is 4 weeks. </p> <p className="text-xs text-gray-400 italic"> You will be redirected to pay the processing fee after applying. </p> </div>
 
         </div>
 
