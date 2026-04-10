@@ -35,19 +35,19 @@ function Approve({ loan, close, fetch }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 z-50">
       
-      <div className="bg-white rounded-lg  p-6 max-w-sm w-full lg:max-w-lg lg:w-full md:max-w-md mdw-full shadow-lg">
+      <div className="bg-gray-800 rounded-lg  p-6 max-w-sm w-full lg:max-w-lg lg:w-full md:max-w-md mdw-full shadow-lg">
 
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">
+        <h2 className="text-lg font-semibold mb-4 text-green-800">
           Approve Loan
         </h2>
 
-        <div className="text-sm text-gray-600 mb-4">
+        <div className="text-sm text-gray-100 mb-4">
         <p><strong>Customer:</strong> {loan?.user?.name || "Loading..."}</p>
         <p><strong>Amount:</strong> KES {loan?.amount || 0}</p>
         <p><strong>Duration:</strong> {loan?.durationWeeks || 0} weeks</p>
         </div>
 
-        <p className="text-xs text-gray-500 mb-4">
+        <p className="text-xs text-gray-400 mb-4">
           Are you sure you want to approve this loan?
         </p>
 
@@ -63,7 +63,7 @@ function Approve({ loan, close, fetch }) {
           <button
             onClick={handleApprove}
             disabled={loading}
-            className="px-3 py-1 bg-gray-800 text-white rounded-lg flex items-center gap-2"
+            className="px-3 py-1 bg-green-800 text-white rounded-lg flex items-center gap-2"
           >
             {loading && <LuLoader className="animate-spin" />}
             {loading ? "Approving..." : "Confirm"}

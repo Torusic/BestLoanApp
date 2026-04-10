@@ -111,7 +111,7 @@ function Customers() {
 
                 <tbody className='text-xs text-white'>
                   {currentClients.map((client) => (
-                    <tr key={client._id} className='hover:bg-gray-700'>
+                    <tr key={client._id} className='hover:bg-green-900'>
                       <td className="px-4 py-3">{client.name}</td>
                       <td className="px-4 py-3">{client.phone}</td>
                       <td className="px-4 py-3">{client.email || "-"}</td>

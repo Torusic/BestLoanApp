@@ -245,6 +245,69 @@ export async function disburseLoan(req, res) {
   }
 }
 
+export async function getMyLoanHistory(req, res) {
+  try {
+    const userId = req.userId;
+
+    const loans = await LoanModel.find({ user: userId })
+      .populate("agent", "name email")
+      .sort({ createdAt: -1 });
+
+    if (!loans.length) {
+      return res.status(404).json({
+        message: "No loan history found",
+        success: false
+      });
+    }
+
+    const now = new Date();
+
+    const formatted = loans.map((loan) => {
+      let loanType = "pending";
+
+      //  Fully repaid (MOST IMPORTANT)
+      if (loan.balance === 0 && loan.isDisbursed) {
+        loanType = "fully_repaid";
+      }
+
+      //  Overdue loan
+      else if (
+        loan.dueDate &&
+        loan.balance > 0 &&
+        loan.dueDate < now
+      ) {
+        loanType = "overdue";
+      }
+
+      //  Active repayment
+      else if (loan.isDisbursed && loan.balance > 0) {
+        loanType = "active";
+      }
+
+      //  Not yet disbursed
+      else if (loan.status === "pending" || loan.status === "approved") {
+        loanType = "processing";
+      }
+
+      return {
+        ...loan.toObject(),
+        loanType
+      };
+    });
+
+    return res.status(200).json({
+      message: "Loan history fetched successfully",
+      success: true,
+      data: formatted
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false
+    });
+  }
+}
 // getAllLoans
 export async function getAllLoans(req,res){
     try {

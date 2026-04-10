@@ -109,13 +109,16 @@ const [disburse, setDisburse] = useState(false)
                       <th className="px-4 py-3 hidden md:table-cell">ID</th>
                       <th className="px-4 py-3 hidden md:table-cell">Agent Name</th>
                       <th className="px-4 py-3">Amount</th>
+                      <th className="px-4 py-3 hidden lg:table-cell">balance</th>
+                      <th className="px-4 py-3 hidden lg:table-cell">Total Repayments</th>
                       <th className="px-4 py-3">Duration</th>
                       <th className="px-4 py-3">M-Pesa Code</th>
                       <th className="px-4 py-3">Status</th>
                       <th className="px-4 py-3 hidden lg:table-cell">Fee</th>
                       <th className="px-4 py-3 hidden lg:table-cell">Fee Status</th>
                       <th className="px-4 py-3 hidden lg:table-cell">Due Date</th>
-                          <th className="px-4 py-3 lg:table-cell">Disbursed</th>
+                     
+                  
                       <th className="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
@@ -137,6 +140,13 @@ const [disburse, setDisburse] = useState(false)
                         <td className="px-4 py-3 text-green-600 font-semibold">
                           KES {loan.amount}
                         </td>
+                         <td className="px-4 py-3 text-red-600 font-semibold">
+                          KES {loan.balance}
+                        </td>
+                         <td className="px-4 py-3 text-blue-600 font-semibold">
+                          KES {loan.totalRepayment}
+                        </td>
+
 
                         <td className="px-4 py-3">
                           {loan.durationWeeks} wks
@@ -171,11 +181,7 @@ const [disburse, setDisburse] = useState(false)
                         <td className="px-4 py-3 hidden lg:table-cell">
                           {formatDate(loan.dueDate)}
                         </td>
-                        <td>
-                          <span className={`text-xs text-gray-500 ${loan.isDisbursed?"Yes":"No"}`}>
-                            {String(loan.isDisbursed)}
-                          </span>
-                        </td>
+                   
 
                         <td className="px-4 py-3">
                           <div className="flex gap-2">

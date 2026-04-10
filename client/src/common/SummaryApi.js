@@ -38,6 +38,12 @@ const SummaryApi={
         method:'get'
 
     },
+    loanHistory:{
+        url:"/api/loan/history",
+        method:'get'
+
+    },
+
     myClients:{
         url:"/api/user/admin/allClients",
         method:'get'

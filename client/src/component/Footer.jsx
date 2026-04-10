@@ -66,7 +66,7 @@ function Footer() {
             {
           name: "History",
           icon: <FaHistory size={20} />,
-          path: "/clientStats/apply",
+          path: "/clientStats/history",
           roles:['client']
         },
 
