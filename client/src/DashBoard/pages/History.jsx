@@ -28,7 +28,7 @@ export default function LoanHistoryCards() {
   const [loans, setLoans] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(false);
-  
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchLoans = async () => {
@@ -74,7 +74,7 @@ export default function LoanHistoryCards() {
         }
       } catch (error) {
         AxiosToastError(error);
-        
+        setError("Failed to load loans");
       } finally {
         setLoading(false);
       }
