@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Axios from "../../utils/Axios";
 import SummaryApi from "../../common/SummaryApi";
 import AxiosToastError from "../../utils/AxiosToastError";
+import toast from "react-hot-toast";
 
 const statusStyles = {
   active: "bg-blue-100 text-blue-700",
@@ -54,6 +55,7 @@ export default function LoanHistoryCards() {
             } else if (loan.isDisbursed && loan.balance > 0) {
               loanType = "active";
             }
+            toast.success(response.data.message);
 
             return {
               _id: loan._id,

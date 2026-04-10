@@ -3,10 +3,8 @@ import { FaRegClock } from 'react-icons/fa';
 import { GiSandsOfTime } from 'react-icons/gi';
 import { MdAttachMoney } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import ActiveLoan from './ActiveLoan';
-import Axios from '../../utils/Axios';
-import SummaryApi from '../../common/SummaryApi';
-import toast from 'react-hot-toast';
+import ActiveLoan from './ActiveLoan'
+
 
 const SkeletonBox = () => (
   <div className="animate-pulse bg-gray-800 rounded-xl p-4">
@@ -105,7 +103,7 @@ function ClientDashboard() {
         </div>
 
         <div className='mt-1'>
-          {loading ? <SkeletonActiveLoan /> : <ActiveLoan />}
+          {loading ? <SkeletonActiveLoan /> : <ActiveLoan/> />}
         </div>
 
       </div>

@@ -46,7 +46,9 @@ function MyLoan() {
            }) 
            if(response.data.success){ 
             toast.success(response.data.message);
-             setActive(response.data.data) }else{ toast.error(response.data.error)
+             setActive(response.data.data)
+             }else{
+               toast.error(response.data.error)
 
               } 
             } catch (error)
