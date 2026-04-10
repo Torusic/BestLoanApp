@@ -313,7 +313,7 @@ export async function getAllLoans(req,res){
     try {
         const loans = await LoanModel.find()
             .populate('agent', 'name email status nationalId')
-            .populate('user', 'name email phone nationalId') // ✅ populate user info
+            .populate('user', 'name email phone nationalId') 
             .sort({ createdAt: -1 })
 
         if (!loans || loans.length === 0) {
