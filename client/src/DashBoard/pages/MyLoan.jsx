@@ -34,30 +34,29 @@ const MyLoanSkeleton = () => {
 
 function MyLoan() {
 
-  const [active, setActive] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [fee, setFee] = useState(false)
+  const[active, setActive]=useState(null) 
+  const[loading, setLoading]=useState(false)
+   const [showMore, setShowMore] = useState(false) 
+   const[fee,setFee]=useState(false)
+    const fetchActiveLoans=async()=>
+      { try { 
+        setLoading(true) 
+        const response=await Axios({
+           ...SummaryApi.myLoan,
+           }) 
+           if(response.data.success){ 
+            toast.success(response.data.message);
+             setActive(response.data.data) }else{ toast.error(response.data.error)
 
-  const fetchActiveLoans = async () => {
-    try {
-      setLoading(true)
-
-      const response = await Axios({
-        ...SummaryApi.myLoan,
-      })
-
-      if (response.data.success) {
-        setActive(response.data.data)
-      } else {
-        toast.error(response.data.message || 'Error')
-      }
-
-    } catch (error) {
-      AxiosToastError(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+              } 
+            } catch (error)
+             {
+               AxiosToastError(error)
+               }
+               finally{
+                
+               }
+               }
 
   useEffect(() => {
     fetchActiveLoans()

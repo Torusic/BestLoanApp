@@ -25,37 +25,9 @@ const SkeletonActiveLoan = () => (
 
 function ClientDashboard() {
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
+ 
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        setLoading(true);
-
-        const response = await Axios({
-          ...SummaryApi.clientDashboard
-        });
-
-        if (response.data.success) {
-          toast.success(response.data.message)
-          setStats(response.data.data);
-        }
-
-      } catch (error) {
-        setStats({
-          limitMin: 5000,
-          limitMax: 95000,
-          repaymentMin: 4,
-          repaymentMax: 24,
-          processingTime: "Within 24 Hours"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboard();
-  }, []);
+  
 
   return (
     <section className='flex items-center justify-center p-1'>
@@ -87,7 +59,7 @@ function ClientDashboard() {
                     Loan Limit
                   </p>
                   <span className='text-gray-100 font-bold text-lg'>
-                    Ksh. {stats?.limitMin} - Ksh. {stats?.limitMax}
+                    Ksh. 5,000 - Ksh. 95,000
                   </span>
                 </div>
               </div>
@@ -110,7 +82,7 @@ function ClientDashboard() {
                       Repayment Period
                     </p>
                     <span className='text-gray-100 font-bold text-xs'>
-                      {stats?.repaymentMin} - {stats?.repaymentMax} Weeks
+                      4 - 24 Weeks
                     </span>
                   </div>
                 </div>
@@ -122,7 +94,7 @@ function ClientDashboard() {
                       Processing Time
                     </p>
                     <span className='text-gray-700 font-bold text-xs'>
-                      {stats?.processingTime}
+                     24 Hours
                     </span>
                   </div>
                 </div>

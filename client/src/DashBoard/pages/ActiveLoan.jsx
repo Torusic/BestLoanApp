@@ -37,26 +37,23 @@ function ActiveLoan() {
   const [loading, setLoading] = useState(false)
   const [showMore, setShowMore] = useState(false)
   const [fee, setFee] = useState(false)
-
-  const fetchActiveLoans = async () => {
-    try {
-      setLoading(true)
-
-      const response = await Axios({
-        ...SummaryApi.myLoan,
-      })
-
-      if (response.data.success) {
-        setActive(response.data.data)
-      } else {
-        toast.error(response.data.message || 'Failed')
+ const fetchActiveLoans=async()=>{
+   try { 
+    setLoading(true) 
+    const response=await Axios({ 
+      ...SummaryApi.myLoan,
+     }) 
+     if(response.data.success){
+       toast.success(response.data.message);
+        setActive(response.data.data) 
+      }else{ 
+        toast.error(response.data.error)
+       } } catch (error) {
+         AxiosToastError(error)
+         }finally{ 
+          setLoading(false) 
+        } 
       }
-    } catch (error) {
-      AxiosToastError(error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
     fetchActiveLoans()
