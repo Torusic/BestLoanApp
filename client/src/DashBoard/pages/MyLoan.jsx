@@ -70,7 +70,7 @@ function MyLoan() {
   }
 
   return (
-    <section className="max-w-5xl mx-auto p-3">
+    <section className="max-w-5xl mx-auto p-1">
 
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
@@ -92,7 +92,7 @@ function MyLoan() {
           No active loan found
         </div>
       ) : (
-        <div className="bg-gray-900 rounded-2xl p-4 space-y-4 text-white">
+        <div className="bg-gray-900 rounded-2xl p-2 space-y-4 text-white">
 
           {/* TOP CARD */}
           <div className="bg-gradient-to-r from-green-600 to-green-400 p-4 rounded-2xl flex items-center gap-3">
