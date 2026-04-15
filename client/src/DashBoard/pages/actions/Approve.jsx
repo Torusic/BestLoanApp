@@ -9,53 +9,61 @@ function Approve({ loan, close, fetch }) {
   const [loading, setLoading] = useState(false)
 
   const handleApprove = async () => {
-  try {
-    setLoading(true)
-
-    const response = await Axios({
-      ...SummaryApi.approve,
-      data: {
-        loanId: loan._id
-      }
-    })
-
-    if (response.data.success) {
-      toast.success("Approved ✅")
-      fetch()
-      close()
+    if (!loan?._id) {
+      toast.error("Invalid loan selected")
+      return
     }
 
-  } catch (error) {
-    AxiosToastError(error)
-  } finally {
-    setLoading(false)
+    try {
+      setLoading(true)
+
+      const response = await Axios({
+        ...SummaryApi.approve, // ✅ MUST MATCH BACKEND ROUTE
+        data: {
+          loanId: loan._id
+        }
+      })
+
+      if (response.data.success) {
+        toast.success("Loan approved successfully ✅")
+        fetch()
+        close()
+      } else {
+        toast.error(response.data.message || "Approval failed")
+      }
+
+    } catch (error) {
+      AxiosToastError(error)
+    } finally {
+      setLoading(false)
+    }
   }
-}
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 z-50">
-      
-      <div className="bg-gray-800 rounded-lg  p-6 max-w-sm w-full lg:max-w-lg lg:w-full md:max-w-md mdw-full shadow-lg">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-3 z-50">
 
-        <h2 className="text-lg font-semibold mb-4 text-green-800">
+      <div className="bg-gray-900 text-white rounded-xl p-6 w-full max-w-md shadow-lg border border-gray-700">
+
+        <h2 className="text-lg font-semibold text-green-500 mb-4">
           Approve Loan
         </h2>
 
-        <div className="text-sm text-gray-100 mb-4">
-        <p><strong>Customer:</strong> {loan?.user?.name || "Loading..."}</p>
-        <p><strong>Amount:</strong> KES {loan?.amount || 0}</p>
-        <p><strong>Duration:</strong> {loan?.durationWeeks || 0} weeks</p>
+        <div className="text-sm space-y-2 mb-4 bg-gray-800 p-3 rounded-lg">
+          <p><span className="text-gray-400">Customer:</span> {loan?.user?.name || "N/A"}</p>
+          <p><span className="text-gray-400">Amount:</span> KES {loan?.amount || 0}</p>
+          <p><span className="text-gray-400">Duration:</span> {loan?.durationWeeks || 0} weeks</p>
+          <p><span className="text-gray-400">Fee Status:</span> {loan?.feeStatus || "pending"}</p>
         </div>
 
-        <p className="text-xs text-gray-400 mb-4">
-          Are you sure you want to approve this loan?
+        <p className="text-xs text-gray-400 mb-5">
+          This action will mark the loan as approved and verified.
         </p>
 
         <div className="flex justify-end gap-2">
 
           <button
             onClick={close}
-            className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg"
+            className="px-4 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg"
           >
             Cancel
           </button>
@@ -63,7 +71,7 @@ function Approve({ loan, close, fetch }) {
           <button
             onClick={handleApprove}
             disabled={loading}
-            className="px-3 py-1 bg-green-800 text-white rounded-lg flex items-center gap-2"
+            className="px-4 py-1 bg-green-600 hover:bg-green-500 rounded-lg flex items-center gap-2 disabled:opacity-50"
           >
             {loading && <LuLoader className="animate-spin" />}
             {loading ? "Approving..." : "Confirm"}

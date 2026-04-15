@@ -110,9 +110,9 @@ const AdminDashboard = () => {
 
               <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-100">Loans Approved</p>
+                  <p className="text-sm text-gray-100">Loans Disbursed</p>
                   <h2 className="text-xl font-bold text-gray-400 mt-1">
-                    {stats?.loansApproved}
+                    {stats?.loansDisbursed}
                   </h2>
                 </div>
                 <FcApproval className='text-xl' />

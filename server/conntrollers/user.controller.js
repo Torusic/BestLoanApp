@@ -229,7 +229,7 @@ export async function adminDashboardController(req, res) {
     const loans = await LoanModel.find();
 
     // Counts
-    const loansApproved = loans.filter(l => l.status === "approved").length;
+    const loansDisbursed = loans.filter(l => l.status === "disbursed").length;
     const loansPending = loans.filter(l => l.status === "pending").length;
     const loansRejected = loans.filter(l => l.status === "rejected").length;
     const totalProcessingFeesVerified = loans.filter(l => l.feeStatus === "verified").length;
@@ -269,7 +269,7 @@ export async function adminDashboardController(req, res) {
       data: {
         totalClients: clients.length,
         totalAgents: agents.length,
-        loansApproved,
+        loansDisbursed,
         loansPending,
         loansRejected,
         totalProcessingFeesVerified,

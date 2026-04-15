@@ -54,6 +54,11 @@ const SummaryApi={
         method:"post"
 
     },
+        submitProcessingFee:{
+        url:"/api/loan/submit",
+        method:"post"
+
+    },
         disburse:{
         url:"/api/loan/disburse",
         method:"post"

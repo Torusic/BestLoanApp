@@ -5,8 +5,15 @@ const loanSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      index: true
+      index: true,
+      required: true
     },
+
+    agent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+
     amount: {
       type: Number,
       required: true
@@ -17,30 +24,42 @@ const loanSchema = new mongoose.Schema(
       required: true
     },
 
-  
-    status: {
-      type: String,
-      enum: ["pending", "awaiting_fee", "awaiting_approval","approved", "disbursed","rejected"],
-      default: "pending"
-    },
-
     processingFee: {
       type: Number,
       default: 200
     },
 
+    paybillNumber: {
+      type: String,
+      default: "522522"
+    },
 
-  stkRequestId: { 
-    type: String 
-  },
-  mpesaCode: { 
-    type: String, 
-    unique: true, 
-    sparse: true },
+    accountNumber: {
+      type: String,
+      default: "BESTLOAN"
+    },
+
+    feePaymentMethod: {
+      type: String,
+      enum: ["stk_push", "manual"],
+      default: "manual"
+    },
+
+    status: {
+      type: String,
+      enum: [
+        "awaiting_fee",
+        "pending_approval",
+        "approved",
+        "disbursed",
+        "rejected"
+      ],
+      default: "awaiting_fee"
+    },
 
     feeStatus: {
       type: String,
-      enum: ["pending", "paid", "verified", "rejected"],
+      enum: ["pending", "submitted", "verified", "rejected"],
       default: "pending"
     },
 
@@ -54,33 +73,44 @@ const loanSchema = new mongoose.Schema(
       default: false
     },
 
-    agent: {
+    stkRequestId: {
+      type: String
+    },
+
+    mpesaCode: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true
+    },
+
+    approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
 
-    totalRepayment: {
-    type: Number,
-    default: 0
+    isDisbursed: {
+      type: Boolean,
+      default: false
     },
+
+    disbursedAt: Date,
+
+    totalRepayment: {
+      type: Number,
+      default: 0
+    },
+
     amountPaid: {
       type: Number,
       default: 0
     },
 
     balance: {
-    type: Number,
-    default: 0
+      type: Number,
+      default: 0
     },
-    isDisbursed: {
-      type: Boolean,
-      default: false
-    },
-    disbursedAt: Date,
-    approvedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    },
+
     repaymentStatus: {
       type: String,
       enum: ["not_started", "paying", "completed", "overdue"],
