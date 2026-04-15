@@ -15,7 +15,7 @@ function Footer() {
       name: "Dashboard",
       icon: <MdDashboard size={22} />,
       path: "/adminStats/adminDashboard",
-      roles:['admin']
+      roles:['admin','agent']
     },
      {
       name: "Loans",
@@ -47,27 +47,27 @@ function Footer() {
       name: "Home",
       icon: <MdHome size={22} />,
       path: "/clientStats/clientDashboard",
-      roles:['client']
+      roles:['client','agent']
     },
     {
       name: "My-Loan",
           icon: <GrMoney size={20} />,
           path: "/clientStats/myloan",
-          roles:['client']
+          roles:['client','agent']
 
     },
      {
           name: "Apply",
           icon: <FaMoneyBillWave size={20} />,
           path: "/clientStats/apply",
-          roles:['client']
+          roles:['client','agent']
         },
 
             {
           name: "History",
           icon: <FaHistory size={20} />,
           path: "/clientStats/history",
-          roles:['client']
+          roles:['client','agent']
         },
 
 
