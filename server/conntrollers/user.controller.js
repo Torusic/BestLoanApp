@@ -238,7 +238,7 @@ export async function adminDashboardController(req, res) {
 
     // Amount calculations
     const totalAmountIssued = loans
-      .filter(l => l.status === "approved")
+      .filter(l => l.status === "disbursed")
       .reduce((sum, l) => sum + l.amount, 0);
 
     const totalAmountRepaid = loans.reduce((sum, l) => sum + (l.amountPaid || 0), 0);
@@ -247,7 +247,7 @@ export async function adminDashboardController(req, res) {
       .filter(l => l.repaymentStatus === "overdue")
       .reduce((sum, l) => sum + (l.balance || 0), 0);
 
-    const activeLoans = loans.filter(l => l.status === "pending" || l.status === "approved").length;
+    const activeLoans = loans.filter(l => l.status === "pending" || l.status === "approved"||l.status === "disbursed").length;
 
     // Optional: Aggregate per agent
     const agentStats = await Promise.all(
