@@ -43,7 +43,7 @@ const AdminDashboard = () => {
     }).format(num || 0)
 
   return (
-    <section className="min-h-screen p-1 bg-gray-900 lg:p-8">
+    <section className="h-full p-1 bg-gray-900 lg:p-8">
 
       <div className="w-full">
 

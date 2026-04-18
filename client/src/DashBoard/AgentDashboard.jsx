@@ -51,7 +51,7 @@ const [submitLoan, setSubmitLoan] = useState(false);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white p-6">
+    <div className="h-full bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white p-6">
       {/* Header */}
       <div className="flex justify-between items-start mb-6">
         <div>
