@@ -1,75 +1,96 @@
 export const baseURL = "https://bestloanapp.onrender.com";
 //export const baseURL = "http://localhost:5000";
 
-const SummaryApi={
-    register:{
-        url:'/api/user/register',
-        method:"post"
-    },
-    login:{
-        url:'/api/user/login',
-        method:"post"
-    },
-    getStats:{
-        url:'/api/user/admin/adminStats',
-        method:'get'
-    },
-    getAllLoans:{
-         url:'/api/loan/admin/getAllLoans',
-        method:'get'
+const SummaryApi = {
+  // 🔐 AUTH
+  register: {
+    url: "/api/user/register",
+    method: "post"
+  },
+  login: {
+    url: "/api/user/login",
+    method: "post"
+  },
 
-    },
-    addAgent:{
-        url:"/api/user/admin/addAgent",
-        method:"post"
+  // 👨‍💼 ADMIN
+  getStats: {
+    url: "/api/user/admin/adminStats",
+    method: "get"
+  },
+  getAllLoans: {
+    url: "/api/loan/admin/getAllLoans",
+    method: "get"
+  },
+  addAgent: {
+    url: "/api/user/admin/addAgent",
+    method: "post"
+  },
+  myClients: {
+    url: "/api/user/admin/allClients",
+    method: "get"
+  },
 
-    },
-    applyLoanForCustomer:{
-        url:'/api/loan/agent/apply',
-        method:"post"
-    },
-    apply:{
-        url:'/api/loan/apply',
-        method:"post"
+  // 💰 LOANS (CLIENT)
+  apply: {
+    url: "/api/loan/apply",
+    method: "post"
+  },
+  myLoan: {
+    url: "/api/loan/activeLoan",
+    method: "get"
+  },
+  loanHistory: {
+    url: "/api/loan/history",
+    method: "get"
+  },
 
-    },
-    myLoan:{
-        url:"/api/loan/activeLoan",
-        method:'get'
+  // 🧾 PROCESSING FEES
+  submitProcessingFee: {
+    url: "/api/loan/submit",
+    method: "post"
+  },
+  approve: {
+    url: "/api/loan/approve",
+    method: "post"
+  },
+  reject: {
+    url: "/api/loan/reject",
+    method: "post"
+  },
+  disburse: {
+    url: "/api/loan/disburse",
+    method: "post"
+  },
 
-    },
-        loanHistory:{
-        url:"/api/loan/history",
-        method:'get'
-
-    },
-
-    myClients:{
-        url:"/api/user/admin/allClients",
-        method:'get'
-
-    },
-    approve:{
-        url:"/api/loan/approve",
-        method:"post"
-
-    },
-        submitProcessingFee:{
-        url:"/api/loan/submit",
-        method:"post"
-
-    },
-        disburse:{
-        url:"/api/loan/disburse",
-        method:"post"
-
-    },
-    makeProcessingFee:{
-        url:"/api/mpesa/stkPush",
-        method:"post"
-    }
+  // 🤝 AGENT MODULE (NEW)
+  agentRegisterClient: {
+    url: "/api/agent/register-client",
+    method: "post"
+  },
+  agentApplyLoan: {
+    url: "/api/agent/apply-loan",
+    method: "post"
+  },
+  agentClients: {
+    url: "/api/agent/clients",
+    method: "get"
+  },
+  agentClientStatus: {
+    url: "/api/agent/client-status", // + /:nationalId in request
+    method: "get"
+  },
+   agentDashboard: {
+    url: "/api/agent/dashboard", // + /:nationalId in request
+    method: "get"
+  },
 
 
-      
-}
+  // 📲 MPESA
+  makeProcessingFee: {
+    url: "/api/mpesa/stkPush",
+    method: "post"
+  }
+};
+
+
 export default SummaryApi;

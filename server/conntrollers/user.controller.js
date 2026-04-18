@@ -230,7 +230,7 @@ export async function adminDashboardController(req, res) {
 
     // Counts
     const loansDisbursed = loans.filter(l => l.status === "disbursed").length;
-    const loansPending = loans.filter(l => l.status === "pending").length;
+    const loansPending = loans.filter(l => l.status === "pending_approval").length;
     const loansRejected = loans.filter(l => l.status === "rejected").length;
     const totalProcessingFeesVerified = loans.filter(l => l.feeStatus === "verified").length;
     const totalProcessingFeesPending = loans.filter(l => l.feeStatus === "paid").length;

@@ -8,6 +8,7 @@ import ConnectDB from './config/ConnectDB.js'
 import userRouter from './routes/user.route.js'
 import loanRouter from './routes/loan.route.js'
 import mpesaRoute from './routes/mpesa.route.js'
+import agentRouter from './routes/agent.route.js'
 
 
 dotenv.config()
@@ -46,6 +47,7 @@ app.use(
 
 app.use('/api/user',userRouter);
 app.use('/api/loan',loanRouter);
+app.use('/api/agent',agentRouter)
 app.use('/api/mpesa',mpesaRoute);
 const PORT=process.env.PORT
 ConnectDB().then(()=>{

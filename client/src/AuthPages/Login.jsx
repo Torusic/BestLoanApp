@@ -43,7 +43,7 @@ const Login = () => {
                     } else if (role === 'client') {
                         navigate('/clientStats/clientDashboard');
                     } else if (role === 'agent') {
-                        navigate('/clientStats/clientDashboard');
+                        navigate('/clientStats/agentDashboard');
                     } else {
                         navigate('/'); // fallback route
                     }

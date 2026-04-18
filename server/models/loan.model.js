@@ -30,13 +30,13 @@ const loanSchema = new mongoose.Schema(
     },
 
     paybillNumber: {
-      type: String,
-      default: "522522"
+      type: Number,
+      default: 852648
     },
 
     accountNumber: {
-      type: String,
-      default: "BESTLOAN"
+      type: Number,
+      default: 115268
     },
 
     feePaymentMethod: {

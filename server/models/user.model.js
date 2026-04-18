@@ -34,7 +34,13 @@ const userSchema=new mongoose.Schema({
         type:String,
         enum:['admin','agent','client'],
         default:'client'
-    }
+    },
+    createdBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  default: null,
+  index: true
+},
 },
 {timestamps:true}
 )

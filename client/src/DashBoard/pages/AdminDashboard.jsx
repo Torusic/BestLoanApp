@@ -153,7 +153,7 @@ const AdminDashboard = () => {
                   <tr>
                     <th className="px-4 py-3">Agent Name</th>
                     <th className="px-4 py-3">Total Loans</th>
-                    <th className="px-4 py-3">Amount Issued</th>
+                    <th className="px-4 py-3">Amount Applied</th>
                   </tr>
                 </thead>
 

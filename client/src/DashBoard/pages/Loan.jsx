@@ -115,7 +115,7 @@ function Loan() {
                     <th className="px-4 py-3 hidden md:table-cell">ID</th>
                     <th className="px-4 py-3">Amount</th>
                     <th className="px-4 py-3">Balance</th>
-                    <th className="px-4 py-3">Repayment</th>
+                    <th className="px-4 py-3">Amount Paid</th>
                     <th className="px-4 py-3">Duration</th>
                     <th className="px-4 py-3">MPESA</th>
                     <th className="px-4 py-3">Status</th>
@@ -154,7 +154,7 @@ function Loan() {
                         </td>
 
                         <td className="px-4 py-3 text-blue-500 font-semibold">
-                          KES {loan.totalRepayment || loan.amount}
+                          KES {loan.amountPaid }
                         </td>
 
                         <td className="px-4 py-3">
