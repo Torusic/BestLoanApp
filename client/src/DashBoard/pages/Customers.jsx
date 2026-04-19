@@ -1,205 +1,300 @@
-import React, { useEffect, useState } from 'react'
-import { IoAdd, IoSearch } from 'react-icons/io5'
-import Axios from '../../utils/Axios'
-import SummaryApi from '../../common/SummaryApi'
-import AxiosToastError from '../../utils/AxiosToastError'
-import { LuLoader } from "react-icons/lu"
-import AddLoan from './actions/AddLoan'
+import React, { useEffect, useState, useCallback } from "react";
+import { IoAdd, IoSearch } from "react-icons/io5";
+import { LuLoader } from "react-icons/lu";
+import Axios from "../../utils/Axios";
+import SummaryApi from "../../common/SummaryApi";
+import AxiosToastError from "../../utils/AxiosToastError";
+import AddLoan from "./actions/AddLoan";
+import toast from "react-hot-toast";
 
 function Customers() {
-  const [clients, setClients] = useState([])
-  const [filteredClients, setFilteredClients] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showAddLoan, setShowAddLoan] = useState(false)
-  const [search, setSearch] = useState("")
+  const [clients, setClients] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const clientsPerPage = 10
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const clientsPerPage = 10;
+
+  const [showAddLoan, setShowAddLoan] = useState(false);
+
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [showEditCustomer, setShowEditCustomer] = useState(false);
+
+  // =========================
   // FETCH CLIENTS
-  const fetchClients = async () => {
+  // =========================
+  const fetchClients = useCallback(async () => {
     try {
+      setLoading(true);
+
       const response = await Axios({
-        ...SummaryApi.myClients
-      })
+        ...SummaryApi.myClients,
+      });
 
       if (response.data.success) {
-        const data = response.data.data.clients
-        setClients(data)
-        setFilteredClients(data)
+        const data = response.data.data.clients || [];
+        setClients(data);
+        setFilteredClients(data);
       }
-
     } catch (error) {
-      AxiosToastError(error)
+      AxiosToastError(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    fetchClients()
-  }, [])
+    fetchClients();
+  }, [fetchClients]);
 
+  // =========================
   // SEARCH FILTER
+  // =========================
   useEffect(() => {
-    const filtered = clients.filter(client =>
-      client.name.toLowerCase().includes(search.toLowerCase()) ||
-      client.phone.includes(search) ||
-      client.nationalId.includes(search)
-    )
+    const filtered = clients.filter((client) => {
+      const name = client?.name?.toLowerCase() || "";
+      const phone = client?.phone || "";
+      const id = client?.nationalId || "";
 
-    setFilteredClients(filtered)
-    setCurrentPage(1)
-  }, [search, clients])
+      return (
+        name.includes(search.toLowerCase()) ||
+        phone.includes(search) ||
+        id.includes(search)
+      );
+    });
 
+    setFilteredClients(filtered);
+    setCurrentPage(1);
+  }, [search, clients]);
+
+  // =========================
+  // DELETE CLIENT (SAFETY)
+  // =========================
+  const handleDelete = async (id) => {
+    try {
+      const confirm = window.confirm("Are you sure you want to delete?");
+      if (!confirm) return;
+
+      const response = await Axios({
+        ...SummaryApi.deleteClient,
+        data: { id },
+      });
+
+      if (response.data.success) {
+        toast.success("Client deleted");
+
+        const updated = clients.filter((c) => c._id !== id);
+        setClients(updated);
+        setFilteredClients(updated);
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
+
+  // =========================
   // PAGINATION
-  const indexOfLast = currentPage * clientsPerPage
-  const indexOfFirst = indexOfLast - clientsPerPage
-  const currentClients = filteredClients.slice(indexOfFirst, indexOfLast)
-  const totalPages = Math.ceil(filteredClients.length / clientsPerPage)
+  // =========================
+  const indexOfLast = currentPage * clientsPerPage;
+  const indexOfFirst = indexOfLast - clientsPerPage;
+  const currentClients = filteredClients.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredClients.length / clientsPerPage);
 
-  return (
-    <section className='bg-gray-800 min-h-screen overflow-y-auto scrollbar-hidden'>
-      <div className='bg-gray-800 p-2 lg:p-6 max-w-7xl mx-auto rounded-2xl shadow-sm'>
+return (
+  <section className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white">
+    
+    <div className="max-w-7xl mx-auto px-4 py-6">
 
-        {loading ? (
-          <div className='flex justify-center py-10'>
-            <LuLoader className='animate-spin text-xl text-white' />
-          </div>
-        ) : (
-          <>
-            {/* HEADER */}
-            <div className='flex flex-col lg:flex-row justify-between items-center gap-4 mb-6'>
-              <h2 className='text-xl font-bold text-white'>Customers</h2>
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
-              <button
-                onClick={() => setShowAddLoan(true)}
-                className='flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl text-sm'
-              >
-                <IoAdd />
-                Apply Loan
-              </button>
-            </div>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Customers
+          </h2>
+          <p className="text-gray-400 text-sm">
+            Manage clients, loans and account activity
+          </p>
+        </div>
 
-            {/* SEARCH */}
-            <div className='bg-gray-700 flex items-center justify-between text-white rounded p-2 mb-4'>
-              <input
-                type="text"
-                placeholder='Search by name, phone or ID'
-                className='outline-none bg-transparent w-full'
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <IoSearch />
-            </div>
+        <button
+          onClick={() => setShowAddLoan(true)}
+          className="flex items-center justify-center gap-2 px-5 py-2.5 
+          bg-gradient-to-r from-blue-600 to-blue-500 
+          hover:from-blue-500 hover:to-blue-400
+          rounded-xl text-sm font-medium shadow-lg transition"
+        >
+          <IoAdd />
+          Apply Loan
+        </button>
 
-            {/* TABLE */}
-            <div className="overflow-x-auto">
-              <table className='min-w-full'>
-                <thead className='bg-gray-900 text-xs text-white'>
-                  <tr>
-                    <th className="px-4 py-3 text-left">Name</th>
-                    <th className="px- py-3">Phone</th>
-                    <th className="px-4 py-3">Email</th>
-                    <th className="px-4 py-3">National ID</th>
-                    <th className="px-4 py-3">Joined</th>
-                    <th className="px-4 py-3">Action</th>
+      </div>
 
-                    
-                  </tr>
-                </thead>
+      {/* SEARCH */}
+      <div className="relative mb-6">
+        <IoSearch className="absolute left-3 top-3 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Search by name, phone or ID..."
+          className="w-full pl-10 pr-4 py-3 
+          bg-gray-900 border border-gray-800 
+          rounded-xl text-sm text-white
+          placeholder-gray-500
+          focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
-                <tbody className='text-xs text-white'>
-                  {currentClients.map((client) => (
-                    <tr key={client._id} className='hover:bg-green-900'>
-                      <td className="px-4 py-3">{client.name}</td>
-                      <td className="px-4 py-3">{client.phone}</td>
-                      <td className="px-4 py-3">{client.email || "-"}</td>
-                      <td className="px-4 py-3">{client.nationalId}</td>
-                      <td className="px-4 py-3">
-                        {new Date(client.createdAt).toLocaleDateString()}
-                      </td>
+      {/* LOADING */}
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <LuLoader className="animate-spin text-2xl text-blue-500" />
+        </div>
+      ) : (
+        <>
+          {/* TABLE WRAPPER */}
+          <div className="overflow-x-auto rounded-2xl border border-gray-800 shadow-xl">
 
-                     <td className="px-4 py-3">
-                      <div className="flex gap-2">
+            <table className="w-full text-sm">
 
-                        {/* EDIT */}
+              {/* HEADER */}
+              <thead className="bg-gray-900 text-gray-300 text-xs uppercase tracking-wider">
+                <tr>
+                  <th className="px-5 py-4 text-left">Name</th>
+                  <th className="px-5 py-4">Phone</th>
+                  <th className="px-5 py-4">Email</th>
+                  <th className="px-5 py-4">National ID</th>
+                  <th className="px-5 py-4">Joined</th>
+                  <th className="px-5 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
+
+              {/* BODY */}
+              <tbody className="divide-y divide-gray-800">
+
+                {currentClients.map((client) => (
+                  <tr
+                    key={client._id}
+                    className="hover:bg-gray-800/60 transition"
+                  >
+
+                    <td className="px-5 py-4 font-medium">
+                      {client.name}
+                    </td>
+
+                    <td className="px-5 py-4 text-gray-300">
+                      {client.phone}
+                    </td>
+
+                    <td className="px-5 py-4 text-gray-400">
+                      {client.email || "-"}
+                    </td>
+
+                    <td className="px-5 py-4 text-gray-400">
+                      {client.nationalId}
+                    </td>
+
+                    <td className="px-5 py-4 text-gray-400">
+                      {new Date(client.createdAt).toLocaleDateString()}
+                    </td>
+
+                    {/* ACTIONS */}
+                    <td className="px-5 py-4">
+                      <div className="flex justify-end gap-2">
+
                         <button
                           onClick={() => {
-                            setSelectedCustomer(client)
-                            setShowEditCustomer(true)
+                            setSelectedCustomer(client);
+                            setShowEditCustomer(true);
                           }}
-                          className="px-3 py-1 text-xs bg-blue-600 rounded-lg"
+                          className="px-3 py-1.5 text-xs rounded-lg 
+                          bg-blue-600/20 text-blue-400 
+                          hover:bg-blue-600 hover:text-white 
+                          transition"
                         >
                           Edit
                         </button>
 
-                        {/* DELETE */}
                         <button
                           onClick={() => handleDelete(client._id)}
-                          className="px-3 py-1 text-xs bg-red-600 rounded-lg"
+                          className="px-3 py-1.5 text-xs rounded-lg 
+                          bg-red-600/20 text-red-400 
+                          hover:bg-red-600 hover:text-white 
+                          transition"
                         >
                           Delete
                         </button>
 
                       </div>
                     </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
 
-            {/* PAGINATION */}
-            <div className="flex justify-between items-center mt-4">
-
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1 bg-gray-900 text-white rounded disabled:opacity-40"
-              >
-                Prev
-              </button>
-
-              <div className="flex gap-2">
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`px-3 py-1 rounded ${
-                      currentPage === i + 1
-                        ? "bg-white text-black"
-                        : "bg-gray-700 text-white"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
+                  </tr>
                 ))}
-              </div>
 
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 bg-gray-900 text-white rounded disabled:opacity-40"
-              >
-                Next
-              </button>
+              </tbody>
+            </table>
+          </div>
 
+          {/* PAGINATION */}
+          <div className="flex justify-between items-center mt-6 text-sm">
+
+            <button
+              onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-lg bg-gray-900 
+              border border-gray-800 hover:bg-gray-800 
+              disabled:opacity-40"
+            >
+              Prev
+            </button>
+
+            <div className="flex gap-2">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-9 h-9 rounded-lg text-sm transition ${
+                    currentPage === i + 1
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-900 border border-gray-800 text-gray-300 hover:bg-gray-800"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
             </div>
-          </>
-        )}
 
-      </div>
+            <button
+              onClick={() =>
+                setCurrentPage(p => Math.min(p + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-lg bg-gray-900 
+              border border-gray-800 hover:bg-gray-800 
+              disabled:opacity-40"
+            >
+              Next
+            </button>
 
-      {/* APPLY LOAN MODAL */}
-      {showAddLoan && (
-        <AddLoan
-          close={() => setShowAddLoan(false)}
-          fetch={fetchClients}
-        />
+          </div>
+        </>
       )}
-    </section>
-  )
+
+    </div>
+
+    {/* MODAL */}
+    {showAddLoan && (
+      <AddLoan
+        close={() => setShowAddLoan(false)}
+        fetch={fetchClients}
+      />
+    )}
+
+  </section>
+);
 }
 
-export default Customers
+export default Customers;

@@ -227,7 +227,7 @@ export async function disburseLoan(req, res) {
         loan.totalRepayment = loan.amount;
         loan.balance = loan.amount;
         loan.amountPaid = 0;
-        loan.repaymentStatus = "paying";
+        loan.repaymentStatus = "not_started";
 
         loan.dueDate = new Date(
             Date.now() + loan.durationWeeks * 7 * 24 * 60 * 60 * 1000

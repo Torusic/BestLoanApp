@@ -83,9 +83,23 @@ const SummaryApi = {
     url: "/api/agent/dashboard", // + /:nationalId in request
     method: "get"
   },
+//Repayment
+ submitRepayment:{
+   url: "/api/repay/submit",
+    method: "post"
+
+},
+getAllRepayments:{
+ url: "/api/repay/all",
+    method: "get"
+},
+verifyRepayment:{
+url: "/api/repay/verify",
+    method: "post"
+},
 
 
-  // 📲 MPESA
+  //  MPESA
   makeProcessingFee: {
     url: "/api/mpesa/stkPush",
     method: "post"

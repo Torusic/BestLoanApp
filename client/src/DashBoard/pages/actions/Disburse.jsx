@@ -9,21 +9,26 @@ function Disburse({ loan, close, fetch }) {
   const [loading, setLoading] = useState(false);
 
   const handleDisburse = async () => {
+    if (!loan?._id) return toast.error("Invalid loan data");
+
     try {
       setLoading(true);
 
       const response = await Axios({
         ...SummaryApi.disburse,
         data: {
-          loanId: loan._id, // important
+          loanId: loan._id,
         },
       });
 
       if (response.data.success) {
-        toast.success("Loan disbursed ✅");
-        fetch(); // refresh loans list
-        close(); // close modal
+        toast.success("Loan disbursed successfully ✅");
+        fetch?.();
+        close?.();
+      } else {
+        toast.error(response.data.message || "Disbursement failed");
       }
+
     } catch (error) {
       AxiosToastError(error);
     } finally {
@@ -32,32 +37,54 @@ function Disburse({ loan, close, fetch }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-[320px] shadow-lg">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">
-          Disburse Loan
-        </h2>
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
 
-        <div className="text-sm text-gray-600 mb-4">
-          <p>
-            <strong>Customer:</strong> {loan?.user?.name || "Loading..."}
-          </p>
-          <p>
-            <strong>Amount:</strong> KES {loan?.amount || 0}
-          </p>
-          <p>
-            <strong>Duration:</strong> {loan?.durationWeeks || 0} weeks
+      <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-6 text-white">
+
+        {/* HEADER */}
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">Disburse Loan</h2>
+          <p className="text-xs text-gray-400">
+            Confirm before sending funds to customer
           </p>
         </div>
 
-        <p className="text-xs text-gray-500 mb-4">
-          Are you sure you want to disburse this loan?
-        </p>
+        {/* LOAN DETAILS */}
+        <div className="bg-gray-800 p-4 rounded-xl text-sm space-y-2">
 
-        <div className="flex justify-end gap-2">
+          <div className="flex justify-between">
+            <span className="text-gray-400">Customer</span>
+            <span className="font-medium">
+              {loan?.user?.name || "N/A"}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-gray-400">Amount</span>
+            <span className="text-green-400 font-semibold">
+              KES {loan?.amount || 0}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-gray-400">Duration</span>
+            <span>{loan?.durationWeeks || 0} weeks</span>
+          </div>
+
+        </div>
+
+        {/* WARNING */}
+        <div className="mt-4 bg-yellow-500/10 border border-yellow-500/30 p-3 rounded-xl text-xs text-yellow-300">
+          ⚠️ This action cannot be reversed once disbursed.
+        </div>
+
+        {/* ACTIONS */}
+        <div className="flex gap-3 mt-5">
+
           <button
             onClick={close}
-            className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg"
+            disabled={loading}
+            className="w-full py-2 rounded-xl bg-gray-700 hover:bg-gray-600 transition text-sm"
           >
             Cancel
           </button>
@@ -65,12 +92,14 @@ function Disburse({ loan, close, fetch }) {
           <button
             onClick={handleDisburse}
             disabled={loading}
-            className="px-3 py-1 bg-blue-600 text-white rounded-lg flex items-center gap-2"
+            className="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition text-sm flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            {loading && <LuLoader className="animate-spin" />}
-            {loading ? "Disbursing..." : "Confirm"}
+            {loading && <LuLoader className="animate-spin" size={16} />}
+            {loading ? "Processing..." : "Confirm Disbursement"}
           </button>
+
         </div>
+
       </div>
     </div>
   );

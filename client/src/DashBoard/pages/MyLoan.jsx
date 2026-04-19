@@ -6,17 +6,18 @@ import toast from 'react-hot-toast'
 import { MdAttachMoney } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import ProcessingFee from '../ProcessingFee'
+import RepaymentModal from './RepaymentModal'
 
 const MyLoanSkeleton = () => {
   return (
-    <div className='bg-gray-900 rounded-2xl p-4 animate-pulse space-y-3'>
-      <div className='h-5 w-40 bg-gray-700 rounded'></div>
-      <div className='h-20 bg-gray-700 rounded-xl'></div>
-      <div className='grid grid-cols-2 gap-2'>
-        <div className='h-16 bg-gray-700 rounded-xl'></div>
-        <div className='h-16 bg-gray-700 rounded-xl'></div>
+    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 animate-pulse space-y-4">
+      <div className="h-5 w-40 bg-gray-700 rounded"></div>
+      <div className="h-24 bg-gray-700 rounded-xl"></div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="h-16 bg-gray-700 rounded-xl"></div>
+        <div className="h-16 bg-gray-700 rounded-xl"></div>
       </div>
-      <div className='h-10 bg-gray-700 rounded-xl'></div>
+      <div className="h-10 bg-gray-700 rounded-xl"></div>
     </div>
   )
 }
@@ -25,6 +26,7 @@ function MyLoan() {
 
   const [active, setActive] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [repay, setRepay] = useState(false)
   const [fee, setFee] = useState(false)
 
   const fetchActiveLoans = async () => {
@@ -60,25 +62,28 @@ function MyLoan() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "awaiting_fee": return "bg-yellow-500"
-      case "pending_approval": return "bg-orange-500"
-      case "approved": return "bg-green-500"
-      case "disbursed": return "bg-blue-500"
-      case "rejected": return "bg-red-500"
-      default: return "bg-gray-500"
+      case "awaiting_fee": return "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+      case "pending_approval": return "bg-orange-500/10 text-orange-400 border-orange-500/20"
+      case "approved": return "bg-green-500/10 text-green-400 border-green-500/20"
+      case "disbursed": return "bg-blue-500/10 text-blue-400 border-blue-500/20"
+      case "rejected": return "bg-red-500/10 text-red-400 border-red-500/20"
+      default: return "bg-gray-500/10 text-gray-400 border-gray-500/20"
     }
   }
 
   return (
-    <section className="max-w-5xl mx-auto p-1">
+    <section className="max-w-5xl mx-auto p-4 text-white">
 
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-white">My Loan Dashboard</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-semibold">My Loan Dashboard</h2>
+          <p className="text-xs text-gray-400">Overview of your active loan</p>
+        </div>
 
         <Link
           to="/clientStats/apply"
-          className="bg-green-600 hover:bg-green-700 text-xs text-white px-5 py-2 rounded-xl"
+          className="bg-gradient-to-r from-green-600 to-green-500 hover:opacity-90 text-xs px-5 py-2 rounded-xl shadow-md"
         >
           Apply Loan
         </Link>
@@ -88,60 +93,64 @@ function MyLoan() {
       {loading ? (
         <MyLoanSkeleton />
       ) : !active ? (
-        <div className="bg-gray-900 text-gray-300 p-4 rounded-xl text-center text-sm">
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl text-center text-gray-400 text-sm">
           No active loan found
         </div>
       ) : (
-        <div className="bg-gray-900 rounded-2xl p-2 space-y-4 text-white">
+        <div className="space-y-5">
 
           {/* TOP CARD */}
-          <div className="bg-gradient-to-r from-green-600 to-green-400 p-4 rounded-2xl flex items-center gap-3">
+          <div className="bg-gradient-to-r from-green-600 to-green-400 p-5 rounded-2xl shadow-lg flex items-center gap-4">
             <MdAttachMoney size={45} />
             <div>
-              <p className="text-sm">Total Repayment</p>
-              <p className="text-xl font-bold">
+              <p className="text-xs opacity-80">Total Repayment</p>
+              <p className="text-2xl font-bold">
                 {formatCurrency(active.totalRepayment)}
               </p>
             </div>
           </div>
 
           {/* STATS */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
 
-            <div className="bg-blue-600 p-3 rounded-xl">
-              <p className="text-xs">Amount Paid</p>
-              <p className="font-bold">{formatCurrency(active.amountPaid)}</p>
+            <div className="bg-gray-900 border border-gray-800 p-4 rounded-2xl">
+              <p className="text-xs text-gray-400">Amount Paid</p>
+              <p className="text-lg font-semibold text-blue-400">
+                {formatCurrency(active.amountPaid)}
+              </p>
             </div>
 
-            <div className="bg-red-600 p-3 rounded-xl">
-              <p className="text-xs">Balance</p>
-              <p className="font-bold">{formatCurrency(active.balance)}</p>
+            <div className="bg-gray-900 border border-gray-800 p-4 rounded-2xl">
+              <p className="text-xs text-gray-400">Balance</p>
+              <p className="text-lg font-semibold text-red-400">
+                {formatCurrency(active.balance)}
+              </p>
             </div>
 
           </div>
 
-          {/* DETAILS */}
-          <div className="bg-gray-800 p-3 rounded-xl space-y-2 text-sm">
+          {/* DETAILS CARD */}
+          <div className="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-3 text-sm">
 
             <div className="flex justify-between">
-              <span>Loan Amount</span>
+              <span className="text-gray-400">Loan Amount</span>
               <span>{formatCurrency(active.amount)}</span>
             </div>
 
-            <div className="flex justify-between">
-              <span>Status</span>
-              <span className={`px-2 py-1 rounded text-xs ${getStatusColor(active.status)}`}>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Status</span>
+              <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(active.status)}`}>
                 {active.status}
               </span>
             </div>
 
             <div className="flex justify-between">
-              <span>Duration</span>
+              <span className="text-gray-400">Duration</span>
               <span>{active.durationWeeks} Weeks</span>
             </div>
 
             <div className="flex justify-between">
-              <span>Due Date</span>
+              <span className="text-gray-400">Due Date</span>
               <span>
                 {active.dueDate
                   ? new Date(active.dueDate).toDateString()
@@ -152,10 +161,10 @@ function MyLoan() {
           </div>
 
           {/* FEE SECTION */}
-          <div className="bg-gray-800 p-3 rounded-xl text-sm space-y-2">
+          <div className="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-3 text-sm">
 
             <div className="flex justify-between">
-              <span>Processing Fee</span>
+              <span className="text-gray-400">Processing Fee</span>
               <span className={active.isFeePaid ? "text-green-400" : "text-red-400"}>
                 {active.isFeePaid ? "Paid" : "Not Paid"}
               </span>
@@ -164,32 +173,30 @@ function MyLoan() {
             {!active.isFeePaid && (
               <button
                 onClick={() => setFee(true)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-sm"
+                className="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded-xl text-sm transition"
               >
-                Pay Processing Fee ({formatCurrency(active.processingFee)})
+                Pay Fee ({formatCurrency(active.processingFee)})
               </button>
             )}
 
             <div className="flex justify-between">
-              <span>Fee Status</span>
+              <span className="text-gray-400">Fee Status</span>
               <span className="capitalize">{active.feeStatus}</span>
             </div>
 
             <div className="flex justify-between">
-              <span>Disbursed</span>
+              <span className="text-gray-400">Disbursed</span>
               <span>{active.isDisbursed ? "Yes" : "No"}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Repayment Status</span>
-              <span className="capitalize">{active.repaymentStatus}</span>
             </div>
 
           </div>
 
-          {/* ACTION */}
+          {/* CTA */}
           {active.isDisbursed && active.balance > 0 && (
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-sm">
+            <button
+              onClick={() => setRepay(true)}
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:opacity-90 py-3 rounded-xl font-medium shadow-md"
+            >
               Pay Loan ({formatCurrency(active.balance)})
             </button>
           )}
@@ -197,11 +204,19 @@ function MyLoan() {
         </div>
       )}
 
-      {/* MODAL */}
+      {/* MODALS */}
       {fee && (
         <ProcessingFee
           loan={active}
           onClose={() => setFee(false)}
+          refresh={fetchActiveLoans}
+        />
+      )}
+
+      {repay && (
+        <RepaymentModal
+          loan={active}
+          onClose={() => setRepay(false)}
           refresh={fetchActiveLoans}
         />
       )}

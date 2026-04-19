@@ -80,7 +80,7 @@ function Footer() {
   const filteredNav = navItems.filter((item) => item.roles.includes(role));
 
   return (
-    <section className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-lg border-t border-gray-800 px-3 py-2">
+    <section className="sticky bottom-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-lg border-t border-gray-800 px-3 py-2">
       <div className="flex items-center justify-between max-w-4xl mx-auto">
         {filteredNav.map((item, index) => {
           const isActive = location.pathname === item.path;

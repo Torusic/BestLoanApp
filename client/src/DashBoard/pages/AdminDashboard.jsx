@@ -2,38 +2,48 @@ import React, { useEffect, useState } from 'react'
 import { IoIosPersonAdd } from "react-icons/io"
 import { FcApproval } from "react-icons/fc"
 import { FaHistory } from 'react-icons/fa'
-import AxiosToastError from '../../utils/AxiosToastError'
+import { IoAdd } from 'react-icons/io5'
+import { LuLoader } from "react-icons/lu"
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+
 import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SummaryApi'
-import toast from 'react-hot-toast'
-import { LuLoader } from "react-icons/lu"
-import { IoAdd } from 'react-icons/io5'
+import AxiosToastError from '../../utils/AxiosToastError'
+
 import AddAgent from './actions/AddAgent'
-import { useNavigate } from 'react-router-dom'
 
 const AdminDashboard = () => {
+
   const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [addAgent, setAddAgent] = useState(false)
+
   const navigate = useNavigate()
 
-  const fetch = async () => {
+  const fetchStats = async () => {
     try {
+      setLoading(true)
+
       const response = await Axios({
         ...SummaryApi.getStats,
       })
 
       if (response.data.success) {
-        toast.success(response.data.message)
         setStats(response.data.data)
+      } else {
+        toast.error(response.data.message || "Failed to load stats")
       }
 
     } catch (error) {
       AxiosToastError(error)
+    } finally {
+      setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetch()
+    fetchStats()
   }, [])
 
   const formatCurrency = (num) =>
@@ -42,176 +52,170 @@ const AdminDashboard = () => {
       currency: 'KES'
     }).format(num || 0)
 
+  if (loading) {
+    return (
+      <div className="h-[70vh] flex items-center justify-center">
+        <LuLoader className="animate-spin text-3xl text-gray-400" />
+      </div>
+    )
+  }
+
+  if (!stats) {
+    return (
+      <div className="h-[60vh] flex items-center justify-center text-gray-400">
+        No dashboard data available
+      </div>
+    )
+  }
+
   return (
-    <section className="h-full p-1 bg-gray-900 lg:p-8">
+    <section className="min-h-screen bg-gray-950 p-3 lg:p-8 text-white">
 
-      <div className="w-full">
+      {/* HEADER */}
+      <div className="mb-6">
+        <h1 className="text-2xl lg:text-3xl font-bold">
+          Admin Dashboard
+        </h1>
+        <p className="text-gray-400 text-sm">
+          Overview of system performance and loan activity
+        </p>
+      </div>
 
-        {!stats ? (
-          <div className='flex items-center justify-center h-[50vh]'>
-            <LuLoader className='animate-spin text-2xl text-gray-500' />
-          </div>
-        ) : (
+      {/* MAIN STATS */}
+      <div className="grid gap-4 lg:grid-cols-3">
 
-          <div>
+        <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 p-5 rounded-2xl">
+          <p className="text-sm opacity-80">Total Amount Issued</p>
+          <h2 className="text-2xl font-bold mt-2">
+            {formatCurrency(stats.totalAmountIssued)}
+          </h2>
+        </div>
 
-            <div className="mb-4">
-              <h1 className="text-md lg:text-3xl font-semibold text-gray-400 tracking-tight">
-                Admin Dashboard
-              </h1>
-              <p className="text-gray-400 lg:text-sm text-xs md:text-sm">
-                Overview of system performance and loan activity
-              </p>
-            </div>
+        <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800">
+          <p className="text-sm text-gray-400">Total Amount Repaid</p>
+          <h2 className="text-2xl font-bold text-emerald-500 mt-2">
+            {formatCurrency(stats.totalAmountRepaid)}
+          </h2>
+        </div>
 
-            <div className='bg-gradient-to-r from-indigo-500 to-indigo-600 text-white lg:p-6 p-5 rounded-2xl shadow-md hover:shadow-lg transition'>
-              <p className="text-sm opacity-80 font-medium">Total Amount Issued</p>
-              <h2 className="text-2xl font-bold mt-1">
-                {formatCurrency(stats?.totalAmountIssued)}
-              </h2>
-            </div>
-
-            <div className='grid grid-cols-2 gap-3 my-3'>
-
-              <div className='bg-gray-800 backdrop-blur-sm lg:p-6 p-5 e rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition'>
-                <p className="text-sm text-gray-50 font-medium">Total Amount Repaid</p>
-                <h2 className="text-xl font-bold text-emerald-500 mt-1">
-                  {formatCurrency(stats?.totalAmountRepaid)}
-                </h2>
-              </div>
-
-              <div className='bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition'>
-                <p className="text-sm text-gray-50 font-medium">Total Overdue Amount</p>
-                <h2 className="text-xl font-bold text-rose-500 mt-1">
-                  {formatCurrency(stats?.totalOverdueAmount)}
-                </h2>
-              </div>
-
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition flex justify-between items-center">
-                <div>
-                  <p className="text-sm text-gray-50">Total Clients</p>
-                  <h2 className="text-xl font-bold text-gray-50 mt-1">
-                    {stats?.totalClients}
-                  </h2>
-                </div>
-                <IoIosPersonAdd className='text-emerald-500 text-2xl' />
-              </div>
-
-              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition">
-                <p className="text-sm text-gray-50">Total Agents</p>
-                <h2 className="text-xl font-bold text-indigo-500 mt-1">
-                  {stats?.totalAgents}
-                </h2>
-              </div>
-
-              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition flex justify-between items-center">
-                <div>
-                  <p className="text-sm text-gray-100">Loans Disbursed</p>
-                  <h2 className="text-xl font-bold text-gray-400 mt-1">
-                    {stats?.loansDisbursed}
-                  </h2>
-                </div>
-                <FcApproval className='text-xl' />
-              </div>
-
-              <div className="bg-gray-800 backdrop-blur-sm lg:p-6 p-5 rounded-2xl shadow-md border border-gray-700/60 hover:shadow-lg transition flex justify-between items-center">
-                <div>
-                  <p className="text-sm text-gray-50">Loans Pending</p>
-                  <h2 className="text-xl font-bold text-amber-500 mt-1">
-                    {stats?.loansPending}
-                  </h2>
-                </div>
-                <FaHistory className='text-amber-500 text-lg' />
-              </div>
-
-            </div>
-
-            <div className="mt-8 bg-gradient-to-r from-gray-800 to-gray-900  backdrop-blur-sm rounded-2xl shadow-md border border-gray-800/60 p-4 overflow-x-auto hover:shadow-lg transition">
-              <div className='flex items-center justify-between my-2'>
-                <h3 className="lg:text-lg md:text-sm text-xs  font-semibold text-gray-200 mb-4">
-                  Agent Performance
-                </h3>
-                
-
-                  <button
-                    onClick={() => setAddAgent(true)}
-                    className='flex items-center gap-2 bg-gray-950 cursor-pointer text-white px-4 py-2 rounded-xl md:text-sm text-xs lg:text-lg'
-                  >
-                    <IoAdd />
-                    Add Agent
-                  </button>
-                
-              </div>
-
-              <table className="min-w-full text-xs text-left">
-
-                <thead className="bg-gray-800/70 text-gray-50 uppercase tracking-wide text-[11px]">
-                  <tr>
-                    <th className="px-4 py-3">Agent Name</th>
-                    <th className="px-4 py-3">Total Loans</th>
-                    <th className="px-4 py-3">Amount Applied</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-
-                  {stats?.agentStats?.length > 0 ? (
-                    stats.agentStats.slice(0, 5).map((agent) => (
-                      <tr
-                        key={agent.agentId}
-                        className="border-t border-gray-800/60 bg-gray-800 hover:bg-gray-800/60 transition"
-                      >
-                        <td className="px-4 py-2 text-gray-50">{agent.name}</td>
-                        <td className="px-4 py-2 text-gray-100">{agent.totalLoans}</td>
-                        <td className="px-4 py-2 text-emerald-600 font-semibold">
-                          {formatCurrency(agent.totalAmountIssued)}
-                        </td>
-
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={3} className="text-center py-6 text-gray-400">
-                        No agent data available
-                      </td>
-                    </tr>
-                  )}
-
-
-                </tbody>
-
-              </table> 
-              <div className='w-fit ml-auto my-2'>
-                  <button
-                    onClick={() => navigate("/adminStats/allAgents")}
-                    className='bg-gray-200 text-gray-700 px-4  py-2 rounded-xl md:text-sm text-xs lg:text-lg'
-                  >
-                    View All
-                  </button>
-
-              </div>
-
-
-            </div>
-
-          </div>
-
-        )}
+        <div className="bg-gray-900 p-5 rounded-2xl border border-gray-800">
+          <p className="text-sm text-gray-400">Total Overdue</p>
+          <h2 className="text-2xl font-bold text-red-500 mt-2">
+            {formatCurrency(stats.totalOverdueAmount)}
+          </h2>
+        </div>
 
       </div>
 
-      {
-        addAgent && (
-          <AddAgent
-            close={() => { setAddAgent(false) }}
-            fetchDashboard={fetch}
-          />
-        )
-      }
+      {/* QUICK STATS */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+
+        <div className="bg-gray-900 p-4 rounded-2xl flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-400">Clients</p>
+            <h2 className="text-xl font-bold">{stats.totalClients}</h2>
+          </div>
+          <IoIosPersonAdd className="text-green-400 text-2xl" />
+        </div>
+
+        <div className="bg-gray-900 p-4 rounded-2xl">
+          <p className="text-sm text-gray-400">Agents</p>
+          <h2 className="text-xl font-bold text-indigo-400">
+            {stats.totalAgents}
+          </h2>
+        </div>
+
+        <div className="bg-gray-900 p-4 rounded-2xl flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-400">Disbursed</p>
+            <h2 className="text-xl font-bold">{stats.loansDisbursed}</h2>
+          </div>
+          <FcApproval className="text-xl" />
+        </div>
+
+        <div className="bg-gray-900 p-4 rounded-2xl flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-400">Pending</p>
+            <h2 className="text-xl font-bold text-yellow-400">
+              {stats.loansPending}
+            </h2>
+          </div>
+          <FaHistory className="text-yellow-400" />
+        </div>
+
+      </div>
+
+      {/* AGENTS TABLE */}
+      <div className="mt-8 bg-gray-900 rounded-2xl border border-gray-800 p-4">
+
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold text-lg">Agent Performance</h3>
+
+          <button
+            onClick={() => setAddAgent(true)}
+            className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-xl text-sm"
+          >
+            <IoAdd />
+            Add Agent
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+
+          <table className="w-full text-sm">
+
+            <thead className="text-gray-400 border-b border-gray-800">
+              <tr>
+                <th className="text-left py-2">Agent</th>
+                <th>Total Loans</th>
+                <th>Amount Issued</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              {stats?.agentStats?.length ? (
+                stats.agentStats.slice(0, 5).map((agent) => (
+                  <tr key={agent.agentId} className="border-b border-gray-800">
+                    <td className="py-3">{agent.name}</td>
+                    <td className="text-center">{agent.totalLoans}</td>
+                    <td className="text-green-400 font-semibold text-center">
+                      {formatCurrency(agent.totalAmountIssued)}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" className="text-center py-6 text-gray-500">
+                    No agent data found
+                  </td>
+                </tr>
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => navigate("/adminStats/allAgents")}
+            className="bg-white text-black px-4 py-2 rounded-xl text-sm"
+          >
+            View All Agents
+          </button>
+        </div>
+
+      </div>
+
+      {/* MODAL */}
+      {addAgent && (
+        <AddAgent
+          close={() => setAddAgent(false)}
+          fetchDashboard={fetchStats}
+        />
+      )}
 
     </section>
   )

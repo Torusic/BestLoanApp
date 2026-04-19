@@ -93,13 +93,13 @@ function ApplyLoan() {
   const durationPercent = ((apply.durationWeeks - 4) / (24 - 4)) * 100
 
   return (
-    <section className="flex items-center justify-center bg-gray-800 rounded-2xl p-4">
+    <section className="flex items-center justify-center bg-gray-950 rounded-2xl p-4">
 
       {loading ? (
         <ApplyLoanSkeleton />
       ) : (
 
-        <div className="bg-gray-800 w-full h-ful max-w-lg md:max-w-5xl lg:max-w-7xl p-4 text-white rounded-2xl flex flex-col items-center space-y-6">
+        <div className="bg-gray-950 w-full h-ful max-w-lg md:max-w-5xl lg:max-w-7xl p-4 text-white rounded-2xl flex flex-col items-center space-y-6">
 
           <p className="text-lg md:text-xl lg:text-2xl text-gray-400 font-medium text-center">
             Enter Loan Amount

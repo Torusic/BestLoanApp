@@ -8,7 +8,7 @@ import ActiveLoan from './ActiveLoan'
 function ClientDashboard() {
 
   return (
-    <section className="h-full flex justify-center p-3 bg-gray-950">
+    <section className="  flex justify-center p-3 bg-gray-950">
 
       <div className="w-full max-w-6xl space-y-4">
 
@@ -73,12 +73,9 @@ function ClientDashboard() {
         </div>
 
         {/* ACTIVE LOAN SECTION */}
-        <div className="bg-gray-900 rounded-2xl p-4 shadow-lg">
+        <div className="bg-gray-900 rounded-2xl p-3 shadow-lg">
 
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-white font-semibold">Active Loan</h2>
-            <span className="text-xs text-gray-400">Live status</span>
-          </div>
+         
 
           <ActiveLoan />
 
