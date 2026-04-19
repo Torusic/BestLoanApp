@@ -15,10 +15,12 @@ export async function applyLoanOnline(req, res) {
             return res.status(400).json({ message: "Invalid duration" });
         }
 
-        const loanActive = await LoanModel.findOne({
-            user: clientId,
-            status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
-        });
+       const loanActive = await LoanModel.findOne({
+    user: clientId,
+    status: { 
+        $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] 
+    }
+});
 
         if (loanActive) {
             return res.status(400).json({ message: "Active loan exists" });
