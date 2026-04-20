@@ -124,7 +124,7 @@ function VerifyRepayment() {
                   <p className="text-gray-400">{item.user?.phone}</p>
                 </div>
 
-                <span className={`text-xs p-1 flex items-center justify-center rounded ${
+                <span className={`text-xs px-3 py-1 flex items-center justify-center rounded ${
                   item.status === "pending"
                     ? "bg-yellow-500"
                     : item.status === "verified"
