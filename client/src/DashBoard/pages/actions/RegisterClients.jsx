@@ -126,7 +126,7 @@ export default function RegisterClients({ onClose }) {
               name="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="Full Name"
+              placeholder="Enter Email"
               className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.name && (
