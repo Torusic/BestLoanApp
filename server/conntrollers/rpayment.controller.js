@@ -123,9 +123,10 @@ export async function verifyRepayment(req, res) {
       if (loan.balance <= 0) {
         loan.balance = 0;
         loan.repaymentStatus = "completed";
-         loan.status = "completed"
-      } else {
+        loan.status = "repaid";
+      } else if (loan.amountPaid > 0) {
         loan.repaymentStatus = "paying";
+        loan.status = "disbursed"; // still active
       }
       
 

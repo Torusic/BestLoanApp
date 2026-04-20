@@ -73,6 +73,8 @@ function Loan() {
         return "bg-green-500/20 text-green-400";
       case "disbursed":
         return "bg-blue-500/20 text-blue-400";
+      case "repaid":
+       return "bg-emerald-500/20 text-emerald-400"; 
       default:
         return "bg-red-500/20 text-red-400";
     }

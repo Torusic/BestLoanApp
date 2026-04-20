@@ -18,7 +18,7 @@ export async function applyLoanOnline(req, res) {
        const loanActive = await LoanModel.findOne({
     user: clientId,
     status: { 
-        $in: ["awaiting_fee", "pending_approval", "approved"] 
+        $in: ["awaiting_fee", "pending_approval", "approved","disbursed"] 
     }
 });
 

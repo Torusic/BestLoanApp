@@ -9,17 +9,17 @@ function VerifyRepayment() {
   const [repayments, setRepayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
-  const [filter, setFilter] = useState("pending");
+  const [filter, setFilter] = useState("all");
   const[approve,setApprove]=useState(false)
   // 🔄 Fetch repayments
   const fetchRepayments = async () => {
     try {
       setLoading(true);
 
-      const response = await Axios({
-        ...SummaryApi.getAllRepayments,
-        params: { status: filter }
-      });
+     const response = await Axios({
+      ...SummaryApi.getAllRepayments,
+      params: filter === "all" ? {} : { status: filter }
+    });
 
       if (response.data.success) {
         setRepayments(response.data.data);
@@ -79,15 +79,23 @@ function VerifyRepayment() {
         <h2 className="text-lg font-bold">Repayment Verification</h2>
 
         {/* FILTER */}
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="bg-gray-800 border border-gray-700 p-2 rounded-lg text-sm"
-        >
-          <option value="pending">Pending</option>
-          <option value="verified">Verified</option>
-          <option value="rejected">Rejected</option>
-        </select>
+      <div className="flex gap-2 overflow-x-auto">
+
+        {["all", "pending", "verified", "rejected"].map((type) => (
+          <button
+            key={type}
+            onClick={() => setFilter(type)}
+            className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition ${
+              filter === type
+                ? "bg-green-500 text-white"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+            }`}
+          >
+            {type.replace("_", " ")}
+          </button>
+        ))}
+
+      </div>
       </div>
 
       {/* CONTENT */}

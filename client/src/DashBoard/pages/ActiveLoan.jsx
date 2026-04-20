@@ -23,6 +23,8 @@ const statusMeta = (status) => {
       return { color: "text-blue-400", bg: "bg-blue-500/10" };
     case "rejected":
       return { color: "text-red-400", bg: "bg-red-500/10" };
+    case "repaid":
+      return { color: "text-emerald-400", bg: "bg-emerald-500/10" };
     default:
       return { color: "text-gray-400", bg: "bg-gray-500/10" };
   }

@@ -52,6 +52,7 @@ const loanSchema = new mongoose.Schema(
         "pending_approval",
         "approved",
         "disbursed",
+        "repaid",
         "rejected"
       ],
       default: "awaiting_fee"

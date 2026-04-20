@@ -3,7 +3,7 @@ import SummaryApi from '../../common/SummaryApi'
 import Axios from '../../utils/Axios'
 import AxiosToastError from '../../utils/AxiosToastError'
 import toast from 'react-hot-toast'
-import { MdAttachMoney } from 'react-icons/md'
+import { MdAttachMoney, MdCelebration } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import ProcessingFee from '../ProcessingFee'
 import RepaymentModal from './RepaymentModal'
@@ -67,6 +67,7 @@ function MyLoan() {
       case "approved": return "bg-green-500/10 text-green-400 border-green-500/20"
       case "disbursed": return "bg-blue-500/10 text-blue-400 border-blue-500/20"
       case "rejected": return "bg-red-500/10 text-red-400 border-red-500/20"
+      case "repaid":  return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
       default: return "bg-gray-500/10 text-gray-400 border-gray-500/20"
     }
   }
@@ -200,6 +201,11 @@ function MyLoan() {
               Pay Loan ({formatCurrency(active.balance)})
             </button>
           )}
+          {active.status === "repaid" && (
+          <div className="bg-green-500/10 text-green-400 p-4 rounded-xl text-center">
+            <MdCelebration size={15} /> Loan fully repaid. You can now apply for a new loan.
+          </div>
+        )}
 
         </div>
       )}
