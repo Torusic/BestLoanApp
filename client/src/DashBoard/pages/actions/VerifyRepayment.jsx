@@ -75,10 +75,12 @@ function VerifyRepayment() {
     <section className="p-4 max-w-6xl mx-auto text-white">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-bold">Repayment Verification</h2>
 
         {/* FILTER */}
+      
+      </div> 
       <div className="flex gap-2 overflow-x-auto">
 
         {["all", "pending", "verified", "rejected"].map((type) => (
@@ -95,7 +97,6 @@ function VerifyRepayment() {
           </button>
         ))}
 
-      </div>
       </div>
 
       {/* CONTENT */}
