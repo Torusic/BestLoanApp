@@ -81,7 +81,7 @@ function VerifyRepayment() {
         {/* FILTER */}
       
       </div> 
-      <div className="flex gap-2 overflow-x-auto">
+      <div className="flex gap-2 mt-2 overflow-x-auto">
 
         {["all", "pending", "verified", "rejected"].map((type) => (
           <button
@@ -124,7 +124,7 @@ function VerifyRepayment() {
                   <p className="text-gray-400">{item.user?.phone}</p>
                 </div>
 
-                <span className={`text-xs px-2 py-1 rounded ${
+                <span className={`text-xs p-2 flex items-center justify-center rounded ${
                   item.status === "pending"
                     ? "bg-yellow-500"
                     : item.status === "verified"
