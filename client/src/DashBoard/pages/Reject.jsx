@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
+import Axios from '../../utils/Axios';
+import SummaryApi from '../../common/SummaryApi';
+import toast from 'react-hot-toast';
 
-function Reject() {
+function Reject({ loan, close, refresh }) {
   const [loading, setLoading] = useState(false);
 
   const handleReject = async () => {
