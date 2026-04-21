@@ -12,6 +12,12 @@ export async function submitRepayment(req, res) {
         message: "All fields required"
       });
     }
+     if (await isMpesaCodeUsed(mpesaCode)) {
+      return res.status(400).json({
+        success: false,
+        message: "MPESA code already used"
+      });
+    }
 
     const loan = await LoanModel.findById(loanId);
 

@@ -1,6 +1,7 @@
 import LoanModel from "../models/loan.model.js";
 import UserModel from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
+import { isMpesaCodeUsed } from "../utils/isMpesaCodeUsed.js";
 
 export async function applyLoanOnline(req, res) {
     try {
@@ -72,7 +73,12 @@ export async function applyLoanViaAgent(req, res) {
 
         if (loanActive) {
             return res.status(400).json({ message: "Active loan exists" });
-        }
+        }if (mpesaCode && await isMpesaCodeUsed(mpesaCode)) {
+  return res.status(400).json({
+    message: "MPESA code already used"
+  });
+}
+
 
         const loan = await LoanModel.create({
             user: client._id,
@@ -108,7 +114,11 @@ export async function submitProcessingFeeManually(req, res) {
 
         if (!loan) {
             return res.status(400).json({ message: "No loan awaiting fee" });
-        }
+        } if (await isMpesaCodeUsed(mpesaCode)) {
+      return res.status(400).json({
+        message: "MPESA code already used"
+      });
+    }
 
         const existing = await LoanModel.findOne({ mpesaCode });
 

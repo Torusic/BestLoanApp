@@ -15,7 +15,7 @@ const statusStyles = {
   overdue: "bg-red-100 text-red-700",
   fully_repaid: "bg-green-100 text-green-700",
   processing: "bg-gray-100 text-gray-700",
-  rejected: "bg-red-200 text-red-800", // ✅ ADD THIS
+  rejected: "bg-red-200 text-red-800",
 };
 
 const statusIcons = {
@@ -23,9 +23,17 @@ const statusIcons = {
   overdue: <FaExclamationTriangle />,
   fully_repaid: <FaCheckCircle />,
   processing: <FaClock />,
-  rejected: <FaExclamationTriangle />, // ✅ ADD THIS
+  rejected: <FaExclamationTriangle />,
 };
 
+// ✅ ADD HERE
+const statusLabels = {
+  active: "Active",
+  overdue: "Overdue",
+  fully_repaid: "Repaid",
+  processing: "Processing",
+  rejected: "Rejected",
+};
 const SkeletonCard = () => (
   <div className="bg-gray-900 rounded-2xl p-4 animate-pulse border border-gray-800">
     <div className="h-5 w-40 bg-gray-700 rounded mb-3"></div>
@@ -123,7 +131,7 @@ export default function LoanHistoryCards() {
 
       {/* FILTERS */}
       <div className="flex gap-2 overflow-x-auto mb-5">
-        {["all", "active", "overdue", "fully_repaid", "processing"].map(
+        {["all", "active", "overdue", "fully_repaid", "processing","rejected"].map(
           (type) => (
             <button
               key={type}
@@ -176,7 +184,7 @@ export default function LoanHistoryCards() {
                   }`}
                 >
                   {statusIcons[loan.loanType]}
-                  <span>{loan.loanType}</span>
+                  <span>{statusLabels[loan.loanType]}</span>
                 </div>
 
               </div>
