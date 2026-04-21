@@ -1,135 +1,164 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import AxiosToastError from '../utils/AxiosToastError'
-import Axios from '../utils/Axios'
-import SummaryApi from '../common/SummaryApi'
-import toast from 'react-hot-toast'
-import { LuLoaderCircle } from 'react-icons/lu'
-import { FaEye, FaEyeSlash } from 'react-icons/fa'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AxiosToastError from "../utils/AxiosToastError";
+import Axios from "../utils/Axios";
+import SummaryApi from "../common/SummaryApi";
+import toast from "react-hot-toast";
+import { LuLoaderCircle } from "react-icons/lu";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
-    const navigate=useNavigate()
-    const[loading,setLoading]=useState(false)
-    const[showPassword,setShowPassword]=useState(false)
-    const[data,setData]=useState({
-        phone:"",
-        password:""
-    })
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [data, setData] = useState({
+    phone: "",
+    password: "",
+  });
 
-    const handleSubmit=async(e)=>{
-        e.preventDefault(e)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        try {
-            setLoading(true)
+    try {
+      setLoading(true);
 
-            const response=await Axios({
-                ...SummaryApi.login,
-                data:data
-                
-            })
-            if(response.data.success){
-                toast.success(response.data.message);
-                setData({
-                    phone:'',
-                    password:''
-                })
-                const role = response.data.data?.role; // adjust path based on API
-                console.log("Role from API:", role);
-                localStorage.setItem('role', role);
+      const response = await Axios({
+        ...SummaryApi.login,
+        data: data,
+      });
 
-                    // Role-based navigation
-                    if (role === 'admin') {
-                        navigate('/adminStats/adminDashboard');
-                    } else if (role === 'client') {
-                        navigate('/clientStats/clientDashboard');
-                    } else if (role === 'agent') {
-                        navigate('/clientStats/agentDashboard');
-                    } else {
-                        navigate('/'); // fallback route
-                    }
-                    
+      if (response.data.success) {
+        toast.success(response.data.message);
 
-                    } else {
-                        toast.error(response.data.message);
-                    }
-            
+        setData({
+          phone: "",
+          password: "",
+        });
 
-            
-        } catch (error) {
-            AxiosToastError(error)
+        const role = response.data.data?.role;
+        localStorage.setItem("role", role);
+
+        if (role === "admin") {
+          navigate("/adminStats/adminDashboard");
+        } else if (role === "client") {
+          navigate("/clientStats/clientDashboard");
+        } else if (role === "agent") {
+          navigate("/clientStats/agentDashboard");
+        } else {
+          navigate("/");
         }
-        finally{
-            setLoading(false)
-        }
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    } finally {
+      setLoading(false);
     }
-const handleChange = (e) => {
-        const { name, value } = e.target
-        setData(prev => 
-            ({
-                 ...prev, [name]: value 
-                })
-            )
-    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
-    <section className='  flex items-center justify-center bg-gray-900 px-7 py-40'>
-        <div className='max-w-md w-full items-center  bg-gray-800  shadow-xl p-3 rounded-xl'>
-        <div className='grid items-center  gap-2 p-2'>
-            <p className='text-sm font-semibold text-green-400'>Login</p>
+    <section className="min-h-screen flex items-center justify-center bg-[#0f172a] px-6">
+      <div className="w-full max-w-md">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 space-y-6">
 
-            <form className='text-white' action="" onSubmit={handleSubmit}>
-              <div className='grid items-center mt-4 gap-4 p-2'>
-                <div className='grid lg:text-sm text-xs gap-2'>
-                    <label htmlFor="">Phone:</label>
-                    <input type="text"
-                    id='phone'
-                    name='phone'
-                    onChange={handleChange}
-                    value={data.phone}
-                     placeholder='Enter name' 
-                     className='bg-gray-100 p-2  text-gray-800 outline-none rounded-lg hover:border hover:border-green-300' />
+          <div className="text-center space-y-1">
+            <h1 className="text-2xl font-semibold text-white tracking-tight">
+              Welcome back
+            </h1>
+            <p className="text-sm text-gray-400">
+              Enter your details to continue
+            </p>
+          </div>
 
-                </div>
-                <div className='grid lg:text-sm text-xs gap-2'>
-                    <label htmlFor="">Password:</label>
+          <form onSubmit={handleSubmit} className="space-y-5">
 
-                    <div className='bg-gray-100 flex items-center px-2 outline-none rounded-lg hover:border hover:border-green-300'>
-                    <input
-                     type={showPassword ?"text":"password" }
-                    id='password'
-                    name='password'
-                    value={data.password}
-                    onChange={handleChange}
-                     placeholder='Enter password' 
-                     className=' p-2 outline-none text-gray-800 rounded-lg w-full' />
+            <div className="space-y-2">
+              <label className="text-xs text-gray-400">Phone</label>
+              <input
+                type="text"
+                name="phone"
+                value={data.phone}
+                onChange={handleChange}
+                placeholder="e.g. 0712345678"
+                className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-400 focus:scale-[1.01] transition-all"
+              />
+            </div>
 
-                     <span onClick={() => setShowPassword(prev => !prev)} className="cursor-pointer text-gray-500">
-                       {showPassword ? <FaEye /> : <FaEyeSlash />}
-                      </span>
-
-                    </div>
-                </div>
-
+            <div className="space-y-2">
+              <label className="text-xs text-gray-400">Password</label>
+              <div className="flex items-center px-3 rounded-lg bg-white/90 focus-within:ring-2 focus-within:ring-green-400 transition-all">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={data.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none placeholder-gray-400"
+                />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </span>
               </div>
-              
-              <div className='w-fit ml-auto my-4 mx-2'>
-                <p className='text-xs lg:text-sm text-gray-500 cursor-pointer'>forgot password ?</p>
-              </div>
+            </div>
 
-              <div className='bg-gradient-to-r from-green-400 flex items-center justify-center to-green-500 rounded-lg  p-2 my-3'>
-                <button className='text-white font-semibold  '>{loading ? <LuLoaderCircle size={20} className='animate-spin '/> : "Login"}</button>
-              </div>
+            <div className="flex justify-between items-center text-xs">
+              <label className="flex items-center gap-2 text-gray-400 cursor-pointer">
+                <input type="checkbox" className="accent-green-500" />
+                Remember me
+              </label>
+              <span className="text-gray-400 hover:text-green-400 cursor-pointer transition">
+                Forgot password?
+              </span>
+            </div>
 
-              <div className='my-4 mx-2 flex'>
-                <p className='text-xs lg:text-sm text-gray-500'>Don't have an account ?<Link className=' underline px-2 text-green-400' to={'/register'}>Register</Link></p>
-              </div>
+            <button
+              type="submit"
+              disabled={loading || !data.phone || !data.password}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <LuLoaderCircle className="animate-spin" size={18} />
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
+            </button>
 
-            </form>
+            <div className="relative flex items-center">
+              <div className="flex-grow border-t border-gray-700"></div>
+              <span className="mx-3 text-xs text-gray-500">or</span>
+              <div className="flex-grow border-t border-gray-700"></div>
+            </div>
+
+            <div className="text-center text-sm text-gray-400">
+              Don’t have an account?
+              <Link
+                to="/register"
+                className="ml-1 text-green-400 hover:underline"
+              >
+                Create one
+              </Link>
+            </div>
+
+          </form>
         </div>
-        </div>
-
+      </div>
     </section>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

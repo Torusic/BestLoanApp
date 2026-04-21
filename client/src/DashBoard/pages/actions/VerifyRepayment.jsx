@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Clock, User, Wallet, Hash } from "lucide-react";
 import SummaryApi from "../../../common/SummaryApi";
 import Axios from "../../../utils/Axios";
 import AxiosToastError from "../../../utils/AxiosToastError";
@@ -10,23 +10,21 @@ function VerifyRepayment() {
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
   const [filter, setFilter] = useState("all");
-  const[approve,setApprove]=useState(false)
-  // 🔄 Fetch repayments
+
   const fetchRepayments = async () => {
     try {
       setLoading(true);
 
-     const response = await Axios({
-      ...SummaryApi.getAllRepayments,
-      params: filter === "all" ? {} : { status: filter }
-    });
+      const response = await Axios({
+        ...SummaryApi.getAllRepayments,
+        params: filter === "all" ? {} : { status: filter },
+      });
 
       if (response.data.success) {
         setRepayments(response.data.data);
       } else {
         toast.error(response.data.message);
       }
-
     } catch (error) {
       AxiosToastError(error);
     } finally {
@@ -38,7 +36,6 @@ function VerifyRepayment() {
     fetchRepayments();
   }, [filter]);
 
-  // ✅ Approve / Reject
   const handleAction = async (id, action) => {
     try {
       setActionLoading(id);
@@ -47,8 +44,8 @@ function VerifyRepayment() {
         ...SummaryApi.verifyRepayment,
         data: {
           repaymentId: id,
-          action
-        }
+          action,
+        },
       });
 
       if (response.data.success) {
@@ -57,7 +54,6 @@ function VerifyRepayment() {
       } else {
         toast.error(response.data.message);
       }
-
     } catch (error) {
       AxiosToastError(error);
     } finally {
@@ -68,21 +64,44 @@ function VerifyRepayment() {
   const formatCurrency = (num) =>
     new Intl.NumberFormat("en-KE", {
       style: "currency",
-      currency: "KES"
+      currency: "KES",
     }).format(num || 0);
+
+  const statusUI = (status) => {
+    switch (status) {
+      case "pending":
+        return (
+          <span className="flex items-center gap-1 text-xs px-3 py-1 rounded bg-yellow-500 text-black">
+            <Clock size={14} /> Pending
+          </span>
+        );
+      case "verified":
+        return (
+          <span className="flex items-center gap-1 text-xs px-3 py-1 rounded bg-green-500 text-white">
+            <CheckCircle size={14} /> Verified
+          </span>
+        );
+      case "rejected":
+        return (
+          <span className="flex items-center gap-1 text-xs px-3 py-1 rounded bg-red-500 text-white">
+            <XCircle size={14} /> Rejected
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <section className="p-4 max-w-6xl mx-auto text-white">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-bold">Repayment Verification</h2>
+      </div>
 
-        {/* FILTER */}
-      
-      </div> 
-      <div className="flex gap-2 mt-2 overflow-x-auto mb-2">
-
+      {/* FILTER */}
+      <div className="flex gap-2 mt-2 overflow-x-auto mb-4">
         {["all", "pending", "verified", "rejected"].map((type) => (
           <button
             key={type}
@@ -93,10 +112,9 @@ function VerifyRepayment() {
                 : "bg-gray-800 text-gray-300 hover:bg-gray-700"
             }`}
           >
-            {type.replace("_", " ")}
+            {type}
           </button>
         ))}
-
       </div>
 
       {/* CONTENT */}
@@ -118,52 +136,50 @@ function VerifyRepayment() {
             >
 
               {/* USER */}
-              <div className="flex justify-between text-sm">
-                <div>
-                  <p className="font-semibold">{item.user?.name}</p>
+              <div className="flex justify-between items-start text-sm">
+                <div className="space-y-1">
+                  <p className="flex items-center gap-2 font-semibold">
+                    <User size={16} /> {item.user?.name}
+                  </p>
                   <p className="text-gray-400">{item.user?.phone}</p>
                 </div>
 
-                <span className={`text-xs px-3 py-1 flex items-center justify-center rounded ${
-                  item.status === "pending"
-                    ? "bg-yellow-500"
-                    : item.status === "verified"
-                    ? "bg-green-500"
-                    : "bg-red-500"
-                }`}>
-                  {item.status}
-                </span>
+                {statusUI(item.status)}
               </div>
 
               {/* DETAILS */}
               <div className="grid grid-cols-2 gap-2 text-sm">
 
-                <p>
-                  Amount:
-                  <span className="ml-1 font-semibold">
-                    {formatCurrency(item.amount)}
+                <p className="flex items-center gap-2">
+                  <Wallet size={14} />
+                  <span>
+                    Amount:{" "}
+                    <span className="font-semibold">
+                      {formatCurrency(item.amount)}
+                    </span>
                   </span>
                 </p>
 
-                <p>
-                  Balance:
-                  <span className="ml-1 font-semibold">
-                    {formatCurrency(item.loan?.balance)}
+                <p className="flex items-center gap-2">
+                  <Wallet size={14} />
+                  <span>
+                    Balance:{" "}
+                    <span className="font-semibold">
+                      {formatCurrency(item.loan?.balance)}
+                    </span>
                   </span>
                 </p>
 
-                <p>
-                  M-Pesa Code:
-                  <span className="ml-1 font-mono text-green-400">
+                <p className="flex items-center gap-2">
+                  <Hash size={14} />
+                  <span className="text-green-400 font-mono">
                     {item.mpesaCode}
                   </span>
                 </p>
 
-                <p>
-                  Account:
-                  <span className="ml-1">
-                    {item.accountNumber}
-                  </span>
+                <p className="flex items-center gap-2">
+                  <Hash size={14} />
+                  <span>{item.accountNumber}</span>
                 </p>
 
               </div>
@@ -175,19 +191,18 @@ function VerifyRepayment() {
                   <button
                     onClick={() => handleAction(item._id, "approve")}
                     disabled={actionLoading === item._id}
-                    className="w-full bg-green-600 hover:bg-green-500 py-2 rounded-xl text-sm flex justify-center items-center gap-2"
+                    className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 py-2 rounded-xl text-sm"
                   >
-                    {actionLoading === item._id && (
-                      <Loader2 className="animate-spin" size={14} />
-                    )}
+                    <CheckCircle size={16} />
                     Approve
                   </button>
 
                   <button
                     onClick={() => handleAction(item._id, "reject")}
                     disabled={actionLoading === item._id}
-                    className="w-full bg-red-600 hover:bg-red-500 py-2 rounded-xl text-sm"
+                    className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 py-2 rounded-xl text-sm"
                   >
+                    <XCircle size={16} />
                     Reject
                   </button>
 

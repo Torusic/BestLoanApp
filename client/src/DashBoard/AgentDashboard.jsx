@@ -3,19 +3,39 @@ import { motion } from "framer-motion";
 import Axios from "../utils/Axios.js";
 import SummaryApi from "../common/SummaryApi.js";
 import AxiosToastError from "../utils/AxiosToastError.js";
+
 import RegisterClients from "./pages/actions/RegisterClients.jsx";
 import SubmitLoan from "./pages/actions/SubmitLoan.jsx";
+
+// ICONS
+import {
+  MdPeople,
+  MdAttachMoney,
+  MdPendingActions,
+  MdCheckCircle,
+  MdTrendingUp,
+  MdWarning,
+  MdInfo,
+  MdAddCircle,
+  MdSend,
+  MdNotificationsActive,
+  MdHistory,
+  MdRefresh,
+} from "react-icons/md";
 
 function AgentDashboard() {
   const [stats, setStats] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [cons, setCons] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
   const [registerClient, setRegisterClient] = useState(false);
-const [submitLoan, setSubmitLoan] = useState(false);
+  const [submitLoan, setSubmitLoan] = useState(false);
+
   const agentDashboard = async () => {
     try {
       setError(null);
@@ -26,9 +46,12 @@ const [submitLoan, setSubmitLoan] = useState(false);
       });
 
       if (response.data.success) {
-        setStats(response.data.data.stats);
-        setAlerts(response.data.data.alerts || []);
-        setActivities(response.data.data.recentActivities || []);
+        const data = response.data.data;
+
+        setStats(data.stats);
+        setAlerts(data.alerts || []);
+        setActivities(data.recentActivities || []);
+        setCons(data.cons || []);
       }
     } catch (err) {
       setError("Failed to load dashboard data");
@@ -42,158 +65,181 @@ const [submitLoan, setSubmitLoan] = useState(false);
   useEffect(() => {
     agentDashboard();
 
-    // optional live refresh every 60s (SaaS feel)
-    const interval = setInterval(() => {
-      agentDashboard();
-    }, 60000);
-
+    const interval = setInterval(agentDashboard, 60000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="h-full bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-white p-6">
-      {/* Header */}
-      <div className="flex justify-between items-start mb-6">
+    <div className="min-h-screen bg-gray-950 text-white p-6">
+
+      {/* HEADER */}
+      <div className="flex justify-between gap-2 mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Agent Smart Panel</h1>
+          <h1 className="text-3xl font-bold">Agent SaaS Panel</h1>
           <p className="text-gray-400 text-sm">
-            Assist clients with registration and loan processing
+            Manage clients & loans efficiently
           </p>
         </div>
 
-        <button
-          onClick={agentDashboard}
-          className="text-xs px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
-        >
-          {refreshing ? "Refreshing..." : "Refresh"}
-        </button>
+<button
+  onClick={agentDashboard}
+  disabled={refreshing}
+  className="text-xs px-3 py-1.5 flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 active:scale-95 transition rounded-lg disabled:opacity-60"
+>
+  <MdRefresh className={`${refreshing ? "animate-spin" : ""} text-sm`} />
+
+  <span>
+    {refreshing ? "Refreshing" : "Refresh"}
+  </span>
+</button>
       </div>
 
-      {/* Error state */}
+      {/* ERROR */}
       {error && (
-        <div className="bg-red-900/30 border border-red-700 p-3 rounded-lg mb-4">
+        <div className="bg-red-500/10 border border-red-500 p-3 rounded-lg mb-4 flex items-center gap-2">
+          <MdWarning className="text-red-400" />
           {error}
         </div>
       )}
 
-      {/* Stats */}
+      {/* STATS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {loading
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))
-          : stats && (
-              <>
-                <StatCard title="Clients Today" value={stats.clientsToday} />
-                <StatCard title="Loans Submitted" value={stats.loansToday} />
-                <StatCard title="Pending" value={stats.pending} />
-                <StatCard title="Completed" value={stats.successful} />
-              </>
-            )}
+
+        <StatCard icon={<MdPeople />} title="Clients Today" value={stats?.clientsToday} />
+        <StatCard icon={<MdAttachMoney />} title="Loans Today" value={stats?.loansToday} />
+        <StatCard icon={<MdPendingActions />} title="Pending" value={stats?.pending} />
+        <StatCard icon={<MdTrendingUp />} title="Completed" value={stats?.successful} />
+
       </div>
 
-      {/* Actions */}
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mb-8">
+      {/* ACTIONS */}
+      <div className="grid grid-cols-2 gap-4 mb-8">
+
         <ActionCard
+          icon={<MdAddCircle />}
           title="Register Client"
-          color="bg-blue-600"
+          color="bg-blue-600 text-xs lg:text-lg"
           onClick={() => setRegisterClient(true)}
         />
-        <ActionCard title="Submit Loan" color="bg-green-600"onClick={() => setSubmitLoan(true)} />
-       
+
+        <ActionCard
+          icon={<MdSend />}
+          title="Submit Loan"
+          color="bg-green-600 text-xs lg:text-lg"
+          onClick={() => setSubmitLoan(true)}
+        />
+
       </div>
 
-      {/* Alerts */}
-      <div className="bg-gray-900/60 border border-gray-800 p-4 rounded-xl mb-8">
-        <h2 className="mb-3 font-semibold">Guidance</h2>
+      {/* ALERTS */}
+      <Section title="Guidance Alerts" icon={<MdNotificationsActive />}>
+        {alerts.length ? (
+          alerts.map((a, i) => (
+            <div key={i} className="flex gap-2 text-sm text-gray-300 mb-2">
+              <MdInfo className="text-blue-400 mt-1" />
+              {a}
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">No alerts</p>
+        )}
+      </Section>
 
-        <ul className="space-y-2 text-sm text-gray-300">
-          {loading ? (
-            <p className="text-gray-500">Loading alerts...</p>
-          ) : alerts.length > 0 ? (
-            alerts.map((alert, i) => <li key={i}>⚡ {alert}</li>)
-          ) : (
-            <li className="text-gray-500">No alerts available</li>
-          )}
-        </ul>
-      </div>
+      {/* CONS */}
+      <Section title="System Risks" icon={<MdWarning />}>
+        {cons.length ? (
+          cons.map((c, i) => (
+            <div
+              key={i}
+              className="flex gap-2 text-sm text-red-300 bg-red-500/10 p-2 rounded mb-2"
+            >
+              <MdWarning className="text-red-400 mt-1" />
+              {c}
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">System stable</p>
+        )}
+      </Section>
 
-      {/* Activity */}
-      <div className="bg-gray-900/60 border border-gray-800 p-4 rounded-xl">
-        <h2 className="mb-4 font-semibold">Recent Actions</h2>
+      {/* ACTIVITY */}
+      <Section title="Recent Activity" icon={<MdHistory />}>
+        {activities.length ? (
+          activities.map((item, i) => (
+            <motion.div
+              key={i}
+              className="flex justify-between bg-gray-800 p-3 rounded-lg mb-2"
+            >
+              <div className="flex gap-2 text-sm">
+                <MdCheckCircle className="text-green-400 mt-1" />
+                {item.name} • {item.action}
+              </div>
 
-        <div className="space-y-3">
-          {loading ? (
-            <p className="text-gray-500">Loading activity...</p>
-          ) : activities.length > 0 ? (
-            activities.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex justify-between bg-gray-800 p-3 rounded-lg"
+              <span
+                className={`text-xs ${
+                  item.status === "Success"
+                    ? "text-green-400"
+                    : item.status === "Pending"
+                    ? "text-yellow-400"
+                    : "text-red-400"
+                }`}
               >
-                <p className="text-sm">
-                  {item.name} • {item.action}
-                </p>
+                {item.status}
+              </span>
+            </motion.div>
+          ))
+        ) : (
+          <p className="text-gray-500">No activity</p>
+        )}
+      </Section>
 
-                <span
-                  className={`text-sm font-medium ${
-                    item.status === "Success" || item.status === "Approved"
-                      ? "text-green-400"
-                      : item.status === "Pending"
-                      ? "text-yellow-400"
-                      : "text-red-400"
-                  }`}
-                >
-                  {item.status}
-                </span>
-              </motion.div>
-            ))
-          ) : (
-            <p className="text-gray-500">No activity yet</p>
-          )}
-        </div>
-      </div>
-
-      {/* Modal */}
+      {/* MODALS */}
       {registerClient && (
         <RegisterClients onClose={() => setRegisterClient(false)} />
       )}
-      {
-        submitLoan&&(
-          <SubmitLoan onClose={() => setSubmitLoan(false)}/>
-        )
-      }
+
+      {submitLoan && (
+        <SubmitLoan onClose={() => setSubmitLoan(false)} />
+      )}
     </div>
   );
 }
 
-/* -------------------- Components -------------------- */
+/* ---------------- COMPONENTS ---------------- */
 
-function StatCard({ title, value }) {
+function StatCard({ icon, title, value }) {
   return (
-    <div className="bg-gray-900/60 border border-gray-800 p-4 rounded-xl text-center">
-      <p className="text-gray-400 text-xs">{title}</p>
-      <h2 className="text-2xl font-bold mt-1">{value ?? 0}</h2>
+    <div className="bg-gray-900 p-4 rounded-xl border border-gray-800 text-center">
+      <div className="flex justify-center text-2xl text-blue-400 mb-1">
+        {icon}
+      </div>
+      <p className="text-xs text-gray-400">{title}</p>
+      <h2 className="text-xl font-bold">{value ?? 0}</h2>
     </div>
   );
 }
 
-function SkeletonCard() {
-  return (
-    <div className="bg-gray-800 animate-pulse p-4 rounded-xl h-20" />
-  );
-}
-
-function ActionCard({ title, color, onClick }) {
+function ActionCard({ icon, title, color, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`${color} p-6 rounded-xl text-sm font-semibold hover:opacity-90 active:scale-95 transition-all`}
+      className={`${color} p-5 rounded-xl flex items-center justify-center gap-2 font-semibold hover:opacity-90`}
     >
+      {icon}
       {title}
     </button>
+  );
+}
+
+function Section({ title, icon, children }) {
+  return (
+    <div className="bg-gray-900/60 border border-gray-800 p-4 rounded-xl mb-6">
+      <h2 className="font-semibold mb-3 flex items-center gap-2">
+        {icon}
+        {title}
+      </h2>
+      {children}
+    </div>
   );
 }
 

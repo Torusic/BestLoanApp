@@ -14,6 +14,8 @@ import MyLoan from "../DashBoard/pages/MyLoan.jsx";
 import History from "../DashBoard/pages/History.jsx";
 import AgentDashboard from "../DashBoard/AgentDashboard.jsx";
 import VerifyRepayment from "../DashBoard/pages/actions/VerifyRepayment.jsx";
+import Settings from "../DashBoard/pages/Settings.jsx";
+
 
 const router=createBrowserRouter([
     {
@@ -50,6 +52,11 @@ const router=createBrowserRouter([
                 index:true,
                 path:'repayments',
                 element:<VerifyRepayment/>
+            },
+            {
+                index:true,
+                path:'settings',
+                element:<Settings/>
             }
         ]
         },
@@ -79,7 +86,12 @@ const router=createBrowserRouter([
             path:"history",
             element:<History/>
 
-        }
+        },
+          {
+                index:true,
+                path:'settings',
+                element:<Settings/>
+            }
         ]
         }
 

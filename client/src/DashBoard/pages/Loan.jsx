@@ -10,11 +10,14 @@ import Disburse from "./actions/Disburse";
 import Axios from "../../utils/Axios";
 import SummaryApi from "../../common/SummaryApi";
 import AxiosToastError from "../../utils/AxiosToastError";
+import Reject from "./actions/Reject.jsx";
+
 
 function Loan() {
   const [customer, setCustomer] = useState(false);
   const [approve, setApprove] = useState(false);
   const [disburse, setDisburse] = useState(false);
+  const[reject,setReject]=useState(false)
 
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -161,7 +164,7 @@ function Loan() {
                 </tr>
               ) : (
 
-                currentLoans.map((loan) => {
+                currentLoans.map((loan,index) => {
 
                   const isPending =
                     loan.status === "pending_approval" ||
@@ -172,7 +175,9 @@ function Loan() {
 
                   return (
                     <tr key={loan._id} className="hover:bg-gray-800/60 transition">
-
+                        <td className="px-4 py-4 font-medium">
+                        {index+1}
+                      </td>
                       <td className="px-4 py-4 font-medium">
                         {loan.user?.name}
                       </td>
@@ -209,33 +214,48 @@ function Loan() {
 
                       {/* ACTIONS */}
                       <td className="px-4 py-4">
-                        <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-2">
 
-                          {isPending && (
-                            <button
-                              onClick={() => {
-                                setSelectedLoan(loan);
-                                setApprove(true);
-                              }}
-                              className="px-3 py-1 text-xs bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600 hover:text-white"
-                            >
-                              Approve
-                            </button>
-                          )}
+  {/* APPROVE */}
+  {isPending && (
+    <button
+      onClick={() => {
+        setSelectedLoan(loan);
+        setApprove(true);
+      }}
+      className="px-3 py-1 text-xs bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600 hover:text-white"
+    >
+      Approve
+    </button>
+  )}
 
-                          {isApproved && !isDisbursed && (
-                            <button
-                              onClick={() => {
-                                setSelectedLoan(loan);
-                                setDisburse(true);
-                              }}
-                              className="px-3 py-1 text-xs bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white"
-                            >
-                              Disburse
-                            </button>
-                          )}
+          {/* REJECT */}
+          {isPending && (
+          <button
+            onClick={() => {
+              setSelectedLoan(loan);
+              setReject(true);
+            }}
+            className="px-3 py-1 text-xs bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600 hover:text-white"
+          >
+            Reject
+          </button>
+        )}
 
-                        </div>
+          {/* DISBURSE */}
+          {isApproved && !isDisbursed && (
+            <button
+              onClick={() => {
+                setSelectedLoan(loan);
+                setDisburse(true);
+              }}
+              className="px-3 py-1 text-xs bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white"
+            >
+              Disburse
+            </button>
+          )}
+
+        </div>
                       </td>
 
                     </tr>
@@ -313,6 +333,13 @@ function Loan() {
           fetch={fetchLoans}
         />
       )}
+      {reject && (
+  <Reject
+    loan={selectedLoan}
+    close={() => setReject(false)}
+    fetch={fetchLoans}
+  />
+)}
 
     </section>
   );

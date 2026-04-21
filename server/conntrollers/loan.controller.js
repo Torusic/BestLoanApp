@@ -159,28 +159,53 @@ export async function approveProcessingFee(req, res) {
     }
 }
 
-export async function rejectProcessingFee(req, res) {
-    try {
-        const { loanId } = req.body;
+export async function rejectLoan(req, res) {
+  try {
+    const { loanId } = req.body;
 
-        const loan = await LoanModel.findById(loanId);
-
-        if (!loan) {
-            return res.status(404).json({ message: "Loan not found" });
-        }
-
-        loan.feeStatus = "rejected";
-        loan.status = "rejected";
-        loan.isFeePaid = false;
-        loan.paymentVerified = false;
-
-        await loan.save();
-
-        return res.status(200).json({ success: true, data: loan });
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+    if (!loanId) {
+      return res.status(400).json({
+        success: false,
+        message: "Loan ID is required"
+      });
     }
+
+    const loan = await LoanModel.findById(loanId);
+
+    if (!loan) {
+      return res.status(404).json({
+        success: false,
+        message: "Loan not found"
+      });
+    }
+
+    // Prevent rejecting already processed loans
+    if (loan.status === "disbursed" || loan.status === "repaid") {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot reject a processed loan"
+      });
+    }
+
+    loan.status = "rejected";
+    loan.feeStatus = "rejected";
+    loan.isFeePaid = false;
+    loan.paymentVerified = false;
+
+    await loan.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Loan rejected successfully",
+      data: loan
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 }
 
 export async function approveLoan(req, res) {
@@ -248,7 +273,7 @@ export async function myLoan(req, res) {
     try {
         const loan = await LoanModel.findOne({
             user: req.userId,
-            status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
+            status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed","rejected"] }
         }).sort({ createdAt: -1 });
 
         if (!loan) {

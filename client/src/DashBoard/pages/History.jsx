@@ -3,12 +3,25 @@ import Axios from "../../utils/Axios";
 import SummaryApi from "../../common/SummaryApi";
 import AxiosToastError from "../../utils/AxiosToastError";
 import toast from "react-hot-toast";
+import { 
+  FaSpinner, 
+  FaCheckCircle, 
+  FaExclamationTriangle, 
+  FaClock 
+} from "react-icons/fa";
 
 const statusStyles = {
   active: "bg-blue-100 text-blue-700",
   overdue: "bg-red-100 text-red-700",
   fully_repaid: "bg-green-100 text-green-700",
   processing: "bg-gray-100 text-gray-700",
+};
+
+const statusIcons = {
+  active: <FaSpinner className="animate-spin" />,
+  overdue: <FaExclamationTriangle />,
+  fully_repaid: <FaCheckCircle />,
+  processing: <FaClock />,
 };
 
 const SkeletonCard = () => (
@@ -55,7 +68,6 @@ export default function LoanHistoryCards() {
             } else if (loan.isDisbursed && loan.balance > 0) {
               loanType = "active";
             }
-            toast.success(response.data.message);
 
             return {
               _id: loan._id,
@@ -71,6 +83,7 @@ export default function LoanHistoryCards() {
           });
 
           setLoans(formatted);
+          toast.success("Loans loaded");
         }
       } catch (error) {
         AxiosToastError(error);
@@ -106,10 +119,10 @@ export default function LoanHistoryCards() {
             <button
               key={type}
               onClick={() => setFilter(type)}
-              className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
+              className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition ${
                 filter === type
                   ? "bg-green-500 text-white"
-                  : "bg-gray-700 text-white"
+                  : "bg-gray-700 text-white hover:bg-gray-600"
               }`}
             >
               {type}
@@ -133,10 +146,12 @@ export default function LoanHistoryCards() {
           {filteredLoans.map((loan) => (
             <div
               key={loan._id}
-              className="bg-gray-900 rounded-2xl text-white p-4 border border-gray-800"
+              className="bg-gray-900 rounded-2xl text-white p-4 border border-gray-800 hover:scale-[1.01] transition"
             >
+
               {/* TOP */}
               <div className="flex justify-between items-center mb-3">
+
                 <div>
                   <h2 className="font-bold text-lg">
                     KSh {loan.amount.toLocaleString()}
@@ -146,19 +161,21 @@ export default function LoanHistoryCards() {
                   </p>
                 </div>
 
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                <div
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
                     statusStyles[loan.loanType]
                   }`}
                 >
-                  {loan.loanType}
-                </span>
+                  {statusIcons[loan.loanType]}
+                  <span>{loan.loanType}</span>
+                </div>
+
               </div>
 
               {/* PROGRESS */}
-              <div className="w-full bg-gray-700 h-2 rounded-full mb-3">
+              <div className="w-full bg-gray-700 h-2 rounded-full mb-3 overflow-hidden">
                 <div
-                  className="h-2 bg-green-500 rounded-full"
+                  className="h-2 bg-green-500 rounded-full transition-all duration-500"
                   style={{
                     width: `${
                       (loan.amountPaid / loan.amount) * 100 || 0
@@ -169,6 +186,7 @@ export default function LoanHistoryCards() {
 
               {/* STATS */}
               <div className="flex justify-between text-sm">
+
                 <div>
                   <p className="text-gray-400">Paid</p>
                   <p className="text-green-500 font-semibold">
@@ -187,6 +205,7 @@ export default function LoanHistoryCards() {
                   <p className="text-gray-400">Due</p>
                   <p>{loan.dueDate || "N/A"}</p>
                 </div>
+
               </div>
             </div>
           ))}
@@ -199,6 +218,7 @@ export default function LoanHistoryCards() {
           No loans found
         </div>
       )}
+
     </div>
   );
 }

@@ -1,29 +1,34 @@
-import React from 'react'
-import { FaRegClock } from 'react-icons/fa'
-import { GiSandsOfTime } from 'react-icons/gi'
-import { MdAttachMoney } from 'react-icons/md'
-import { Link } from 'react-router-dom'
-import ActiveLoan from './ActiveLoan'
+import React from "react";
+import { FaRegClock } from "react-icons/fa";
+import { GiSandsOfTime } from "react-icons/gi";
+import { MdAttachMoney, MdDashboard } from "react-icons/md";
+import { FiTrendingUp } from "react-icons/fi";
+import { HiOutlineDocumentText } from "react-icons/hi";
+import { Link } from "react-router-dom";
+import ActiveLoan from "./ActiveLoan";
 
 function ClientDashboard() {
-
   return (
-    <section className="  flex justify-center p-3 bg-gray-950">
+    <section className="flex justify-center p-3 bg-gray-950">
 
       <div className="w-full max-w-6xl space-y-4">
 
         {/* HEADER */}
         <div className="flex items-center justify-between bg-gray-900 p-4 rounded-2xl shadow-lg">
 
-          <div>
-            <h1 className="text-white text-lg font-bold">Dashboard</h1>
-            <p className="text-gray-400 text-sm">Loan overview & activity</p>
+          <div className="flex items-center gap-2">
+            <MdDashboard className="text-green-400" size={22} />
+            <div>
+              <h1 className="text-white text-lg font-bold">Dashboard</h1>
+              <p className="text-gray-400 text-sm">Loan overview & activity</p>
+            </div>
           </div>
 
           <Link
             to="/clientStats/apply"
-            className="bg-green-600 hover:bg-green-700 text-white text-xs px-5 py-2 rounded-xl"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-xs px-5 py-2 rounded-xl"
           >
+            <FiTrendingUp size={16} />
             Apply Loan
           </Link>
 
@@ -75,7 +80,10 @@ function ClientDashboard() {
         {/* ACTIVE LOAN SECTION */}
         <div className="bg-gray-900 rounded-2xl p-3 shadow-lg">
 
-         
+          <div className="flex items-center gap-2 mb-2 text-gray-300">
+            <HiOutlineDocumentText size={18} />
+            <span className="text-sm">Active Loan</span>
+          </div>
 
           <ActiveLoan />
 
@@ -84,7 +92,7 @@ function ClientDashboard() {
       </div>
 
     </section>
-  )
+  );
 }
 
-export default ClientDashboard
+export default ClientDashboard;

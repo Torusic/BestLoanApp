@@ -73,6 +73,12 @@ function Footer() {
         path: "/clientStats/history",
         roles: ["client", "agent"],
       },
+       {
+        name: "Settings",
+        icon: <IoSettings size={22} />,
+        path: "/adminStats/settings",
+        roles: ['agent','client'],
+      },
     ],
     []
   );

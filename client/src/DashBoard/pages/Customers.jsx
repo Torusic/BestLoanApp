@@ -163,6 +163,7 @@ return (
               {/* HEADER */}
               <thead className="bg-gray-900 text-gray-300 text-xs uppercase tracking-wider">
                 <tr>
+                  <th className="px-5 py-4 text-left">#</th>
                   <th className="px-5 py-4 text-left">Name</th>
                   <th className="px-5 py-4">Phone</th>
                   <th className="px-5 py-4">Email</th>
@@ -175,11 +176,14 @@ return (
               {/* BODY */}
               <tbody className="divide-y divide-gray-800">
 
-                {currentClients.map((client) => (
+                {currentClients.map((client,index) => (
                   <tr
                     key={client._id}
                     className="hover:bg-gray-800/60 transition"
                   >
+                    <td className="px-5 py-4 font-medium">
+                      {index+1}
+                    </td>
 
                     <td className="px-5 py-4 font-medium">
                       {client.name}

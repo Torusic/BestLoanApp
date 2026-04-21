@@ -291,3 +291,134 @@ export async function adminDashboardController(req, res) {
     });
   }
 }
+export async function updateProfileController(req, res) {
+  try {
+    const userId = req.userId; // from auth middleware
+    const { name, email, phone, nationalId } = req.body;
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        name,
+        email,
+        phone,
+        nationalId,
+      },
+      { new: true }
+    ).select("-password");
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      success: true,
+      error: false,
+      data: updatedUser,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+}
+export async function changePasswordController(req, res) {
+  try {
+    const userId = req.userId;
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+        error: true,
+      });
+    }
+
+    const isMatch = await bcryptjs.compare(currentPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: "Current password is incorrect",
+        success: false,
+        error: true,
+      });
+    }
+
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({
+      message: "Password updated successfully",
+      success: true,
+      error: false,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+}
+export async function toggleNotificationController(req, res) {
+  try {
+    const userId = req.userId;
+    const { notifications } = req.body;
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { notifications },
+      { new: true }
+    ).select("-password");
+
+    return res.status(200).json({
+      message: "Notification preference updated",
+      success: true,
+      error: false,
+      data: updatedUser,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+} 
+export async function getUserSettingsController(req, res) {
+  try {
+    const userId = req.userId;
+
+    const user = await UserModel.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+        error: true,
+      });
+    }
+
+    return res.status(200).json({
+      message: "User settings fetched",
+      success: true,
+      error: false,
+      data: user,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+}

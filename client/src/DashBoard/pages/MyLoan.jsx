@@ -3,24 +3,17 @@ import SummaryApi from '../../common/SummaryApi'
 import Axios from '../../utils/Axios'
 import AxiosToastError from '../../utils/AxiosToastError'
 import toast from 'react-hot-toast'
-import { MdAttachMoney, MdCelebration } from 'react-icons/md'
+import {
+  MdAttachMoney,
+  MdCelebration,
+  MdOutlinePendingActions,
+  MdCheckCircle,
+  MdError,
+  MdAccessTime
+} from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import ProcessingFee from '../ProcessingFee'
 import RepaymentModal from './RepaymentModal'
-
-const MyLoanSkeleton = () => {
-  return (
-    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 animate-pulse space-y-4">
-      <div className="h-5 w-40 bg-gray-700 rounded"></div>
-      <div className="h-24 bg-gray-700 rounded-xl"></div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="h-16 bg-gray-700 rounded-xl"></div>
-        <div className="h-16 bg-gray-700 rounded-xl"></div>
-      </div>
-      <div className="h-10 bg-gray-700 rounded-xl"></div>
-    </div>
-  )
-}
 
 function MyLoan() {
 
@@ -40,7 +33,7 @@ function MyLoan() {
       if (response.data.success) {
         setActive(response.data.data)
       } else {
-        toast.error(response.data.message || "No active loan")
+        setActive(null)
       }
 
     } catch (error) {
@@ -62,13 +55,25 @@ function MyLoan() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "awaiting_fee": return "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-      case "pending_approval": return "bg-orange-500/10 text-orange-400 border-orange-500/20"
-      case "approved": return "bg-green-500/10 text-green-400 border-green-500/20"
-      case "disbursed": return "bg-blue-500/10 text-blue-400 border-blue-500/20"
-      case "rejected": return "bg-red-500/10 text-red-400 border-red-500/20"
-      case "repaid":  return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-      default: return "bg-gray-500/10 text-gray-400 border-gray-500/20"
+      case "awaiting_fee": return "text-yellow-400"
+      case "pending_approval": return "text-orange-400"
+      case "approved": return "text-green-400"
+      case "disbursed": return "text-blue-400"
+      case "rejected": return "text-red-400"
+      case "repaid": return "text-emerald-400"
+      default: return "text-gray-400"
+    }
+  }
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "awaiting_fee": return <MdOutlinePendingActions />
+      case "pending_approval": return <MdAccessTime />
+      case "approved": return <MdCheckCircle />
+      case "disbursed": return <MdAttachMoney />
+      case "rejected": return <MdError />
+      case "repaid": return <MdCelebration />
+      default: return <MdOutlinePendingActions />
     }
   }
 
@@ -79,29 +84,77 @@ function MyLoan() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-semibold">My Loan Dashboard</h2>
-          <p className="text-xs text-gray-400">Overview of your active loan</p>
+          <p className="text-xs text-gray-400">Track your loan status</p>
         </div>
 
         <Link
           to="/clientStats/apply"
-          className="bg-gradient-to-r from-green-600 to-green-500 hover:opacity-90 text-xs px-5 py-2 rounded-xl shadow-md"
+          className="bg-green-600 hover:bg-green-500 px-5 py-2 rounded-xl text-xs"
         >
           Apply Loan
         </Link>
       </div>
 
-      {/* CONTENT */}
+      {/* LOADING */}
       {loading ? (
-        <MyLoanSkeleton />
-      ) : !active ? (
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl text-center text-gray-400 text-sm">
-          No active loan found
+        <div className="bg-gray-900 p-6 rounded-2xl text-gray-400">
+          Loading...
         </div>
+      ) : !active ? (
+
+        /* NO LOAN */
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl text-center text-gray-400">
+          No active loan found
+
+          <div className="mt-4">
+            <Link
+              to="/clientStats/apply"
+              className="bg-green-600 hover:bg-green-500 px-5 py-2 rounded-xl text-white"
+            >
+              Apply for Loan
+            </Link>
+          </div>
+        </div>
+
+      ) : active.status === "repaid" ? (
+
+        /* REPAID */
+        <div className="bg-green-500/10 border border-green-500/20 p-6 rounded-2xl text-center text-green-400">
+          <MdCelebration size={35} className="mx-auto mb-2" />
+          <p className="font-semibold">Congratulations 🎉</p>
+          <p className="text-sm">You have fully repaid your loan.</p>
+
+          <Link
+            to="/clientStats/apply"
+            className="inline-block mt-4 bg-green-600 hover:bg-green-500 px-5 py-2 rounded-xl text-white"
+          >
+            Apply for another loan
+          </Link>
+        </div>
+
+      ) : active.status === "rejected" ? (
+
+        /* REJECTED */
+        <div className="bg-red-500/10 border border-red-500/20 p-6 rounded-2xl text-center text-red-400">
+          <MdError size={35} className="mx-auto mb-2" />
+          <p className="font-semibold">Loan Rejected</p>
+          <p className="text-sm">Your loan application was not approved.</p>
+
+          <Link
+            to="/clientStats/apply"
+            className="inline-block mt-4 bg-green-600 hover:bg-green-500 px-5 py-2 rounded-xl text-white"
+          >
+            Apply Again
+          </Link>
+        </div>
+
       ) : (
+
+        /* ACTIVE LOAN */
         <div className="space-y-5">
 
           {/* TOP CARD */}
-          <div className="bg-gradient-to-r from-green-600 to-green-400 p-5 rounded-2xl shadow-lg flex items-center gap-4">
+          <div className="bg-gradient-to-r from-green-600 to-green-400 p-5 rounded-2xl flex items-center gap-4">
             <MdAttachMoney size={45} />
             <div>
               <p className="text-xs opacity-80">Total Repayment</p>
@@ -111,101 +164,81 @@ function MyLoan() {
             </div>
           </div>
 
-          {/* STATS */}
+          {/* STATUS */}
+          <div className="bg-gray-900 border border-gray-800 p-4 rounded-2xl flex justify-between items-center">
+            <span className="text-gray-400 text-sm">Status</span>
+            <span className={`flex items-center gap-1 ${getStatusColor(active.status)}`}>
+              {getStatusIcon(active.status)}
+              <span className="capitalize">{active.status}</span>
+            </span>
+          </div>
+
+          {/* PROCESSING FEE */}
+          {active.status === "awaiting_fee" && !active.isFeePaid && (
+            <div className="bg-yellow-500/10 border border-yellow-500/20 p-5 rounded-2xl space-y-2">
+              <p className="text-sm">Processing Fee: {formatCurrency(active.processingFee)}</p>
+              <p className="text-sm">Paybill: {active.paybillNumber}</p>
+              <p className="text-sm">Account: {active.accountNumber}</p>
+
+              <button
+                onClick={() => setFee(true)}
+                className="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-2 rounded-xl"
+              >
+                Pay Processing Fee
+              </button>
+            </div>
+          )}
+
+          {/* AMOUNT + BALANCE */}
           <div className="grid grid-cols-2 gap-4">
 
             <div className="bg-gray-900 border border-gray-800 p-4 rounded-2xl">
               <p className="text-xs text-gray-400">Amount Paid</p>
-              <p className="text-lg font-semibold text-blue-400">
+              <p className="text-lg text-blue-400 font-semibold">
                 {formatCurrency(active.amountPaid)}
               </p>
             </div>
 
             <div className="bg-gray-900 border border-gray-800 p-4 rounded-2xl">
               <p className="text-xs text-gray-400">Balance</p>
-              <p className="text-lg font-semibold text-red-400">
+              <p className="text-lg text-red-400 font-semibold">
                 {formatCurrency(active.balance)}
               </p>
             </div>
 
           </div>
 
-          {/* DETAILS CARD */}
-          <div className="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-3 text-sm">
+          {/* DETAILS */}
+          <div className="bg-gray-900 border border-gray-800 p-5 rounded-2xl text-sm space-y-2">
 
             <div className="flex justify-between">
               <span className="text-gray-400">Loan Amount</span>
               <span>{formatCurrency(active.amount)}</span>
             </div>
 
-            <div className="flex justify-between items-center">
-              <span className="text-gray-400">Status</span>
-              <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(active.status)}`}>
-                {active.status}
-              </span>
-            </div>
-
             <div className="flex justify-between">
               <span className="text-gray-400">Duration</span>
-              <span>{active.durationWeeks} Weeks</span>
+              <span>{active.durationWeeks} weeks</span>
             </div>
 
             <div className="flex justify-between">
               <span className="text-gray-400">Due Date</span>
               <span>
-                {active.dueDate
-                  ? new Date(active.dueDate).toDateString()
-                  : "Not set"}
+                {active.dueDate ? new Date(active.dueDate).toDateString() : "Not set"}
               </span>
             </div>
 
           </div>
 
-          {/* FEE SECTION */}
-          <div className="bg-gray-900 border border-gray-800 p-5 rounded-2xl space-y-3 text-sm">
-
-            <div className="flex justify-between">
-              <span className="text-gray-400">Processing Fee</span>
-              <span className={active.isFeePaid ? "text-green-400" : "text-red-400"}>
-                {active.isFeePaid ? "Paid" : "Not Paid"}
-              </span>
-            </div>
-
-            {!active.isFeePaid && (
-              <button
-                onClick={() => setFee(true)}
-                className="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded-xl text-sm transition"
-              >
-                Pay Fee ({formatCurrency(active.processingFee)})
-              </button>
-            )}
-
-            <div className="flex justify-between">
-              <span className="text-gray-400">Fee Status</span>
-              <span className="capitalize">{active.feeStatus}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-gray-400">Disbursed</span>
-              <span>{active.isDisbursed ? "Yes" : "No"}</span>
-            </div>
-
-          </div>
-
-          {/* CTA */}
+          {/* REPAY BUTTON */}
           {active.isDisbursed && active.balance > 0 && (
             <button
               onClick={() => setRepay(true)}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:opacity-90 py-3 rounded-xl font-medium shadow-md"
+              className="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl"
             >
               Pay Loan ({formatCurrency(active.balance)})
             </button>
           )}
-          {active.status === "repaid" && (
-          <div className="bg-green-500/10 text-green-400 p-4 rounded-xl text-center">
-            <MdCelebration size={15} /> Loan fully repaid. You can now apply for a new loan.
-          </div>
-        )}
 
         </div>
       )}
