@@ -31,7 +31,7 @@ function Reject({ loan, close, refresh }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex p-2 items-center justify-center z-50">
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-md shadow-xl space-y-4">
 
