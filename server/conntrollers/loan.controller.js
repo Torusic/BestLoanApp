@@ -273,7 +273,7 @@ export async function myLoan(req, res) {
     try {
         const loan = await LoanModel.findOne({
             user: req.userId,
-            status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed","rejected"] }
+            status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
         }).sort({ createdAt: -1 });
 
         if (!loan) {

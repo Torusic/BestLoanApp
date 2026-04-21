@@ -15,6 +15,7 @@ const statusStyles = {
   overdue: "bg-red-100 text-red-700",
   fully_repaid: "bg-green-100 text-green-700",
   processing: "bg-gray-100 text-gray-700",
+  rejected: "bg-red-200 text-red-800", // ✅ ADD THIS
 };
 
 const statusIcons = {
@@ -22,6 +23,7 @@ const statusIcons = {
   overdue: <FaExclamationTriangle />,
   fully_repaid: <FaCheckCircle />,
   processing: <FaClock />,
+  rejected: <FaExclamationTriangle />, // ✅ ADD THIS
 };
 
 const SkeletonCard = () => (
@@ -54,33 +56,40 @@ export default function LoanHistoryCards() {
         });
 
         if (response.data.success) {
-          const formatted = response.data.data.map((loan) => {
-            let loanType = "processing";
+         const formatted = response.data.data.map((loan) => {
+          let loanType = "processing";
 
-            if (loan.balance === 0 && loan.isDisbursed) {
-              loanType = "fully_repaid";
-            } else if (
-              loan.dueDate &&
-              loan.balance > 0 &&
-              new Date(loan.dueDate) < new Date()
-            ) {
-              loanType = "overdue";
-            } else if (loan.isDisbursed && loan.balance > 0) {
-              loanType = "active";
-            }
+          // ✅ PRIORITY: backend status
+          if (loan.status === "rejected") {
+            loanType = "rejected";
+          } else if (loan.status === "repaid") {
+            loanType = "fully_repaid";
+          } 
+          // fallback logic
+          else if (loan.balance === 0 && loan.isDisbursed) {
+            loanType = "fully_repaid";
+          } else if (
+            loan.dueDate &&
+            loan.balance > 0 &&
+            new Date(loan.dueDate) < new Date()
+          ) {
+            loanType = "overdue";
+          } else if (loan.isDisbursed && loan.balance > 0) {
+            loanType = "active";
+          }
 
-            return {
-              _id: loan._id,
-              amount: loan.amount,
-              durationWeeks: loan.durationWeeks,
-              amountPaid: loan.amountPaid,
-              balance: loan.balance,
-              dueDate: loan.dueDate
-                ? new Date(loan.dueDate).toISOString().split("T")[0]
-                : null,
-              loanType,
-            };
-          });
+          return {
+            _id: loan._id,
+            amount: loan.amount,
+            durationWeeks: loan.durationWeeks,
+            amountPaid: loan.amountPaid,
+            balance: loan.balance,
+            dueDate: loan.dueDate
+              ? new Date(loan.dueDate).toISOString().split("T")[0]
+              : null,
+            loanType,
+          };
+        });
 
           setLoans(formatted);
           toast.success("Loans loaded");
