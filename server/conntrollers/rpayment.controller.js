@@ -1,5 +1,6 @@
 import LoanModel from "../models/loan.model.js";
 import RepaymentModel from "../models/repayment.model.js";
+import { isMpesaCodeUsed } from "../utils/isMpesaCodeUsed.js";
 
 export async function submitRepayment(req, res) {
   try {
