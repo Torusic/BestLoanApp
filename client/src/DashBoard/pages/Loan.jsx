@@ -10,7 +10,8 @@ import Disburse from "./actions/Disburse";
 import Axios from "../../utils/Axios";
 import SummaryApi from "../../common/SummaryApi";
 import AxiosToastError from "../../utils/AxiosToastError";
-import Reject from "./actions/Reject.jsx";
+import Reject from "./Reject.jsx";
+
 
 
 function Loan() {

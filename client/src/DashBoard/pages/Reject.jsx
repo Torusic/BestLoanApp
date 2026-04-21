@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import Axios from "../../../utils/Axios";
-import SummaryApi from "../../../common/SummaryApi";
-import AxiosToastError from "../../../utils/AxiosToastError";
-import toast from "react-hot-toast";
-import { LuLoader } from "react-icons/lu";
+import React from 'react'
 
-function Reject({ loan, close, fetch }) {
+function Reject() {
   const [loading, setLoading] = useState(false);
 
   const handleReject = async () => {
@@ -95,4 +90,4 @@ function Reject({ loan, close, fetch }) {
   );
 }
 
-export default Reject;
+export default Reject
