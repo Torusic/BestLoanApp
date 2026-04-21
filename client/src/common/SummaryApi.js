@@ -96,7 +96,10 @@ const SummaryApi = {
   getAllRepayments: {
     url: "/api/repay/all",
     method: "get",
-  },
+  },getRepaymentHistory: {
+  url: "/api/repay/history",
+  method: "get",
+},
   verifyRepayment: {
     url: "/api/repay/verify",
     method: "post",

@@ -70,8 +70,9 @@ function SideBar() {
         path: "/clientStats/apply",
         roles: ["client", "agent"],
       },
+    
       {
-        name: "History",
+        name: "Loan History",
         icon: <FaHistory size={20} />,
         path: "/clientStats/history",
         roles: ["client", "agent"],

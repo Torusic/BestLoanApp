@@ -6,6 +6,7 @@ import AxiosToastError from "../../utils/AxiosToastError";
 import Axios from "../../utils/Axios";
 import SummaryApi from "../../common/SummaryApi";
 import ProcessingFee from "../ProcessingFee";
+import RepaymentModal from "./RepaymentModal";
 
 const formatCurrency = (num) =>
   new Intl.NumberFormat("en-KE", {
@@ -47,7 +48,7 @@ function ActiveLoan() {
   const [error, setError] = useState(null);
   const [showMore, setShowMore] = useState(false);
   const [fee, setFee] = useState(false);
-
+const[repay,setRepay]=useState(false)
   const fetchActiveLoans = useCallback(async () => {
     try {
       setError(null);
@@ -212,6 +213,7 @@ function ActiveLoan() {
           {/* REPAY BUTTON */}
           {active.isDisbursed && active.balance > 0 && (
             <button
+            onClick={()=>setRepay(true)}
               className="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded-lg"
             >
               Pay Loan ({formatCurrency(active.balance)})
@@ -226,6 +228,13 @@ function ActiveLoan() {
         <ProcessingFee
           loan={active}
           onClose={() => setFee(false)}
+          refresh={fetchActiveLoans}
+        />
+      )}
+      {repay && (
+        <RepaymentModal
+          loan={active}
+          onClose={() => setRepay(false)}
           refresh={fetchActiveLoans}
         />
       )}

@@ -7,7 +7,9 @@ import {
   FaSpinner, 
   FaCheckCircle, 
   FaExclamationTriangle, 
-  FaClock 
+  FaClock, 
+  FaTimesCircle,
+  FaMoneyBillWave
 } from "react-icons/fa";
 
 const statusStyles = {
@@ -26,7 +28,6 @@ const statusIcons = {
   rejected: <FaExclamationTriangle />,
 };
 
-// ✅ ADD HERE
 const statusLabels = {
   active: "Active",
   overdue: "Overdue",
@@ -34,6 +35,24 @@ const statusLabels = {
   processing: "Processing",
   rejected: "Rejected",
 };
+const repayStatusStyles = {
+  pending: "bg-yellow-100 text-yellow-700",
+  verified: "bg-green-100 text-green-700",
+  rejected: "bg-red-100 text-red-700",
+};
+
+const repayStatusIcons = {
+  pending: <FaClock/>,
+  verified: <FaCheckCircle />,
+  rejected: <FaTimesCircle />,
+};
+
+const repayStatusLabels = {
+  pending: "Pending",
+  verified: "Verified",
+  rejected: "Rejected",
+};
+
 const SkeletonCard = () => (
   <div className="bg-gray-900 rounded-2xl p-4 animate-pulse border border-gray-800">
     <div className="h-5 w-40 bg-gray-700 rounded mb-3"></div>
@@ -48,33 +67,34 @@ const SkeletonCard = () => (
 );
 
 export default function LoanHistoryCards() {
+  const [tab, setTab] = useState("loans");
+
   const [loans, setLoans] = useState([]);
+  const [repayments, setRepayments] = useState([]);
+
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchLoans = async () => {
-      try {
-        setLoading(true);
-        setError("");
+  // ---------------- LOANS ----------------
+  const fetchLoans = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-        const response = await Axios({
-          ...SummaryApi.loanHistory,
-        });
+      const response = await Axios({
+        ...SummaryApi.loanHistory,
+      });
 
-        if (response.data.success) {
-         const formatted = response.data.data.map((loan) => {
+      if (response.data.success) {
+        const formatted = response.data.data.map((loan) => {
           let loanType = "processing";
 
-          // ✅ PRIORITY: backend status
           if (loan.status === "rejected") {
             loanType = "rejected";
           } else if (loan.status === "repaid") {
             loanType = "fully_repaid";
-          } 
-          // fallback logic
-          else if (loan.balance === 0 && loan.isDisbursed) {
+          } else if (loan.balance === 0 && loan.isDisbursed) {
             loanType = "fully_repaid";
           } else if (
             loan.dueDate &&
@@ -99,19 +119,43 @@ export default function LoanHistoryCards() {
           };
         });
 
-          setLoans(formatted);
-          toast.success("Loans loaded");
-        }
-      } catch (error) {
-        AxiosToastError(error);
-        setError("Failed to load loans");
-      } finally {
-        setLoading(false);
+        setLoans(formatted);
+        toast.success("Loans loaded");
       }
-    };
+    } catch (error) {
+      AxiosToastError(error);
+      setError("Failed to load loans");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchLoans();
-  }, []);
+  // ---------------- REPAYMENTS ----------------
+  const fetchRepayments = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await Axios({
+        ...SummaryApi.getRepaymentHistory,
+      });
+
+      if (response.data.success) {
+        setRepayments(response.data.data);
+        toast.success("Repayments loaded");
+      }
+    } catch (error) {
+      AxiosToastError(error);
+      setError("Failed to load repayments");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (tab === "loans") fetchLoans();
+    if (tab === "repayments") fetchRepayments();
+  }, [tab]);
 
   const filteredLoans =
     filter === "all"
@@ -122,119 +166,201 @@ export default function LoanHistoryCards() {
     <div className="min-h-screen bg-gray-800 rounded p-5">
 
       <h1 className="text-2xl text-white font-bold mb-4">
-        My Loans
+        My Financial Records
       </h1>
+
+      {/* TAB SWITCH */}
+      <div className="flex gap-2 mb-5">
+        <button
+          onClick={() => setTab("loans")}
+          className={`px-4 py-2 rounded-full text-sm ${
+            tab === "loans"
+              ? "bg-green-500 text-white"
+              : "bg-gray-700 text-white"
+          }`}
+        >
+          Loan History
+        </button>
+
+        <button
+          onClick={() => setTab("repayments")}
+          className={`px-4 py-2 rounded-full text-sm ${
+            tab === "repayments"
+              ? "bg-green-500 text-white"
+              : "bg-gray-700 text-white"
+          }`}
+        >
+          Repayment History
+        </button>
+      </div>
 
       {error && (
         <div className="text-red-400 mb-3 text-sm">{error}</div>
       )}
 
-      {/* FILTERS */}
-      <div className="flex gap-2 overflow-x-auto mb-5">
-        {["all", "active", "overdue", "fully_repaid", "processing","rejected"].map(
-          (type) => (
-            <button
-              key={type}
-              onClick={() => setFilter(type)}
-              className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition ${
-                filter === type
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-700 text-white hover:bg-gray-600"
-              }`}
-            >
-              {type}
-            </button>
-          )
-        )}
-      </div>
-
-      {/* LOADING */}
-      {loading && (
-        <div className="grid gap-4">
-          {[1, 2, 3].map((i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      )}
-
-      {/* CARDS */}
-      {!loading && (
-        <div className="grid gap-4">
-          {filteredLoans.map((loan) => (
-            <div
-              key={loan._id}
-              className="bg-gray-900 rounded-2xl text-white p-4 border border-gray-800 hover:scale-[1.01] transition"
-            >
-
-              {/* TOP */}
-              <div className="flex justify-between items-center mb-3">
-
-                <div>
-                  <h2 className="font-bold text-lg">
-                    KSh {loan.amount.toLocaleString()}
-                  </h2>
-                  <p className="text-sm text-gray-400">
-                    {loan.durationWeeks} weeks loan
-                  </p>
-                </div>
-
-                <div
-                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                    statusStyles[loan.loanType]
+      {/* ---------------- LOANS VIEW ---------------- */}
+      {tab === "loans" && (
+        <>
+          {/* FILTERS (UNCHANGED) */}
+          <div className="flex gap-2 overflow-x-auto mb-5">
+            {["all", "active", "overdue", "fully_repaid", "processing", "rejected"].map(
+              (type) => (
+                <button
+                  key={type}
+                  onClick={() => setFilter(type)}
+                  className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
+                    filter === type
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-700 text-white hover:bg-gray-600"
                   }`}
                 >
-                  {statusIcons[loan.loanType]}
-                  <span>{statusLabels[loan.loanType]}</span>
-                </div>
+                  {type}
+                </button>
+              )
+            )}
+          </div>
 
-              </div>
-
-              {/* PROGRESS */}
-              <div className="w-full bg-gray-700 h-2 rounded-full mb-3 overflow-hidden">
-                <div
-                  className="h-2 bg-green-500 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${
-                      (loan.amountPaid / loan.amount) * 100 || 0
-                    }%`,
-                  }}
-                />
-              </div>
-
-              {/* STATS */}
-              <div className="flex justify-between text-sm">
-
-                <div>
-                  <p className="text-gray-400">Paid</p>
-                  <p className="text-green-500 font-semibold">
-                    KSh {loan.amountPaid}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-gray-400">Balance</p>
-                  <p className="text-red-400 font-semibold">
-                    KSh {loan.balance}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-gray-400">Due</p>
-                  <p>{loan.dueDate || "N/A"}</p>
-                </div>
-
-              </div>
+          {loading && (
+            <div className="grid gap-4">
+              {[1, 2, 3].map((i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+
+          {!loading && (
+            <div className="grid gap-4">
+              {filteredLoans.map((loan) => (
+                <div
+                  key={loan._id}
+                  className="bg-gray-900 rounded-2xl text-white p-4 border border-gray-800 hover:scale-[1.01] transition"
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <div>
+                      <h2 className="font-bold text-lg">
+                        KSh {loan.amount.toLocaleString()}
+                      </h2>
+                      <p className="text-sm text-gray-400">
+                        {loan.durationWeeks} weeks loan
+                      </p>
+                    </div>
+
+                    <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${statusStyles[loan.loanType]}`}>
+                      {statusIcons[loan.loanType]}
+                      <span>{statusLabels[loan.loanType]}</span>
+                    </div>
+                  </div>
+
+                  <div className="w-full bg-gray-700 h-2 rounded-full mb-3 overflow-hidden">
+                    <div
+                      className="h-2 bg-green-500 rounded-full"
+                      style={{
+                        width: `${(loan.amountPaid / loan.amount) * 100 || 0}%`,
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex justify-between text-sm">
+                    <div>
+                      <p className="text-gray-400">Paid</p>
+                      <p className="text-green-500 font-semibold">
+                        KSh {loan.amountPaid}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400">Balance</p>
+                      <p className="text-red-400 font-semibold">
+                        KSh {loan.balance}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400">Due</p>
+                      <p>{loan.dueDate || "N/A"}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
-      {/* EMPTY */}
-      {!loading && filteredLoans.length === 0 && (
-        <div className="text-center text-gray-400 mt-10">
-          No loans found
+      {tab === "repayments" && (
+  <div className="grid gap-4">
+
+    {loading && (
+      <p className="text-gray-400">Loading repayments...</p>
+    )}
+
+    {!loading && repayments.length === 0 && (
+      <p className="text-gray-400">No repayment records found</p>
+    )}
+
+    {repayments.map((repay) => (
+      <div
+        key={repay._id}
+        className="bg-gray-900 rounded-2xl text-white p-4 border border-gray-800 hover:scale-[1.01] transition"
+      >
+
+        {/* TOP */}
+        <div className="flex justify-between items-center mb-3">
+
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <FaMoneyBillWave className="text-green-400" />
+              KSh {repay.amount.toLocaleString()}
+            </h2>
+
+            <p className="text-xs text-gray-400 mt-1">
+              M-Pesa: {repay.mpesaCode}
+            </p>
+          </div>
+
+          {/* STATUS BADGE */}
+          <div
+            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
+              repayStatusStyles[repay.status]
+            }`}
+          >
+            {repayStatusIcons[repay.status]}
+            <span>{repayStatusLabels[repay.status]}</span>
+          </div>
+
         </div>
-      )}
+
+        {/* DETAILS */}
+        <div className="flex justify-between text-sm mt-3">
+
+          <div>
+            <p className="text-gray-400">Loan ID</p>
+            <p className="text-white text-xs">
+              {repay.loan?._id?.slice(-6) || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-400">User</p>
+            <p className="text-white text-xs">
+              {repay.user?.name || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-gray-400">Date</p>
+            <p className="text-white text-xs">
+              {new Date(repay.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    ))}
+
+  </div>
+)}
 
     </div>
   );

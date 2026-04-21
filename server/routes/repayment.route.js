@@ -1,11 +1,15 @@
 import { Router } from "express";
 import { auth, authorizeRoles } from "../middleware/auth.js";
-import { getAllRepayments, getPendingRepayments, submitRepayment, verifyRepayment } from "../conntrollers/rpayment.controller.js";
-
+import {
+  getAllRepayments,
+  getPendingRepayments,
+  submitRepayment,
+  verifyRepayment,
+  getMyRepaymentHistory
+} from "../conntrollers/rpayment.controller.js";
 
 const repaymentRouter = Router();
 
-// 🔹 CLIENT submits repayment
 repaymentRouter.post(
   "/submit",
   auth,
@@ -13,7 +17,6 @@ repaymentRouter.post(
   submitRepayment
 );
 
-// 🔹 ADMIN verifies (approve/reject)
 repaymentRouter.post(
   "/verify",
   auth,
@@ -21,7 +24,6 @@ repaymentRouter.post(
   verifyRepayment
 );
 
-// 🔹 ADMIN gets only pending repayments
 repaymentRouter.get(
   "/pending",
   auth,
@@ -29,12 +31,18 @@ repaymentRouter.get(
   getPendingRepayments
 );
 
-// 🔹 ADMIN gets all repayments (with filters)
 repaymentRouter.get(
   "/all",
   auth,
   authorizeRoles("admin"),
   getAllRepayments
+);
+
+repaymentRouter.get(
+  "/history",
+  auth,
+  authorizeRoles("client"),
+  getMyRepaymentHistory
 );
 
 export default repaymentRouter;

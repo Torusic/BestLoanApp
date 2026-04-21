@@ -124,17 +124,18 @@ export async function verifyRepayment(req, res) {
       repayment.verifiedAt = new Date();
 
       // 💰 Update loan
-      loan.amountPaid += repayment.amount;
-      loan.balance -= repayment.amount;
+    // 💰 Update loan
+loan.amountPaid += repayment.amount;
+loan.balance -= repayment.amount;
 
-      if (loan.balance <= 0) {
-        loan.balance = 0;
-        loan.repaymentStatus = "completed";
-        loan.status = "repaid";
-      } else if (loan.amountPaid > 0) {
-        loan.repaymentStatus = "paying";
-        loan.status = "disbursed"; // still active
-      }
+// ✅ LOAN STATUS LOGIC (PUT IT HERE)
+if (loan.balance <= 0) {
+  loan.balance = 0;
+  loan.status = "repaid";
+  loan.repaymentStatus = "completed";
+} else {
+  loan.repaymentStatus = "paying";
+}
       
 
       await repayment.save();
@@ -211,6 +212,29 @@ export async function getAllRepayments(req, res) {
     return res.status(500).json({
       success: false,
       message: error.message
+    });
+  }
+}
+export async function getMyRepaymentHistory(req, res) {
+  try {
+    const userId = req.userId;
+
+    const repayments = await RepaymentModel.find({
+      user: userId,
+    })
+      .populate("loan", "amount balance status repaymentStatus")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Repayment history fetched successfully",
+      count: repayments.length,
+      data: repayments,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 }
