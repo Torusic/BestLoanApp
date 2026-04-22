@@ -13,7 +13,7 @@ const repaymentRouter = Router();
 repaymentRouter.post(
   "/submit",
   auth,
-  authorizeRoles("client"),
+  authorizeRoles('client','agent'),
   submitRepayment
 );
 
@@ -41,7 +41,7 @@ repaymentRouter.get(
 repaymentRouter.get(
   "/history",
   auth,
-  authorizeRoles("client"),
+  authorizeRoles('client','agent'),
   getMyRepaymentHistory
 );
 
