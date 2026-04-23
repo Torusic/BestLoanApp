@@ -44,7 +44,7 @@ export default function SubmitLoan({ onClose }) {
       setSuccess(null);
 
       const response = await Axios({
-        ...SummaryApi.agentApplyLoan,
+        ...SummaryApi.applyLoanForCustomer,
         data: form,
       });
 

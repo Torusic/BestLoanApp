@@ -23,7 +23,7 @@ function AddLoan({ close, fetch }) {
 
     try {
       const response = await Axios({
-        ...SummaryApi.applyLoanForCustomer,
+        ...SummaryApi.applyLoanViaAdmin,
         data: data
       })
 

@@ -5,7 +5,7 @@ import { applyLoanOnline, applyLoanViaAgent,  approveProcessingFee, disburseLoan
 const loanRouter=Router();
 
 loanRouter.post('/apply',auth, authorizeRoles('client','admin','agent'),applyLoanOnline)
-loanRouter.post('/agent/apply',auth,authorizeRoles('agent','admin'),applyLoanViaAgent);
+loanRouter.post('/admin/apply',auth,authorizeRoles('admin'),applyLoanViaAgent);
 loanRouter.post('/submit',auth,authorizeRoles('client','agent'),submitProcessingFeeManually);
 loanRouter.post('/approve',auth,authorizeRoles('admin'),approveProcessingFee);
 loanRouter.post('/reject',auth,authorizeRoles('admin'),rejectLoan);

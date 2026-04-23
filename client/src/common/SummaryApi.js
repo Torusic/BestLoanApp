@@ -21,6 +21,11 @@ const SummaryApi = {
     url: "/api/loan/admin/getAllLoans",
     method: "get",
   },
+   applyLoanViaAdmin: {
+    url: "/api/loan/admin/apply",
+    method: "post",
+  },
+
   addAgent: {
     url: "/api/user/admin/addAgent",
     method: "post",
