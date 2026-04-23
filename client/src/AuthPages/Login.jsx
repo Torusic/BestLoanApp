@@ -18,14 +18,26 @@ const Login = () => {
     password: "",
   });
 
-  // HANDLE INPUT
+  // ================= PHONE FORMAT =================
+  const formatPhone = (phone) => {
+    let cleaned = phone.replace(/\D/g, "");
+
+    if (cleaned.startsWith("0")) {
+      cleaned = cleaned.slice(1);
+    }
+
+    return "+254" + cleaned;
+  };
+
+  const isValidPhone = data.phone.replace(/\D/g, "").length === 9;
+
+  // ================= HANDLE INPUT =================
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setError("");
 
     if (name === "phone") {
-      const cleaned = value.replace(/\D/g, "").slice(0, 9); // only digits, max 9
+      const cleaned = value.replace(/\D/g, "").slice(0, 9);
       setData((prev) => ({
         ...prev,
         phone: cleaned,
@@ -38,7 +50,7 @@ const Login = () => {
     }
   };
 
-  // SUBMIT
+  // ================= SUBMIT =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -46,12 +58,10 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const formattedPhone = "+254" + data.phone;
-
       const response = await Axios({
         ...SummaryApi.login,
         data: {
-          phone: formattedPhone,
+          phone: formatPhone(data.phone),
           password: data.password,
         },
       });
@@ -88,11 +98,14 @@ const Login = () => {
 
   return (
     <section className="min-h-screen flex text-xs items-center justify-center bg-[#0f172a] px-6">
+
       <div className="w-full max-w-md">
+
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 space-y-6">
 
+          {/* HEADER */}
           <div className="text-center space-y-1">
-            <h1 className="text-2xl font-semibold text-white tracking-tight">
+            <h1 className="text-2xl font-semibold text-white">
               Welcome back
             </h1>
             <p className="text-sm text-gray-400">
@@ -100,7 +113,7 @@ const Login = () => {
             </p>
           </div>
 
-          {/* 🔴 ERROR */}
+          {/* ERROR */}
           {error && (
             <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
               {error}
@@ -109,8 +122,8 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
 
-            {/* PHONE WITH +254 PREFIX */}
-            <div className="space-y-2 grid text-xs items-center gap-2">
+            {/* PHONE */}
+            <div className="space-y-2">
               <label className="text-xs text-gray-400">Phone</label>
 
               <div className="flex items-center bg-white/90 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-green-400">
@@ -132,9 +145,11 @@ const Login = () => {
             </div>
 
             {/* PASSWORD */}
-            <div className="space-y-2 grid items-center gap-2 mt-">
+            <div className="space-y-2">
               <label className="text-xs text-gray-400">Password</label>
+
               <div className="flex items-center px-3 rounded-lg bg-white/90 focus-within:ring-2 focus-within:ring-green-400">
+
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -143,22 +158,25 @@ const Login = () => {
                   placeholder="Enter your password"
                   className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
                 />
+
                 <span
                   onClick={() => setShowPassword((prev) => !prev)}
                   className="cursor-pointer text-gray-500 hover:text-gray-700"
                 >
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </span>
+
               </div>
             </div>
 
             {/* OPTIONS */}
-            <div className="flex justify-between items-center text-xs">
-              <label className="flex items-center gap-2 text-gray-400 cursor-pointer">
+            <div className="flex justify-between items-center text-xs text-gray-400">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" className="accent-green-500" />
                 Remember me
               </label>
-              <span className="text-gray-400 hover:text-green-400 cursor-pointer">
+
+              <span className="hover:text-green-400 cursor-pointer">
                 Forgot password?
               </span>
             </div>
@@ -166,7 +184,7 @@ const Login = () => {
             {/* BUTTON */}
             <button
               type="submit"
-              disabled={loading || data.phone.length !== 9 || !data.password}
+              disabled={loading || !isValidPhone || !data.password}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 active:scale-[0.98] transition-all disabled:opacity-60"
             >
               {loading ? (
@@ -189,7 +207,10 @@ const Login = () => {
             {/* REGISTER */}
             <div className="text-center text-sm text-gray-400">
               Don’t have an account?
-              <Link to="/register" className="ml-1 text-green-400 hover:underline">
+              <Link
+                to="/register"
+                className="ml-1 text-green-400 hover:underline"
+              >
                 Create one
               </Link>
             </div>

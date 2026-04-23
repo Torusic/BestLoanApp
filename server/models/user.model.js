@@ -10,14 +10,18 @@ const userSchema = new mongoose.Schema(
       maxlength: 100,
     },
 
-    phone: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      match: [/^0\d{9}$/, "Phone must be 10 digits starting with 0"],
+   phone: {
+  type: String,
+  required: true,
+  unique: true,
+  trim: true,
+  validate: {
+    validator: function (v) {
+      return /^\+254\d{9}$/.test(v);
     },
-
+    message: "Phone must be in format +2547XXXXXXXX"
+  }
+},
     email: {
       type: String,
       unique: true,
