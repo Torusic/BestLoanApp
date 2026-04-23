@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AxiosToastError from "../utils/AxiosToastError";
 import Axios from "../utils/Axios";
 import SummaryApi from "../common/SummaryApi";
 import toast from "react-hot-toast";
@@ -9,22 +8,52 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+
   const [data, setData] = useState({
     phone: "",
     password: "",
   });
 
+  // HANDLE INPUT
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setError("");
+
+    if (name === "phone") {
+      const cleaned = value.replace(/\D/g, "").slice(0, 9); // only digits, max 9
+      setData((prev) => ({
+        ...prev,
+        phone: cleaned,
+      }));
+    } else {
+      setData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  // SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
       setLoading(true);
 
+      const formattedPhone = "+254" + data.phone;
+
       const response = await Axios({
         ...SummaryApi.login,
-        data: data,
+        data: {
+          phone: formattedPhone,
+          password: data.password,
+        },
       });
 
       if (response.data.success) {
@@ -48,25 +77,17 @@ const Login = () => {
           navigate("/");
         }
       } else {
-        toast.error(response.data.message);
+        setError(response.data.message || "Login failed");
       }
-    } catch (error) {
-      AxiosToastError(error);
+    } catch (err) {
+      setError(err?.response?.data?.message || "Server error");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   return (
-    <section className="min-h-screen flex  text-xs items-center justify-center bg-[#0f172a] px-6">
+    <section className="min-h-screen flex text-xs items-center justify-center bg-[#0f172a] px-6">
       <div className="w-full max-w-md">
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 space-y-6">
 
@@ -79,54 +100,74 @@ const Login = () => {
             </p>
           </div>
 
+          {/* 🔴 ERROR */}
+          {error && (
+            <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5">
 
-            <div className="space-y-2 grid items-center gap-2">
+            {/* PHONE WITH +254 PREFIX */}
+            <div className="space-y-2 grid text-xs items-center gap-2">
               <label className="text-xs text-gray-400">Phone</label>
-              <input
-                type="text"
-                name="phone"
-                value={data.phone}
-                onChange={handleChange}
-                placeholder="e.g. 0712345678"
-                className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-400 focus:scale-[1.01] transition-all"
-              />
+
+              <div className="flex items-center bg-white/90 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-green-400">
+
+                <span className="px-3 text-gray-700 font-medium bg-gray-100">
+                  +254
+                </span>
+
+                <input
+                  type="text"
+                  name="phone"
+                  value={data.phone}
+                  onChange={handleChange}
+                  placeholder="712345678"
+                  maxLength={9}
+                  className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2 grid items-center gap-2 mt-1">
+            {/* PASSWORD */}
+            <div className="space-y-2 grid items-center gap-2 mt-">
               <label className="text-xs text-gray-400">Password</label>
-              <div className="flex items-center px-3 rounded-lg bg-white/90 focus-within:ring-2 focus-within:ring-green-400 transition-all">
+              <div className="flex items-center px-3 rounded-lg bg-white/90 focus-within:ring-2 focus-within:ring-green-400">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={data.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none placeholder-gray-400"
+                  className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
                 />
                 <span
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
+                  className="cursor-pointer text-gray-500 hover:text-gray-700"
                 >
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
             </div>
 
+            {/* OPTIONS */}
             <div className="flex justify-between items-center text-xs">
               <label className="flex items-center gap-2 text-gray-400 cursor-pointer">
                 <input type="checkbox" className="accent-green-500" />
                 Remember me
               </label>
-              <span className="text-gray-400 hover:text-green-400 cursor-pointer transition">
+              <span className="text-gray-400 hover:text-green-400 cursor-pointer">
                 Forgot password?
               </span>
             </div>
 
+            {/* BUTTON */}
             <button
               type="submit"
-              disabled={loading || !data.phone || !data.password}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={loading || data.phone.length !== 9 || !data.password}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 active:scale-[0.98] transition-all disabled:opacity-60"
             >
               {loading ? (
                 <>
@@ -138,18 +179,17 @@ const Login = () => {
               )}
             </button>
 
+            {/* DIVIDER */}
             <div className="relative flex items-center">
               <div className="flex-grow border-t border-gray-700"></div>
               <span className="mx-3 text-xs text-gray-500">or</span>
               <div className="flex-grow border-t border-gray-700"></div>
             </div>
 
+            {/* REGISTER */}
             <div className="text-center text-sm text-gray-400">
               Don’t have an account?
-              <Link
-                to="/register"
-                className="ml-1 text-green-400 hover:underline"
-              >
+              <Link to="/register" className="ml-1 text-green-400 hover:underline">
                 Create one
               </Link>
             </div>

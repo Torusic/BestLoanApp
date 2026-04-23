@@ -36,18 +36,14 @@ const Register = () => {
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
 
-    if (score <= 2) {
-      return { score: 33, label: "Weak", color: "bg-red-500" };
-    } else if (score <= 4) {
-      return { score: 66, label: "Medium", color: "bg-yellow-400" };
-    } else {
-      return { score: 100, label: "Strong", color: "bg-green-500" };
-    }
+    if (score <= 2) return { score: 33, label: "Weak", color: "bg-red-500" };
+    if (score <= 4) return { score: 66, label: "Medium", color: "bg-yellow-400" };
+    return { score: 100, label: "Strong", color: "bg-green-500" };
   };
 
   const strength = getPasswordStrength(data.password);
 
-  // 🔐 Password rules
+  // 🔐 Rules
   const passwordRules = {
     length: data.password.length >= 8,
     uppercase: /[A-Z]/.test(data.password),
@@ -68,37 +64,44 @@ const Register = () => {
     data.confirmPassword &&
     data.password === data.confirmPassword;
 
+  // HANDLE INPUT
   const handleChange = (e) => {
     const { name, value } = e.target;
     setError("");
 
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === "phone") {
+      const cleaned = value.replace(/\D/g, "").slice(0, 9);
+      setData((prev) => ({
+        ...prev,
+        phone: cleaned,
+      }));
+    } else {
+      setData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
+  // SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!isPasswordMatch) {
-      return setError("Passwords do not match");
-    }
-
-    if (!isStrongPassword) {
-      return setError("Please create a stronger password");
-    }
+    if (!isPasswordMatch) return setError("Passwords do not match");
+    if (!isStrongPassword) return setError("Please create a stronger password");
 
     try {
       setLoading(true);
+
+      const formattedPhone = "+254" + data.phone;
 
       const res = await Axios({
         ...SummaryApi.register,
         data: {
           name: data.name,
           email: data.email,
-          phone: data.phone,
+          phone: formattedPhone,
           nationalId: data.nationalId,
           password: data.password,
         },
@@ -146,7 +149,7 @@ const Register = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs">
 
             {/* NAME */}
             <input
@@ -155,11 +158,12 @@ const Register = () => {
               value={data.name}
               onChange={handleChange}
               placeholder="Full name"
-              className="px-4 py-3 rounded-lg text-xs bg-white/90 text-gray-900 outline-none"
+              className="px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
             />
 
             {/* EMAIL + PHONE */}
-            <div className="flex flex-col-2 text-xs md:flex-row gap-4">
+            <div className="flex flex-col-2 md:flex-row gap-4">
+
               <input
                 type="email"
                 name="email"
@@ -169,14 +173,22 @@ const Register = () => {
                 className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
               />
 
-              <input
-                type="text"
-                name="phone"
-                value={data.phone}
-                onChange={handleChange}
-                placeholder="Phone number"
-                className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
-              />
+              {/* PHONE WITH +254 */}
+              <div className="flex items-center bg-white/90 rounded-lg overflow-hidden w-full">
+                <span className="px-3 text-gray-700 font-medium bg-gray-100">
+                  +254
+                </span>
+                <input
+                  type="text"
+                  name="phone"
+                  value={data.phone}
+                  onChange={handleChange}
+                  placeholder="712345678"
+                  maxLength={9}
+                  className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
+                />
+              </div>
+
             </div>
 
             {/* NATIONAL ID */}
@@ -186,11 +198,11 @@ const Register = () => {
               value={data.nationalId}
               onChange={handleChange}
               placeholder="National ID"
-              className="px-4 py-3 rounded-lg text-xs bg-white/90 text-gray-900 outline-none"
+              className="px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
             />
 
             {/* PASSWORD + CONFIRM */}
-            <div className="flex flex-col-2 md:flex-row text-xs gap-4">
+            <div className="flex flex-col-2 md:flex-row gap-4">
 
               {/* PASSWORD */}
               <div className="flex items-center px-3 rounded-lg bg-white/90 w-full">
@@ -202,10 +214,7 @@ const Register = () => {
                   placeholder="Password"
                   className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
                 />
-                <span
-                  onClick={() => setShowPassword((p) => !p)}
-                  className="cursor-pointer text-gray-500"
-                >
+                <span onClick={() => setShowPassword((p) => !p)} className="cursor-pointer text-gray-500">
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
@@ -220,10 +229,7 @@ const Register = () => {
                   placeholder="Confirm password"
                   className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
                 />
-                <span
-                  onClick={() => setShowConfirm((p) => !p)}
-                  className="cursor-pointer text-gray-500"
-                >
+                <span onClick={() => setShowConfirm((p) => !p)} className="cursor-pointer text-gray-500">
                   {showConfirm ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
@@ -234,22 +240,17 @@ const Register = () => {
             {data.password && (
               <div>
                 <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${strength.color}`}
-                    style={{ width: `${strength.score}%` }}
-                  ></div>
+                  <div className={`h-full ${strength.color}`} style={{ width: `${strength.score}%` }}></div>
                 </div>
                 <p className="text-xs mt-1 text-gray-400">
                   Strength:{" "}
-                  <span
-                    className={
-                      strength.label === "Weak"
-                        ? "text-red-400"
-                        : strength.label === "Medium"
-                        ? "text-yellow-400"
-                        : "text-green-400"
-                    }
-                  >
+                  <span className={
+                    strength.label === "Weak"
+                      ? "text-red-400"
+                      : strength.label === "Medium"
+                      ? "text-yellow-400"
+                      : "text-green-400"
+                  }>
                     {strength.label}
                   </span>
                 </p>
@@ -258,7 +259,7 @@ const Register = () => {
 
             {/* RULES */}
             {data.password && (
-              <div className="text-xs mt-2 space-y-1">
+              <div className="text-xs space-y-1">
                 <p className="text-gray-400">Password must contain:</p>
 
                 <p className={passwordRules.length ? "text-green-400" : "text-gray-400"}>
@@ -286,12 +287,13 @@ const Register = () => {
               </p>
             )}
 
+            {/* BUTTON */}
             <button
               type="submit"
               disabled={
                 loading ||
                 !data.name ||
-                !data.phone ||
+                data.phone.length !== 9 ||
                 !data.nationalId ||
                 !isPasswordMatch ||
                 !isStrongPassword
