@@ -85,9 +85,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Prevent duplicate email/phone errors gracefully
-userSchema.index({ email: 1 }, { unique: true, sparse: true });
-userSchema.index({ phone: 1 }, { unique: true });
+
 
 const UserModel = mongoose.model("User", userSchema);
 
