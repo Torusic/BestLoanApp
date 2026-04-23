@@ -6,107 +6,142 @@ import LoanModel from "../models/loan.model.js";
 
 
 //register user
-export  async function registerController(req,res){
-    try {
-        const{name,email,phone,password,nationalId}=req.body;
-        const userExist=await UserModel.findOne({$or:[{email},{phone},{nationalId}]})
-        if(userExist){
-            return res.status(400).json({
-                message:'User Already Exist',
-                error:true,
-                success:false
-            })
-        }
-        const  salt=await bcryptjs.genSalt(10)  
-        const hashPassword=await bcryptjs.hash(password,salt);
-        
-        const payload={
-            name,
-            email,
-            phone,
-            password:hashPassword,
-            nationalId
-        }
-        const newUser= await UserModel(payload)
-        const save=newUser.save()
+export async function registerController(req, res) {
+  try {
+    const { name, email, phone, password, nationalId } = req.body;
 
-        return res.status(200).json({
-            message:'User Registered Successfully',
-            error:false,
-            success:true,
-            data:newUser
-        })
-    } catch (error) {
-        return res.status(500).json({
-            message:error.message||error,
-            error:true,
-            success:false
-        })
-        
+    // Basic validation
+    if (!name || !phone || !password || !nationalId) {
+      return res.status(400).json({
+        message: "All required fields must be provided",
+        error: true,
+        success: false,
+      });
     }
 
+    // Check if user exists
+    const userExist = await UserModel.findOne({
+      $or: [{ email }, { phone }, { nationalId }],
+    });
+
+    if (userExist) {
+      return res.status(400).json({
+        message: "User already exists",
+        error: true,
+        success: false,
+      });
+    }
+
+    // Hash password
+    const salt = await bcryptjs.genSalt(10);
+    const hashPassword = await bcryptjs.hash(password, salt);
+
+    // Create user
+    const newUser = new UserModel({
+      name,
+      email,
+      phone,
+      password: hashPassword,
+      nationalId,
+    });
+
+    await newUser.save();
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      error: false,
+      success: true,
+      data: {
+        _id: newUser._id,
+        name: newUser.name,
+        phone: newUser.phone,
+        role: newUser.role,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Server error",
+      error: true,
+      success: false,
+    });
+  }
 }
 
 //login user
-export  async function loginController(req,res){
-    try {
-        const{phone,password}=req.body
+export async function loginController(req, res) {
+  try {
+    const { phone, password } = req.body;
 
-        const user=await UserModel.findOne({phone})
-
-        if(!user){
-            return res.status(400).json({
-                message:"User does not exist",
-                error:true,
-                success:false
-            })
-        }
-        const checkPassword=await bcryptjs.compare(password,user.password)
-
-        if(!checkPassword){
-            return res.status(400).json({
-                message:"Invalid Password",
-                error:true,
-                success:false
-            })
-        }
-        const accessToken=await generatedAccessToken(user._id)
-        const refreshToken=await generatedRefreshToken(user._id)
-
-        const updateUser=await UserModel.findByIdAndUpdate(user?._id,{
-            last_login_date:new Date()
-        })
-
-        const cookiesOptions={
-                    httpOnly:true,
-                    secure:true,
-                    sameSite:"None",
-        
-                }
-        
-                res.cookie("accessToken",accessToken,cookiesOptions);
-                res.cookie("refreshToken",refreshToken,cookiesOptions);
-        
-                return res.status(200).json({
-                    message:"User logged in Successfully",
-                    error:false,
-                    success:true,
-                    data:{
-                        accessToken,
-                        refreshToken,
-                        role: user.role, // <-- add this
-                        name: user.name  
-                    }
-                })
-        
-    } catch (error) {
-          return res.status(500).json({
-            message:error.message||error,
-            error:true,
-            success:false
-        })
-        
+    // Validation
+    if (!phone || !password) {
+      return res.status(400).json({
+        message: "Phone and password are required",
+        error: true,
+        success: false,
+      });
     }
+
+    // 🔥 IMPORTANT: include password
+    const user = await UserModel.findOne({ phone }).select("+password");
+
+    if (!user) {
+      return res.status(400).json({
+        message: "User does not exist",
+        error: true,
+        success: false,
+      });
+    }
+
+    // Check password
+    const checkPassword = await bcryptjs.compare(password, user.password);
+
+    if (!checkPassword) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+        error: true,
+        success: false,
+      });
+    }
+
+    // Generate tokens
+    const accessToken = await generatedAccessToken(user._id);
+    const refreshToken = await generatedRefreshToken(user._id);
+
+    // Update last login
+    await UserModel.findByIdAndUpdate(user._id, {
+      last_login_date: new Date(),
+      refresh_token: refreshToken,
+    });
+
+    // Cookie settings
+    const cookiesOptions = {
+      httpOnly: true,
+      secure: true,       // true in production (Render/Vercel)
+      sameSite: "None",   // required for cross-site cookies
+    };
+
+    res.cookie("accessToken", accessToken, cookiesOptions);
+    res.cookie("refreshToken", refreshToken, cookiesOptions);
+
+    return res.status(200).json({
+      message: "User logged in successfully",
+      error: false,
+      success: true,
+      data: {
+        role: user.role,
+        name: user.name,
+        accessToken,
+        refreshToken,
+      },
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Server error",
+      error: true,
+      success: false,
+    });
+  }
 }
 //get All Agents
 export async function getAllAgents(req,res){

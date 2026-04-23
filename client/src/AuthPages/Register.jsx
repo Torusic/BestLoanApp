@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LuLoaderCircle } from "react-icons/lu";
 
-import toast from "react-hot-toast";
 import Axios from "../utils/Axios";
 import SummaryApi from "../common/SummaryApi";
 
@@ -11,6 +10,8 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -23,6 +24,29 @@ const Register = () => {
     confirmPassword: "",
   });
 
+  // 🔐 Password strength function
+  const getPasswordStrength = (password) => {
+    let score = 0;
+
+    if (!password) return { score: 0, label: "", color: "" };
+
+    if (password.length >= 6) score++;
+    if (password.length >= 10) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    if (score <= 2) {
+      return { score: 33, label: "Weak", color: "bg-red-500" };
+    } else if (score <= 4) {
+      return { score: 66, label: "Medium", color: "bg-yellow-400" };
+    } else {
+      return { score: 100, label: "Strong", color: "bg-green-500" };
+    }
+  };
+
+  const strength = getPasswordStrength(data.password);
+
   const isPasswordMatch =
     data.password &&
     data.confirmPassword &&
@@ -30,18 +54,22 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    setError("");
+
     setData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  // REGISTER API
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setError("");
+
     if (!isPasswordMatch) {
-      return toast.error("Passwords do not match");
+      return setError("Passwords do not match");
     }
 
     try {
@@ -59,8 +87,6 @@ const Register = () => {
       });
 
       if (res.data.success) {
-        toast.success("Account created successfully");
-
         setData({
           name: "",
           email: "",
@@ -72,10 +98,10 @@ const Register = () => {
 
         navigate("/login");
       } else {
-        toast.error(res.data.message || "Registration failed");
+        setError(res.data.message || "Registration failed");
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Server error");
+      setError(err?.response?.data?.message || "Server error");
     } finally {
       setLoading(false);
     }
@@ -94,6 +120,13 @@ const Register = () => {
               Join and start your experience
             </p>
           </div>
+
+          {/* 🔴 ERROR */}
+          {error && (
+            <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
@@ -133,6 +166,7 @@ const Register = () => {
               className="px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
             />
 
+            {/* PASSWORD */}
             <div className="flex items-center px-3 rounded-lg bg-white/90">
               <input
                 type={showPassword ? "text" : "password"}
@@ -150,6 +184,33 @@ const Register = () => {
               </span>
             </div>
 
+            {/* 🔐 PASSWORD STRENGTH */}
+            {data.password && (
+              <div>
+                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${strength.color} transition-all`}
+                    style={{ width: `${strength.score}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs mt-1 text-gray-400">
+                  Strength:{" "}
+                  <span
+                    className={
+                      strength.label === "Weak"
+                        ? "text-red-400"
+                        : strength.label === "Medium"
+                        ? "text-yellow-400"
+                        : "text-green-400"
+                    }
+                  >
+                    {strength.label}
+                  </span>
+                </p>
+              </div>
+            )}
+
+            {/* CONFIRM PASSWORD */}
             <div className="flex items-center px-3 rounded-lg bg-white/90">
               <input
                 type={showConfirm ? "text" : "password"}
@@ -167,6 +228,7 @@ const Register = () => {
               </span>
             </div>
 
+            {/* MATCH CHECK */}
             {data.confirmPassword && (
               <p
                 className={`text-xs ${
@@ -184,7 +246,6 @@ const Register = () => {
               disabled={
                 loading ||
                 !data.name ||
-                !data.email ||
                 !data.phone ||
                 !data.nationalId ||
                 !data.password ||
