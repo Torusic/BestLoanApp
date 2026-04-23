@@ -71,7 +71,7 @@ const SummaryApi = {
     url: "/api/agent/register-client",
     method: "post",
   },
-  agentApplyLoan: {
+  applyLoanForCustomer: {
     url: "/api/agent/apply-loan",
     method: "post",
   },

@@ -22,7 +22,7 @@ agentRouter.post(
 agentRouter.post(
   "/apply-loan",
   auth,
-  authorizeRoles("agent"),
+  authorizeRoles("agent","admin"),
   agentApplyLoan
 );
 
