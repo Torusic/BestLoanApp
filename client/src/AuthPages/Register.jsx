@@ -162,7 +162,7 @@ const Register = () => {
             />
 
             {/* EMAIL + PHONE */}
-            <div className="grid gap-2 items-center">
+            <div className="grid gap-3 items-center">
               <input
                 type="email"
                 name="email"
