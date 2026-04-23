@@ -1,92 +1,48 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 3,
-      maxlength: 100,
+const userSchema=new mongoose.Schema({
+    name:{
+        type:String,
+        required:true,
     },
-
-    phone: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      match: [/^0\d{9}$/, "Invalid phone number format"],
-      index: true,
+    phone:{
+        type:String,
+        required:true,
     },
-
-    email: {
-      type: String,
-      unique: true,
-      sparse: true,
-      lowercase: true,
-      trim: true,
-      match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
+    email:{
+        type:String
     },
-
     password: {
       type: String,
-      required: true,
-      minlength: 6,
-      select: false, // hides password by default in queries
+      required: true
     },
-
     nationalId: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      minlength: 6,
-      maxlength: 20,
-      index: true,
-    },
-
-    role: {
-      type: String,
-      enum: ["admin", "agent", "client"],
-      default: "client",
-      index: true,
-    },
-
+        type: String,
+        required: true,
+        unique: true
+        },
     refresh_token: {
-      type: String,
-      default: null,
-      select: false,
-    },
-
+            type: String,
+            default: null,
+        },
     last_login_date: {
-      type: Date,
-      default: null,
+            type: Date,
+            default: null,
+        },
+  
+    role:{
+        type:String,
+        enum:['admin','agent','client'],
+        default:'client'
     },
-
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-      index: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-
-
-const UserModel = mongoose.model("User", userSchema);
-
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  default: null,
+  index: true
+},
+},
+{timestamps:true}
+)
+const UserModel=new mongoose.model('User',userSchema);
 export default UserModel;
