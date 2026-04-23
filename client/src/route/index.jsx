@@ -21,6 +21,7 @@ import MyLoan from "../DashBoard/pages/MyLoan.jsx";
 import History from "../DashBoard/pages/History.jsx";
 import AgentDashboard from "../DashBoard/AgentDashboard.jsx";
 import RepaymentHistory from "../DashBoard/pages/RepaymentHistory.jsx";
+import AgentStats from "../DashBoard/AgentStats.jsx";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,40 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <ClientDashboard />, // default client page
+          },
+          {
+            path: "agentDashboard",
+            element: <AgentDashboard />,
+          },
+          {
+            path: "repayHistory",
+            element: <RepaymentHistory />,
+          },
+          {
+            path: "myloan",
+            element: <MyLoan />,
+          },
+          {
+            path: "apply",
+            element: <ApplyLoan />,
+          },
+          {
+            path: "history",
+            element: <History />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
+          },
+        ],
+      },
+            {
+        path: "agentStats",
+        element: <AgentStats />,
+        children: [
+          {
+            index: true,
+            element: <AgentDashboard />, // default client page
           },
           {
             path: "agentDashboard",

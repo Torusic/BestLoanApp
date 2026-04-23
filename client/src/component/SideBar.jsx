@@ -19,7 +19,7 @@ function SideBar() {
       {
         name: "Dashboard",
         icon: <MdDashboard size={22} />,
-        path: "/adminStats/adminDashboard",
+        path: "/adminStats",
         roles: ["admin"],
       },
       {
@@ -47,17 +47,17 @@ function SideBar() {
         roles: ["admin"],
       },
       {
-        name: "Home",
-        icon: <MdHome size={22} />,
-        path: "/clientStats/clientDashboard",
-        roles: ["client"],
-      },
-      {
-        name: "Dashboard",
-        icon: <MdDashboard size={22} />,
-        path: "/clientStats/agentDashboard",
-        roles: ["agent"],
-      },
+           name: "Home",
+           icon: <MdHome size={22} />,
+           path: "/clientStats",
+           roles: ["client"],
+         },
+          {
+               name: "Dashboard",
+               icon: <MdDashboard size={22} />,
+               path: "/agentStats",
+               roles: ["agent"],
+             },
       {
         name: "My Loan",
         icon: <GrMoney size={20} />,

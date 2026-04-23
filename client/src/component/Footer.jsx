@@ -16,7 +16,7 @@ function Footer() {
       {
         name: "Dashboard",
         icon: <MdDashboard size={22} />,
-        path: "/adminStats/adminDashboard",
+        path: "/adminStats",
         roles: ["admin"],
       },
       {
@@ -46,13 +46,13 @@ function Footer() {
       {
         name: "Home",
         icon: <MdHome size={22} />,
-        path: "/clientStats/clientDashboard",
+        path: "/clientStats",
         roles: ["client"],
       },
        {
             name: "Dashboard",
             icon: <MdDashboard size={22} />,
-            path: "/clientStats/agentDashboard",
+            path: "/agentStats",
             roles: ["agent"],
           },
       {
