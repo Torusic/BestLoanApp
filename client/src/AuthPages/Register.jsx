@@ -169,7 +169,7 @@ const Register = () => {
                 value={data.email}
                 onChange={handleChange}
                 placeholder="Email"
-                className="w-1/2 px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+                className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
               />
 
               <div className="flex w-1/2 items-center bg-white/90 rounded-lg overflow-hidden">
