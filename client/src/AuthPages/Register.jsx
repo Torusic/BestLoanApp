@@ -172,7 +172,7 @@ const Register = () => {
                 className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
               />
 
-              <div className="flex w-1/2 items-center bg-white/90 rounded-lg overflow-hidden">
+              <div className="flex w-full items-center bg-white/90 rounded-lg overflow-hidden">
                 <span className="px-2 text-gray-700 bg-gray-100">+254</span>
                 <input
                   type="text"
