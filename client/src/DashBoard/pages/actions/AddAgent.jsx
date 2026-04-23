@@ -35,7 +35,7 @@ function AddAgent({ close, fetchDashboard }) {
         })
         fetchDashboard()
         close()
-        navigate("/adminStats/adminDashboard")
+        navigate("/adminStats")
       } else {
         toast.error(response.data.error)
       }
