@@ -197,18 +197,15 @@ const AdminDashboard = () => {
           </table>
 
         </div>
-<div className="flex justify-end mt-4">
-  <button
-    disabled
-    className="bg-gray-700 text-gray-400 px-4 py-2 rounded-xl text-sm cursor-not-allowed relative"
-  >
-    View All Agents
 
-    <span className="absolute -top-2 -right-2 text-[10px] bg-yellow-500 text-black px-2 py-[2px] rounded-full">
-      Coming Soon
-    </span>
-  </button>
-</div>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => navigate("adminStats/allAgents")}
+            className="bg-white text-black px-4 py-2 rounded-xl text-sm"
+          >
+            View All Agents
+          </button>
+        </div>
 
       </div>
 
