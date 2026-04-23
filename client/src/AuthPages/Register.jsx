@@ -24,7 +24,7 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  // 🔐 Password strength function
+  // 🔐 Password strength
   const getPasswordStrength = (password) => {
     let score = 0;
 
@@ -47,6 +47,22 @@ const Register = () => {
 
   const strength = getPasswordStrength(data.password);
 
+  // 🔐 Password rules
+  const passwordRules = {
+    length: data.password.length >= 8,
+    uppercase: /[A-Z]/.test(data.password),
+    lowercase: /[a-z]/.test(data.password),
+    number: /[0-9]/.test(data.password),
+    special: /[^A-Za-z0-9]/.test(data.password),
+  };
+
+  const isStrongPassword =
+    passwordRules.length &&
+    passwordRules.uppercase &&
+    passwordRules.lowercase &&
+    passwordRules.number &&
+    passwordRules.special;
+
   const isPasswordMatch =
     data.password &&
     data.confirmPassword &&
@@ -54,7 +70,6 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setError("");
 
     setData((prev) => ({
@@ -65,11 +80,14 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
 
     if (!isPasswordMatch) {
       return setError("Passwords do not match");
+    }
+
+    if (!isStrongPassword) {
+      return setError("Please create a stronger password");
     }
 
     try {
@@ -121,7 +139,7 @@ const Register = () => {
             </p>
           </div>
 
-          {/* 🔴 ERROR */}
+          {/* ERROR */}
           {error && (
             <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
               {error}
@@ -130,66 +148,94 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
+            {/* NAME */}
             <input
               type="text"
               name="name"
               value={data.name}
               onChange={handleChange}
               placeholder="Full name"
-              className="px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+              className="px-4 py-3 rounded-lg text-xs bg-white/90 text-gray-900 outline-none"
             />
 
-            <input
-              type="email"
-              name="email"
-              value={data.email}
-              onChange={handleChange}
-              placeholder="Email address"
-              className="px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
-            />
+            {/* EMAIL + PHONE */}
+            <div className="flex flex-col-2 text-xs md:flex-row gap-4">
+              <input
+                type="email"
+                name="email"
+                value={data.email}
+                onChange={handleChange}
+                placeholder="Email address"
+                className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+              />
 
-            <input
-              type="text"
-              name="phone"
-              value={data.phone}
-              onChange={handleChange}
-              placeholder="Phone number"
-              className="px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
-            />
+              <input
+                type="text"
+                name="phone"
+                value={data.phone}
+                onChange={handleChange}
+                placeholder="Phone number"
+                className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+              />
+            </div>
 
+            {/* NATIONAL ID */}
             <input
               type="text"
               name="nationalId"
               value={data.nationalId}
               onChange={handleChange}
               placeholder="National ID"
-              className="px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+              className="px-4 py-3 rounded-lg text-xs bg-white/90 text-gray-900 outline-none"
             />
 
-            {/* PASSWORD */}
-            <div className="flex items-center px-3 rounded-lg bg-white/90">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={data.password}
-                onChange={handleChange}
-                placeholder="Password"
-                className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
-              />
-              <span
-                onClick={() => setShowPassword((p) => !p)}
-                className="cursor-pointer text-gray-500"
-              >
-                {showPassword ? <FaEye /> : <FaEyeSlash />}
-              </span>
+            {/* PASSWORD + CONFIRM */}
+            <div className="flex flex-col-2 md:flex-row text-xs gap-4">
+
+              {/* PASSWORD */}
+              <div className="flex items-center px-3 rounded-lg bg-white/90 w-full">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={data.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                  className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
+                />
+                <span
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="cursor-pointer text-gray-500"
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </span>
+              </div>
+
+              {/* CONFIRM */}
+              <div className="flex items-center px-3 rounded-lg bg-white/90 w-full">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  name="confirmPassword"
+                  value={data.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm password"
+                  className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
+                />
+                <span
+                  onClick={() => setShowConfirm((p) => !p)}
+                  className="cursor-pointer text-gray-500"
+                >
+                  {showConfirm ? <FaEye /> : <FaEyeSlash />}
+                </span>
+              </div>
+
             </div>
 
-            {/* 🔐 PASSWORD STRENGTH */}
+            {/* STRENGTH */}
             {data.password && (
               <div>
                 <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
                   <div
-                    className={`h-full ${strength.color} transition-all`}
+                    className={`h-full ${strength.color}`}
                     style={{ width: `${strength.score}%` }}
                   ></div>
                 </div>
@@ -210,34 +256,33 @@ const Register = () => {
               </div>
             )}
 
-            {/* CONFIRM PASSWORD */}
-            <div className="flex items-center px-3 rounded-lg bg-white/90">
-              <input
-                type={showConfirm ? "text" : "password"}
-                name="confirmPassword"
-                value={data.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm password"
-                className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
-              />
-              <span
-                onClick={() => setShowConfirm((p) => !p)}
-                className="cursor-pointer text-gray-500"
-              >
-                {showConfirm ? <FaEye /> : <FaEyeSlash />}
-              </span>
-            </div>
+            {/* RULES */}
+            {data.password && (
+              <div className="text-xs mt-2 space-y-1">
+                <p className="text-gray-400">Password must contain:</p>
 
-            {/* MATCH CHECK */}
+                <p className={passwordRules.length ? "text-green-400" : "text-gray-400"}>
+                  {passwordRules.length ? "✔" : "•"} At least 8 characters
+                </p>
+                <p className={passwordRules.uppercase ? "text-green-400" : "text-gray-400"}>
+                  {passwordRules.uppercase ? "✔" : "•"} Uppercase letter
+                </p>
+                <p className={passwordRules.lowercase ? "text-green-400" : "text-gray-400"}>
+                  {passwordRules.lowercase ? "✔" : "•"} Lowercase letter
+                </p>
+                <p className={passwordRules.number ? "text-green-400" : "text-gray-400"}>
+                  {passwordRules.number ? "✔" : "•"} Number
+                </p>
+                <p className={passwordRules.special ? "text-green-400" : "text-gray-400"}>
+                  {passwordRules.special ? "✔" : "•"} Special character
+                </p>
+              </div>
+            )}
+
+            {/* MATCH */}
             {data.confirmPassword && (
-              <p
-                className={`text-xs ${
-                  isPasswordMatch ? "text-green-400" : "text-red-400"
-                }`}
-              >
-                {isPasswordMatch
-                  ? "Passwords match"
-                  : "Passwords do not match"}
+              <p className={`text-xs ${isPasswordMatch ? "text-green-400" : "text-red-400"}`}>
+                {isPasswordMatch ? "Passwords match" : "Passwords do not match"}
               </p>
             )}
 
@@ -248,8 +293,8 @@ const Register = () => {
                 !data.name ||
                 !data.phone ||
                 !data.nationalId ||
-                !data.password ||
-                !isPasswordMatch
+                !isPasswordMatch ||
+                !isStrongPassword
               }
               className="flex items-center justify-center gap-2 py-3 rounded-lg text-white bg-green-500 hover:bg-green-600 disabled:opacity-60"
             >

@@ -66,7 +66,7 @@ const Login = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-[#0f172a] px-6">
+    <section className="min-h-screen flex  text-xs items-center justify-center bg-[#0f172a] px-6">
       <div className="w-full max-w-md">
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 space-y-6">
 
@@ -81,7 +81,7 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
 
-            <div className="space-y-2">
+            <div className="space-y-2 grid items-center gap-2">
               <label className="text-xs text-gray-400">Phone</label>
               <input
                 type="text"
@@ -93,7 +93,7 @@ const Login = () => {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 grid items-center gap-2 mt-1">
               <label className="text-xs text-gray-400">Password</label>
               <div className="flex items-center px-3 rounded-lg bg-white/90 focus-within:ring-2 focus-within:ring-green-400 transition-all">
                 <input
