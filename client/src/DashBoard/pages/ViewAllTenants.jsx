@@ -8,6 +8,11 @@ const ViewAllTenants = () => {
 
   const [agents, setAgents] = useState([])
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState("")
+
+  // 🔢 PAGINATION STATE
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
 
   const fetchAgents = async () => {
     try {
@@ -32,6 +37,26 @@ const ViewAllTenants = () => {
     fetchAgents()
   }, [])
 
+  // 🔍 SEARCH FILTER
+  const filteredAgents = agents.filter((agent) =>
+    agent.name?.toLowerCase().includes(search.toLowerCase()) ||
+    agent.phone?.includes(search) ||
+    agent.nationalId?.includes(search)
+  )
+
+  // 📄 PAGINATION LOGIC
+  const totalPages = Math.ceil(filteredAgents.length / itemsPerPage)
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const currentData = filteredAgents.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  )
+
+  const goToPage = (page) => {
+    setCurrentPage(page)
+  }
+
   if (loading) {
     return (
       <div className="h-[70vh] flex items-center justify-center">
@@ -53,6 +78,20 @@ const ViewAllTenants = () => {
         </p>
       </div>
 
+      {/* SEARCH */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by name, phone or ID..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setCurrentPage(1) // reset page on search
+          }}
+          className="w-full lg:w-1/3 bg-gray-900 border border-gray-800 px-4 py-2 rounded-xl outline-none text-sm"
+        />
+      </div>
+
       {/* TABLE */}
       <div className="bg-gray-900 rounded-2xl border border-gray-800 p-4 overflow-x-auto">
 
@@ -60,7 +99,8 @@ const ViewAllTenants = () => {
 
           <thead className="text-gray-400 border-b border-gray-800">
             <tr>
-              <th className="text-left py-3">Name</th>
+              <th className="text-left py-3">#</th>
+              <th className="text-left">Name</th>
               <th className="text-left">Phone</th>
               <th className="text-left">Email</th>
               <th className="text-left">National ID</th>
@@ -69,9 +109,15 @@ const ViewAllTenants = () => {
           </thead>
 
           <tbody>
-            {agents.length > 0 ? (
-              agents.map((agent) => (
+            {currentData.length > 0 ? (
+              currentData.map((agent, index) => (
                 <tr key={agent._id} className="border-b border-gray-800">
+
+                  {/* INDEX (global index across pages) */}
+                  <td className="py-3 text-gray-400">
+                    {startIndex + index + 1}
+                  </td>
+
                   <td className="py-3">{agent.name}</td>
                   <td>{agent.phone}</td>
                   <td>{agent.email}</td>
@@ -83,7 +129,7 @@ const ViewAllTenants = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center py-6 text-gray-500">
+                <td colSpan="6" className="text-center py-6 text-gray-500">
                   No agents found
                 </td>
               </tr>
@@ -91,6 +137,24 @@ const ViewAllTenants = () => {
           </tbody>
 
         </table>
+      </div>
+
+      {/* 📄 PAGINATION CONTROLS */}
+      <div className="flex justify-center mt-6 gap-2 flex-wrap">
+
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => goToPage(i + 1)}
+            className={`px-3 py-1 rounded-lg text-sm ${
+              currentPage === i + 1
+                ? "bg-white text-black"
+                : "bg-gray-800 text-gray-300"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
 
       </div>
 

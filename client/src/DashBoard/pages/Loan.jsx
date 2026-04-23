@@ -27,6 +27,10 @@ function Loan() {
   const [currentPage, setCurrentPage] = useState(1);
   const loansPerPage = 10;
 
+  const noActionNeeded = (status) => {
+  return ["approved", "disbursed", "rejected", "repaid"].includes(status);
+};
+
   const fetchLoans = async () => {
     try {
       setLoading(true);
@@ -136,6 +140,7 @@ function Loan() {
             {/* HEADER */}
             <thead className="bg-gray-900 text-gray-400 text-xs uppercase">
               <tr>
+                <th className="px-4 py-4 text-left">#</th>
                 <th className="px-4 py-4 text-left">Customer</th>
                 <th className="px-4 py-4">Amount</th>
                 <th className="px-4 py-4">Balance</th>
@@ -215,23 +220,32 @@ function Loan() {
 
                       {/* ACTIONS */}
                       <td className="px-4 py-4">
-                    <div className="flex justify-end gap-2">
+                 {/* ACTIONS */}
 
-  {/* APPROVE */}
-  {isPending && (
-    <button
-      onClick={() => {
-        setSelectedLoan(loan);
-        setApprove(true);
-      }}
-      className="px-3 py-1 text-xs bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600 hover:text-white"
-    >
-      Approve
-    </button>
-  )}
+  <div className="flex justify-end gap-2">
 
-          {/* REJECT */}
-          {isPending && (
+    {/* NO ACTION STATE */}
+    {noActionNeeded(loan.status) ? (
+      <span className="text-xs px-3 py-1  flex items-center gap-2 rounded-lg bg-gray-800 text-gray-400 border border-gray-700">
+        <FaInfoCircle />No action needed
+      </span>
+    ) : (
+      <>
+        {/* APPROVE */}
+        {isPending && (
+          <button
+            onClick={() => {
+              setSelectedLoan(loan);
+              setApprove(true);
+            }}
+            className="px-3 py-1 text-xs bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600 hover:text-white"
+          >
+            Approve
+          </button>
+        )}
+
+        {/* REJECT */}
+        {isPending && (
           <button
             onClick={() => {
               setSelectedLoan(loan);
@@ -243,20 +257,23 @@ function Loan() {
           </button>
         )}
 
-          {/* DISBURSE */}
-          {isApproved && !isDisbursed && (
-            <button
-              onClick={() => {
-                setSelectedLoan(loan);
-                setDisburse(true);
-              }}
-              className="px-3 py-1 text-xs bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white"
-            >
-              Disburse
-            </button>
-          )}
+        {/* DISBURSE */}
+        {isApproved && !isDisbursed && (
+          <button
+            onClick={() => {
+              setSelectedLoan(loan);
+              setDisburse(true);
+            }}
+            className="px-3 py-1 text-xs bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white"
+          >
+            Disburse
+          </button>
+        )}
+      </>
+    )}
 
-        </div>
+  </div>
+
                       </td>
 
                     </tr>

@@ -200,7 +200,7 @@ const AdminDashboard = () => {
 
         <div className="flex justify-end mt-4">
           <button
-            onClick={() => navigate("adminStats/allAgents")}
+            onClick={() => navigate("/adminStats/allAgents")}
             className="bg-white text-black px-4 py-2 rounded-xl text-sm"
           >
             View All Agents
