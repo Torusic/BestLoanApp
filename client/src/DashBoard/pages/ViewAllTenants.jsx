@@ -97,14 +97,14 @@ const ViewAllTenants = () => {
 
         <table className="w-full text-sm">
 
-          <thead className="text-gray-400 border-b border-gray-800">
+          <thead className="text-gray-400 border-b text-xs border-gray-800">
             <tr>
-              <th className="text-left py-3">#</th>
-              <th className="text-left">Name</th>
-              <th className="text-left">Phone</th>
-              <th className="text-left">Email</th>
-              <th className="text-left">National ID</th>
-              <th className="text-left">Created At</th>
+              <th className="text-left py-4 px-4">#</th>
+              <th className="text-left px-4 py-4">Name</th>
+              <th className="text-left px-4 py-4">Phone</th>
+              <th className="text-left px-4 py-4">Email</th>
+              <th className="text-left px-4 py-4">National ID</th>
+              <th className="text-left px-4 py-4">Created At</th>
             </tr>
           </thead>
 
