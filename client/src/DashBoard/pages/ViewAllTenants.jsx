@@ -118,11 +118,11 @@ const ViewAllTenants = () => {
                     {startIndex + index + 1}
                   </td>
 
-                  <td className="py-3">{agent.name}</td>
-                  <td>{agent.phone}</td>
-                  <td>{agent.email}</td>
-                  <td>{agent.nationalId}</td>
-                  <td>
+                  <td className="px-4 py-4 font-medium">{agent.name}</td>
+                  <td className="px-4 py-4 font-medium">{agent.phone}</td>
+                  <td className="px-4 py-4 font-medium">{agent.email}</td>
+                  <td className="px-4 py-4 font-medium">{agent.nationalId}</td>
+                  <td className="px-4 py-4 font-medium">
                     {new Date(agent.createdAt).toLocaleDateString()}
                   </td>
                 </tr>
