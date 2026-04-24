@@ -6,6 +6,19 @@ import toast from 'react-hot-toast'
 import Axios from '../../../utils/Axios'
 import { useNavigate } from 'react-router-dom'
 
+// 🔥 phone formatter
+const formatPhone = (phone) => {
+  if (!phone) return "";
+
+  phone = phone.replace(/\D/g, "");
+
+  if (phone.startsWith("254")) return "+" + phone;
+  if (phone.startsWith("0")) return "+254" + phone.slice(1);
+  if (phone.length === 9) return "+254" + phone;
+
+  return phone;
+};
+
 function AddLoan({ close, fetch }) {
   const navigate = useNavigate()
 
@@ -18,13 +31,29 @@ function AddLoan({ close, fetch }) {
     mpesaCode: ""
   })
 
+  // ✅ INPUT HANDLER
+  const handleChange = (e) => {
+    const { name, value } = e.target
+
+    setData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  // ✅ LOAN SUBMIT
   const applyLoanforCustomer = async (e) => {
     e.preventDefault()
 
     try {
+      const payload = {
+        ...data,
+        phone: formatPhone(data.phone), // 🔥 IMPORTANT FIX
+      }
+
       const response = await Axios({
         ...SummaryApi.applyLoanViaAdmin,
-        data: data
+        data: payload
       })
 
       if (response.data.success) {
@@ -43,13 +72,15 @@ function AddLoan({ close, fetch }) {
         close()
         navigate("/adminStats/loans")
       } else {
-        toast.error(response.data.error)
+        toast.error(response.data.message || "Failed")
       }
+
     } catch (error) {
       AxiosToastError(error)
     }
   }
 
+  // ✅ DURATION CONTROL
   const increment = () => {
     if (data.durationWeeks >= 24) return
     setData(prev => ({
@@ -66,20 +97,12 @@ function AddLoan({ close, fetch }) {
     }))
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
-
   return (
     <section className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'>
 
       <div className='w-full max-w-4xl mx-3 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl'>
 
-        {/* Header */}
+        {/* HEADER */}
         <div className='flex justify-between items-center px-6 py-4 border-b border-gray-800'>
           <div>
             <h2 className='text-white text-sm font-semibold'>Apply Loan</h2>
@@ -94,12 +117,12 @@ function AddLoan({ close, fetch }) {
           </button>
         </div>
 
-        {/* Form */}
+        {/* FORM */}
         <form onSubmit={applyLoanforCustomer} className='p-6'>
 
           <div className='grid grid-cols-2 md:grid-cols-2 text-xs lg:grid-cols-3 gap-4'>
 
-            {/* Name */}
+            {/* NAME */}
             <div>
               <label className='text-xs text-gray-400'>Name</label>
               <input
@@ -111,19 +134,27 @@ function AddLoan({ close, fetch }) {
               />
             </div>
 
-            {/* Phone */}
+            {/* PHONE (FIXED +254) */}
             <div>
               <label className='text-xs text-gray-400'>Phone</label>
-              <input
-                name='phone'
-                value={data.phone}
-                onChange={handleChange}
-                placeholder='Enter phone'
-                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500'
-              />
+
+              <div className='flex items-center mt-1 bg-gray-800 rounded-xl overflow-hidden'>
+                <span className='px-3 bg-gray-700 text-white'>+254</span>
+
+                <input
+                  name='phone'
+                  value={data.phone}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/\D/g, "").slice(0, 9)
+                    setData(prev => ({ ...prev, phone: cleaned }))
+                  }}
+                  placeholder='712345678'
+                  className='w-full p-3 bg-transparent text-white outline-none'
+                />
+              </div>
             </div>
 
-            {/* National ID */}
+            {/* NATIONAL ID */}
             <div>
               <label className='text-xs text-gray-400'>National ID</label>
               <input
@@ -135,7 +166,7 @@ function AddLoan({ close, fetch }) {
               />
             </div>
 
-            {/* Amount */}
+            {/* AMOUNT */}
             <div>
               <label className='text-xs text-gray-400'>Amount</label>
               <input
@@ -147,47 +178,32 @@ function AddLoan({ close, fetch }) {
               />
             </div>
 
-            {/* Duration */}
+            {/* DURATION */}
             <div>
-              <label className='text-xs text-gray-400 flex items-center gap-1'>
-                Duration <span className='text-[10px]'>(weeks)</span>
-              </label>
+              <label className='text-xs text-gray-400'>Duration (weeks)</label>
 
               <div className='mt-1 flex items-center justify-between bg-gray-800 rounded-xl px-4 py-3'>
 
-                <button
-                  type='button'
-                  onClick={decrement}
-                  className='text-white text-xl hover:text-red-400'
-                >
+                <button type='button' onClick={decrement} className='text-white text-xl'>
                   −
                 </button>
 
                 <input
-                  type='number'
-                  name='durationWeeks'
                   value={data.durationWeeks}
                   readOnly
                   className='w-12 text-center bg-transparent text-white outline-none'
                 />
 
-                <button
-                  type='button'
-                  onClick={increment}
-                  className='text-white text-xl hover:text-green-400'
-                >
+                <button type='button' onClick={increment} className='text-white text-xl'>
                   +
                 </button>
 
               </div>
             </div>
 
-            {/* Mpesa Code */}
+            {/* MPESA */}
             <div>
-              <label className='text-xs text-gray-400 flex items-center gap-1'>
-                M-Pesa Code <span className='text-[10px]'>(after payment)</span>
-              </label>
-
+              <label className='text-xs text-gray-400'>M-Pesa Code</label>
               <input
                 name='mpesaCode'
                 value={data.mpesaCode}
@@ -199,7 +215,7 @@ function AddLoan({ close, fetch }) {
 
           </div>
 
-          {/* Submit */}
+          {/* SUBMIT */}
           <button
             type='submit'
             className='w-full mt-6 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 rounded-xl shadow-lg transition'

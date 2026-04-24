@@ -83,10 +83,7 @@ const router = createBrowserRouter([
             index: true,
             element: <ClientDashboard />, // default client page
           },
-          {
-            path: "agentDashboard",
-            element: <AgentDashboard />,
-          },
+        
           {
             path: "repayHistory",
             element: <RepaymentHistory />,

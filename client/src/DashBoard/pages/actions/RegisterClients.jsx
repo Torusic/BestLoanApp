@@ -5,78 +5,105 @@ import Axios from "../../../utils/Axios";
 import SummaryApi from "../../../common/SummaryApi";
 import toast from "react-hot-toast";
 import AxiosToastError from "../../../utils/AxiosToastError";
+import { formatPhone } from "../../../utils/formatPhone";
+
 
 export default function RegisterClients({ onClose }) {
   const [form, setForm] = useState({
     name: "",
     phone: "",
-    email:"",
+    email: "",
     nationalId: "",
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // ✅ VALIDATION
   const validate = () => {
     const newErrors = {};
 
     if (!form.name.trim()) newErrors.name = "Full name is required";
-    if (!/^\d{10,13}$/.test(form.phone))
-      newErrors.phone = "Enter a valid phone number";
-    if (!form.nationalId.trim())
+
+    if (!/^\d{9}$/.test(form.phone)) {
+      newErrors.phone = "Enter 9 digits (e.g. 712345678)";
+    }
+
+    if (!form.nationalId.trim()) {
       newErrors.nationalId = "National ID is required";
+    }
+
+    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) {
+      newErrors.email = "Invalid email format";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // ✅ HANDLE INPUT
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+
+    if (name === "phone") {
+      const cleaned = value.replace(/\D/g, "").slice(0, 9);
+      setForm((prev) => ({ ...prev, phone: cleaned }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
+  // ✅ SUBMIT
   const handleSubmit = async () => {
     if (!validate()) return;
 
     try {
       setLoading(true);
 
-      const response=await Axios({
+      const payload = {
+        ...form,
+        phone: formatPhone(form.phone), // +254 conversion
+      };
+
+      const response = await Axios({
         ...SummaryApi.agentRegisterClient,
-        data:form
-      })
-      if(response.data.success){
+        data: payload,
+      });
+
+      if (response.data.success) {
         toast.success(response.data.message);
+
         setForm({
-            name: "",
-            phone: "",
-            email:"",
-            nationalId: "",
+          name: "",
+          phone: "",
+          email: "",
+          nationalId: "",
+        });
 
-        })
+        onClose();
+      } else {
+        toast.error(response.data.message || "Failed to register client");
       }
-      await new Promise((res) => setTimeout(res, 1200));
-
-      console.log("Submitted:", form);
-
-      onClose();
     } catch (error) {
-      AxiosToastError(error)
+      AxiosToastError(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center p-2 justify-center z-50">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-3">
+
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
         className="bg-white dark:bg-gray-900 w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gray-200 dark:border-gray-800"
       >
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
+
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-5">
           <div>
             <h2 className="text-xl font-semibold">Register Client</h2>
             <p className="text-sm text-gray-500">
@@ -84,64 +111,72 @@ export default function RegisterClients({ onClose }) {
             </p>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
             <X size={18} />
           </button>
         </div>
 
-        {/* Form */}
+        {/* FORM */}
         <div className="space-y-4">
-          {/* Name */}
+
+          {/* NAME */}
           <div>
             <input
               name="name"
               value={form.name}
               onChange={handleChange}
               placeholder="Full Name"
-              className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none"
             />
             {errors.name && (
               <p className="text-red-500 text-xs mt-1">{errors.name}</p>
             )}
           </div>
 
-          {/* Phone */}
+          {/* PHONE (FIXED +254 FORMAT) */}
           <div>
-            <input
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden">
+              <span className="px-3 bg-gray-200 dark:bg-gray-700 text-sm">
+                +254
+              </span>
+
+              <input
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="712345678"
+                maxLength={9}
+                className="w-full p-3 bg-transparent outline-none"
+              />
+            </div>
+
             {errors.phone && (
               <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
             )}
           </div>
-           <div>
+
+          {/* EMAIL */}
+          <div>
             <input
               name="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="Enter Email"
-              className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email (optional)"
+              className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none"
             />
-            {errors.name && (
+            {errors.email && (
               <p className="text-red-500 text-xs mt-1">{errors.email}</p>
             )}
           </div>
 
-          {/* ID */}
+          {/* NATIONAL ID */}
           <div>
             <input
               name="nationalId"
               value={form.nationalId}
               onChange={handleChange}
               placeholder="National ID"
-              className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none"
             />
             {errors.nationalId && (
               <p className="text-red-500 text-xs mt-1">
@@ -149,13 +184,14 @@ export default function RegisterClients({ onClose }) {
               </p>
             )}
           </div>
+
         </div>
 
-        {/* Actions */}
+        {/* BUTTON */}
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-4 py-2 rounded-xl border"
           >
             Cancel
           </button>
@@ -163,12 +199,13 @@ export default function RegisterClients({ onClose }) {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white disabled:opacity-50"
           >
             {loading && <Loader2 className="animate-spin" size={16} />}
             {loading ? "Saving..." : "Register Client"}
           </button>
         </div>
+
       </motion.div>
     </div>
   );

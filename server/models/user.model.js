@@ -10,14 +10,15 @@ const userSchema = new mongoose.Schema(
       maxlength: 100,
     },
 
-   phone: {
+phone: {
   type: String,
   required: true,
   unique: true,
+  index: true,
   trim: true,
   validate: {
     validator: function (v) {
-      return /^\+254\d{9}$/.test(v);
+      return /^\+2547\d{8}$/.test(v);
     },
     message: "Phone must be in format +2547XXXXXXXX"
   }
