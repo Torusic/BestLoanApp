@@ -24,17 +24,6 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  // ================= PHONE FORMAT =================
-  const formatPhone = (phone) => {
-    let cleaned = phone.replace(/\D/g, "");
-
-    if (cleaned.startsWith("0")) {
-      cleaned = cleaned.substring(1);
-    }
-
-    return "+254" + cleaned;
-  };
-
   const isValidPhone = data.phone.replace(/\D/g, "").length === 9;
 
   // ================= PASSWORD STRENGTH =================
@@ -100,7 +89,7 @@ const Register = () => {
         data: {
           name: data.name,
           email: data.email,
-          phone: formatPhone(data.phone),
+          phone: data.phone, // ✅ RAW PHONE SENT (NO FORMAT)
           nationalId: data.nationalId,
           password: data.password,
         },
@@ -151,7 +140,6 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
 
-            {/* NAME */}
             <input
               type="text"
               name="name"
@@ -161,31 +149,27 @@ const Register = () => {
               className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
             />
 
-            {/* EMAIL + PHONE */}
-            <div className="grid gap-3 items-center">
-              <input
-                type="email"
-                name="email"
-                value={data.email}
-                onChange={handleChange}
-                placeholder="Email"
-                className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
-              />
+            <input
+              type="email"
+              name="email"
+              value={data.email}
+              onChange={handleChange}
+              placeholder="Email"
+              className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+            />
 
-              <div className="flex w-full items-center bg-white/90 rounded-lg overflow-hidden">
-                <span className="px-2 text-gray-700 bg-gray-100">+254</span>
-                <input
-                  type="text"
-                  name="phone"
-                  value={data.phone}
-                  onChange={handleChange}
-                  placeholder="712345678"
-                  className="w-full px-2 py-3 bg-transparent outline-none text-gray-900"
-                />
-              </div>
+            <div className="flex items-center bg-white/90 rounded-lg overflow-hidden">
+              <span className="px-2 bg-gray-100 text-gray-700">+254</span>
+              <input
+                type="text"
+                name="phone"
+                value={data.phone}
+                onChange={handleChange}
+                placeholder="712345678"
+                className="w-full px-2 py-3 bg-transparent outline-none text-gray-900"
+              />
             </div>
 
-            {/* NATIONAL ID */}
             <input
               type="text"
               name="nationalId"
@@ -195,10 +179,8 @@ const Register = () => {
               className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
             />
 
-            {/* PASSWORD + CONFIRM */}
+            {/* PASSWORD */}
             <div className="flex gap-3">
-
-              {/* PASSWORD */}
               <div className="flex items-center w-1/2 px-3 bg-white/90 rounded-lg">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -213,7 +195,6 @@ const Register = () => {
                 </span>
               </div>
 
-              {/* CONFIRM */}
               <div className="flex items-center w-1/2 px-3 bg-white/90 rounded-lg">
                 <input
                   type={showConfirm ? "text" : "password"}
@@ -227,44 +208,8 @@ const Register = () => {
                   {showConfirm ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
-
             </div>
 
-            {/* STRENGTH BAR */}
-            {data.password && (
-              <div>
-                <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className={`${strength.color} h-full`}
-                    style={{ width: `${strength.width}%` }}
-                  />
-                </div>
-
-                <p className="text-xs text-gray-400 mt-1">
-                  Strength: {strength.label}
-                </p>
-              </div>
-            )}
-
-            {/* RULES */}
-            {data.password && (
-              <div className="text-xs text-gray-400 space-y-1">
-                <p className={rules.length ? "text-green-400" : ""}>✔ 8+ characters</p>
-                <p className={rules.upper ? "text-green-400" : ""}>✔ Uppercase</p>
-                <p className={rules.lower ? "text-green-400" : ""}>✔ Lowercase</p>
-                <p className={rules.number ? "text-green-400" : ""}>✔ Number</p>
-                <p className={rules.special ? "text-green-400" : ""}>✔ Special character</p>
-              </div>
-            )}
-
-            {/* MATCH */}
-            {data.confirmPassword && (
-              <p className={`text-xs ${isMatch ? "text-green-400" : "text-red-400"}`}>
-                {isMatch ? "Passwords match" : "Passwords do not match"}
-              </p>
-            )}
-
-            {/* BUTTON */}
             <button
               type="submit"
               disabled={loading || !isStrongPassword || !isMatch || !isValidPhone}
@@ -279,13 +224,6 @@ const Register = () => {
                 "Create Account"
               )}
             </button>
-
-            <p className="text-center text-sm text-gray-400">
-              Already have an account?{" "}
-              <Link to="/login" className="text-green-400">
-                Login
-              </Link>
-            </p>
 
           </form>
         </div>
