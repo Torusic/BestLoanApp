@@ -19,31 +19,47 @@ function AddAgent({ close, fetchDashboard }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // ✅ PHONE HANDLER (+254 safe)
-  const handlePhone = (value) => {
-    let cleaned = value.replace(/\D/g, "").slice(0, 9); // 9 digits after 7
-    setAgent((prev) => ({ ...prev, phone: cleaned }));
+  // ================= HANDLE INPUT =================
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+
+    if (name === "phone") {
+      const cleaned = value.replace(/\D/g, "").slice(0, 10); // ✅ 10 digits
+      setAgent((prev) => ({ ...prev, phone: cleaned }));
+      return;
+    }
+
+    setAgent((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // ✅ VALIDATION
+  // ================= VALIDATION =================
   const validate = () => {
     const err = {};
 
     if (!agent.name.trim()) err.name = "Name required";
 
-    if (!/^\d{9}$/.test(agent.phone))
-      err.phone = "Enter valid 7XXXXXXXX format";
+    if (!/^0\d{9}$/.test(agent.phone)) {
+      err.phone = "Enter valid 07XXXXXXXX format (10 digits)";
+    }
 
-    if (agent.email && !/^\S+@\S+\.\S+$/.test(agent.email))
+    if (agent.email && !/^\S+@\S+\.\S+$/.test(agent.email)) {
       err.email = "Invalid email";
+    }
 
-    if (!agent.nationalId) err.nationalId = "National ID required";
+    if (!agent.nationalId.trim()) {
+      err.nationalId = "National ID required";
+    }
 
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
-  // ✅ SUBMIT
+  // ================= SUBMIT =================
   const handleAddAgent = async (e) => {
     e.preventDefault();
 
@@ -54,7 +70,7 @@ function AddAgent({ close, fetchDashboard }) {
 
       const payload = {
         ...agent,
-        phone: "+254" + agent.phone,
+        phone: agent.phone.replace(/\D/g, ""), // still send raw 10 digits
       };
 
       const response = await Axios({
@@ -76,7 +92,7 @@ function AddAgent({ close, fetchDashboard }) {
         close();
         navigate("/adminStats");
       } else {
-        toast.error(response.data.error);
+        toast.error(response.data.message || "Failed to add agent");
       }
     } catch (error) {
       AxiosToastError(error);
@@ -87,6 +103,7 @@ function AddAgent({ close, fetchDashboard }) {
 
   return (
     <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+
       <div className="w-full max-w-lg mx-4 rounded-2xl bg-gray-900 border border-gray-800 shadow-2xl">
 
         {/* HEADER */}
@@ -115,9 +132,7 @@ function AddAgent({ close, fetchDashboard }) {
             <input
               name="name"
               value={agent.name}
-              onChange={(e) =>
-                setAgent({ ...agent, name: e.target.value })
-              }
+              onChange={handleChange}
               placeholder="Enter full name"
               className="w-full mt-1 p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -132,9 +147,7 @@ function AddAgent({ close, fetchDashboard }) {
             <input
               name="email"
               value={agent.email}
-              onChange={(e) =>
-                setAgent({ ...agent, email: e.target.value })
-              }
+              onChange={handleChange}
               placeholder="Enter email (optional)"
               className="w-full mt-1 p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -143,17 +156,20 @@ function AddAgent({ close, fetchDashboard }) {
             )}
           </div>
 
-          {/* PHONE (+254 FIXED) */}
+          {/* PHONE */}
           <div>
             <label className="text-xs text-gray-400">Phone</label>
 
             <div className="flex items-center bg-gray-800 rounded-lg overflow-hidden mt-1">
+
               <span className="px-3 text-gray-300">+254</span>
 
               <input
+                name="phone"
                 value={agent.phone}
-                onChange={(e) => handlePhone(e.target.value)}
-                placeholder="7XXXXXXXX"
+                onChange={handleChange}
+                placeholder="0712345678"
+                maxLength={10}
                 className="w-full p-3 bg-transparent text-white outline-none"
               />
             </div>
@@ -169,16 +185,12 @@ function AddAgent({ close, fetchDashboard }) {
             <input
               name="nationalId"
               value={agent.nationalId}
-              onChange={(e) =>
-                setAgent({ ...agent, nationalId: e.target.value })
-              }
+              onChange={handleChange}
               placeholder="Enter ID number"
               className="w-full mt-1 p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500"
             />
             {errors.nationalId && (
-              <p className="text-red-400 text-xs">
-                {errors.nationalId}
-              </p>
+              <p className="text-red-400 text-xs">{errors.nationalId}</p>
             )}
           </div>
 

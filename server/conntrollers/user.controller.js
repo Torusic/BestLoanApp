@@ -3,31 +3,40 @@ import bcryptjs from 'bcryptjs'
 import generatedAccessToken from "../utils/generateAccessToken.js";
 import generatedRefreshToken from "../utils/generateRefreshToken.js";
 import LoanModel from "../models/loan.model.js";
+import { formatPhone } from "../utils/formatPhone.js";
 
 
 //register user
 export async function registerController(req, res) {
   try {
-    const { name, email, phone, password, nationalId } = req.body;
+    let { name, email, phone, password, nationalId } = req.body;
 
     // Basic validation
     if (!name || !phone || !password || !nationalId) {
       return res.status(400).json({
         message: "All required fields must be provided",
-        error: true,
+        success: false,
+      });
+    }
+
+    // ✅ FORMAT PHONE (single source of truth)
+    const formattedPhone = formatPhone(phone);
+
+    if (!formattedPhone) {
+      return res.status(400).json({
+        message: "Invalid phone number format",
         success: false,
       });
     }
 
     // Check if user exists
     const userExist = await UserModel.findOne({
-      $or: [{ email }, { phone }, { nationalId }],
+      $or: [{ email }, { phone: formattedPhone }, { nationalId }],
     });
 
     if (userExist) {
       return res.status(400).json({
         message: "User already exists",
-        error: true,
         success: false,
       });
     }
@@ -40,7 +49,7 @@ export async function registerController(req, res) {
     const newUser = new UserModel({
       name,
       email,
-      phone,
+      phone: formattedPhone, // ✅ ALWAYS SAVED CLEAN
       password: hashPassword,
       nationalId,
     });
@@ -49,7 +58,6 @@ export async function registerController(req, res) {
 
     return res.status(201).json({
       message: "User registered successfully",
-      error: false,
       success: true,
       data: {
         _id: newUser._id,
@@ -58,10 +66,10 @@ export async function registerController(req, res) {
         role: newUser.role,
       },
     });
+
   } catch (error) {
     return res.status(500).json({
       message: error.message || "Server error",
-      error: true,
       success: false,
     });
   }
@@ -70,24 +78,31 @@ export async function registerController(req, res) {
 //login user
 export async function loginController(req, res) {
   try {
-    const { phone, password } = req.body;
+    let { phone, password } = req.body;
 
-    // Validation
     if (!phone || !password) {
       return res.status(400).json({
         message: "Phone and password are required",
-        error: true,
         success: false,
       });
     }
 
-    // 🔥 IMPORTANT: include password
-    const user = await UserModel.findOne({ phone }).select("+password");
+    // ✅ FORMAT PHONE
+    const formattedPhone = formatPhone(phone);
+
+    if (!formattedPhone) {
+      return res.status(400).json({
+        message: "Invalid phone number format",
+        success: false,
+      });
+    }
+
+    // IMPORTANT: include password
+    const user = await UserModel.findOne({ phone: formattedPhone }).select("+password");
 
     if (!user) {
       return res.status(400).json({
         message: "User does not exist",
-        error: true,
         success: false,
       });
     }
@@ -98,7 +113,6 @@ export async function loginController(req, res) {
     if (!checkPassword) {
       return res.status(400).json({
         message: "Invalid credentials",
-        error: true,
         success: false,
       });
     }
@@ -107,17 +121,15 @@ export async function loginController(req, res) {
     const accessToken = await generatedAccessToken(user._id);
     const refreshToken = await generatedRefreshToken(user._id);
 
-    // Update last login
     await UserModel.findByIdAndUpdate(user._id, {
       last_login_date: new Date(),
       refresh_token: refreshToken,
     });
 
-    // Cookie settings
     const cookiesOptions = {
       httpOnly: true,
-      secure: true,       // true in production (Render/Vercel)
-      sameSite: "None",   // required for cross-site cookies
+      secure: true,
+      sameSite: "None",
     };
 
     res.cookie("accessToken", accessToken, cookiesOptions);
@@ -125,7 +137,6 @@ export async function loginController(req, res) {
 
     return res.status(200).json({
       message: "User logged in successfully",
-      error: false,
       success: true,
       data: {
         role: user.role,
@@ -138,7 +149,6 @@ export async function loginController(req, res) {
   } catch (error) {
     return res.status(500).json({
       message: error.message || "Server error",
-      error: true,
       success: false,
     });
   }

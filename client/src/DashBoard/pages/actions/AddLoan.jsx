@@ -6,19 +6,6 @@ import toast from 'react-hot-toast'
 import Axios from '../../../utils/Axios'
 import { useNavigate } from 'react-router-dom'
 
-// 🔥 phone formatter
-const formatPhone = (phone) => {
-  if (!phone) return "";
-
-  phone = phone.replace(/\D/g, "");
-
-  if (phone.startsWith("254")) return "+" + phone;
-  if (phone.startsWith("0")) return "+254" + phone.slice(1);
-  if (phone.length === 9) return "+254" + phone;
-
-  return phone;
-};
-
 function AddLoan({ close, fetch }) {
   const navigate = useNavigate()
 
@@ -31,9 +18,20 @@ function AddLoan({ close, fetch }) {
     mpesaCode: ""
   })
 
-  // ✅ INPUT HANDLER
+  // ================= HANDLE INPUT =================
   const handleChange = (e) => {
     const { name, value } = e.target
+
+    if (name === "phone") {
+      // ✅ 10 digits max (Kenya local format without +254)
+      const cleaned = value.replace(/\D/g, "").slice(0, 10)
+
+      setData(prev => ({
+        ...prev,
+        phone: cleaned
+      }))
+      return
+    }
 
     setData(prev => ({
       ...prev,
@@ -41,14 +39,21 @@ function AddLoan({ close, fetch }) {
     }))
   }
 
-  // ✅ LOAN SUBMIT
+  // ================= VALIDATION =================
+  const isValidPhone = data.phone.replace(/\D/g, "").length === 10
+
+  // ================= SUBMIT =================
   const applyLoanforCustomer = async (e) => {
     e.preventDefault()
+
+    if (!isValidPhone) {
+      return toast.error("Phone must be exactly 10 digits")
+    }
 
     try {
       const payload = {
         ...data,
-        phone: formatPhone(data.phone), // 🔥 IMPORTANT FIX
+        phone: data.phone.replace(/\D/g, "") // raw 10 digits ONLY
       }
 
       const response = await Axios({
@@ -80,7 +85,7 @@ function AddLoan({ close, fetch }) {
     }
   }
 
-  // ✅ DURATION CONTROL
+  // ================= DURATION CONTROL =================
   const increment = () => {
     if (data.durationWeeks >= 24) return
     setData(prev => ({
@@ -120,7 +125,7 @@ function AddLoan({ close, fetch }) {
         {/* FORM */}
         <form onSubmit={applyLoanforCustomer} className='p-6'>
 
-          <div className='grid grid-cols-2 md:grid-cols-2 text-xs lg:grid-cols-3 gap-4'>
+          <div className='grid grid-cols-2 lg:grid-cols-3 gap-4 text-xs'>
 
             {/* NAME */}
             <div>
@@ -129,14 +134,15 @@ function AddLoan({ close, fetch }) {
                 name='name'
                 value={data.name}
                 onChange={handleChange}
-                placeholder='Enter name'
-                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500'
+                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none'
               />
             </div>
 
-            {/* PHONE (FIXED +254) */}
+            {/* PHONE */}
             <div>
-              <label className='text-xs text-gray-400'>Phone</label>
+              <label className='text-xs text-gray-400'>
+                Phone (10 digits)
+              </label>
 
               <div className='flex items-center mt-1 bg-gray-800 rounded-xl overflow-hidden'>
                 <span className='px-3 bg-gray-700 text-white'>+254</span>
@@ -144,14 +150,17 @@ function AddLoan({ close, fetch }) {
                 <input
                   name='phone'
                   value={data.phone}
-                  onChange={(e) => {
-                    const cleaned = e.target.value.replace(/\D/g, "").slice(0, 9)
-                    setData(prev => ({ ...prev, phone: cleaned }))
-                  }}
-                  placeholder='712345678'
+                  onChange={handleChange}
+                  placeholder='7123456789'
                   className='w-full p-3 bg-transparent text-white outline-none'
                 />
               </div>
+
+              {!isValidPhone && data.phone.length > 0 && (
+                <p className='text-red-400 text-xs mt-1'>
+                  Phone must be 10 digits
+                </p>
+              )}
             </div>
 
             {/* NATIONAL ID */}
@@ -161,8 +170,7 @@ function AddLoan({ close, fetch }) {
                 name='nationalId'
                 value={data.nationalId}
                 onChange={handleChange}
-                placeholder='Enter ID number'
-                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500'
+                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none'
               />
             </div>
 
@@ -173,30 +181,25 @@ function AddLoan({ close, fetch }) {
                 name='amount'
                 value={data.amount}
                 onChange={handleChange}
-                placeholder='Enter amount'
-                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500'
+                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none'
               />
             </div>
 
             {/* DURATION */}
             <div>
-              <label className='text-xs text-gray-400'>Duration (weeks)</label>
+              <label className='text-xs text-gray-400'>Duration</label>
 
               <div className='mt-1 flex items-center justify-between bg-gray-800 rounded-xl px-4 py-3'>
 
-                <button type='button' onClick={decrement} className='text-white text-xl'>
-                  −
-                </button>
+                <button type='button' onClick={decrement}>−</button>
 
                 <input
                   value={data.durationWeeks}
                   readOnly
-                  className='w-12 text-center bg-transparent text-white outline-none'
+                  className='w-12 text-center bg-transparent text-white'
                 />
 
-                <button type='button' onClick={increment} className='text-white text-xl'>
-                  +
-                </button>
+                <button type='button' onClick={increment}>+</button>
 
               </div>
             </div>
@@ -208,8 +211,7 @@ function AddLoan({ close, fetch }) {
                 name='mpesaCode'
                 value={data.mpesaCode}
                 onChange={handleChange}
-                placeholder='Enter payment code'
-                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500'
+                className='w-full mt-1 p-3 rounded-xl bg-gray-800 text-white outline-none'
               />
             </div>
 
@@ -218,7 +220,8 @@ function AddLoan({ close, fetch }) {
           {/* SUBMIT */}
           <button
             type='submit'
-            className='w-full mt-6 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 rounded-xl shadow-lg transition'
+            disabled={!isValidPhone}
+            className='w-full mt-6 bg-green-600 text-white py-3 rounded-xl disabled:opacity-50'
           >
             Add Loan
           </button>

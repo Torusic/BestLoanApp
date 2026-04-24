@@ -5,8 +5,6 @@ import Axios from "../../../utils/Axios";
 import SummaryApi from "../../../common/SummaryApi";
 import toast from "react-hot-toast";
 import AxiosToastError from "../../../utils/AxiosToastError";
-import { formatPhone } from "../../../utils/formatPhone";
-
 
 export default function RegisterClients({ onClose }) {
   const [form, setForm] = useState({
@@ -19,14 +17,19 @@ export default function RegisterClients({ onClose }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // ✅ VALIDATION
+  // ================= VALIDATION =================
   const validate = () => {
     const newErrors = {};
 
-    if (!form.name.trim()) newErrors.name = "Full name is required";
+    if (!form.name.trim()) {
+      newErrors.name = "Full name is required";
+    }
 
-    if (!/^\d{9}$/.test(form.phone)) {
-      newErrors.phone = "Enter 9 digits (e.g. 712345678)";
+    const phoneDigits = form.phone.replace(/\D/g, "");
+
+    // ✅ STRICT 10 DIGITS
+    if (phoneDigits.length !== 10) {
+      newErrors.phone = "Phone must be exactly 10 digits";
     }
 
     if (!form.nationalId.trim()) {
@@ -41,21 +44,29 @@ export default function RegisterClients({ onClose }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ HANDLE INPUT
+  // ================= INPUT HANDLER =================
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setErrors((prev) => ({ ...prev, [name]: "" }));
 
     if (name === "phone") {
-      const cleaned = value.replace(/\D/g, "").slice(0, 9);
-      setForm((prev) => ({ ...prev, phone: cleaned }));
+      // ✅ limit to 10 digits only
+      const cleaned = value.replace(/\D/g, "").slice(0, 10);
+
+      setForm((prev) => ({
+        ...prev,
+        phone: cleaned,
+      }));
     } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
-  // ✅ SUBMIT
+  // ================= SUBMIT =================
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -64,7 +75,7 @@ export default function RegisterClients({ onClose }) {
 
       const payload = {
         ...form,
-        phone: formatPhone(form.phone), // +254 conversion
+        phone: form.phone.replace(/\D/g, ""), // RAW 10 digits ONLY
       };
 
       const response = await Axios({
@@ -133,7 +144,7 @@ export default function RegisterClients({ onClose }) {
             )}
           </div>
 
-          {/* PHONE (FIXED +254 FORMAT) */}
+          {/* PHONE */}
           <div>
             <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden">
               <span className="px-3 bg-gray-200 dark:bg-gray-700 text-sm">
@@ -144,8 +155,7 @@ export default function RegisterClients({ onClose }) {
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                placeholder="712345678"
-                maxLength={9}
+                placeholder="7123456789"
                 className="w-full p-3 bg-transparent outline-none"
               />
             </div>
@@ -179,16 +189,15 @@ export default function RegisterClients({ onClose }) {
               className="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-xl outline-none"
             />
             {errors.nationalId && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.nationalId}
-              </p>
+              <p className="text-red-500 text-xs mt-1">{errors.nationalId}</p>
             )}
           </div>
 
         </div>
 
-        {/* BUTTON */}
+        {/* BUTTONS */}
         <div className="flex justify-end gap-3 mt-6">
+
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-xl border"
@@ -204,6 +213,7 @@ export default function RegisterClients({ onClose }) {
             {loading && <Loader2 className="animate-spin" size={16} />}
             {loading ? "Saving..." : "Register Client"}
           </button>
+
         </div>
 
       </motion.div>

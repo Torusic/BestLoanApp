@@ -18,26 +18,15 @@ const Login = () => {
     password: "",
   });
 
-  // ================= PHONE FORMAT =================
-  const formatPhone = (phone) => {
-    let cleaned = phone.replace(/\D/g, "");
-
-    if (cleaned.startsWith("0")) {
-      cleaned = cleaned.slice(1);
-    }
-
-    return "+254" + cleaned;
-  };
-
-  const isValidPhone = data.phone.replace(/\D/g, "").length === 9;
-
   // ================= HANDLE INPUT =================
   const handleChange = (e) => {
     const { name, value } = e.target;
     setError("");
 
     if (name === "phone") {
-      const cleaned = value.replace(/\D/g, "").slice(0, 9);
+      // keep digits only (no formatting here)
+      const cleaned = value.replace(/\D/g, "").slice(0, 12);
+
       setData((prev) => ({
         ...prev,
         phone: cleaned,
@@ -50,6 +39,9 @@ const Login = () => {
     }
   };
 
+  // ================= VALID PHONE =================
+  const isValidPhone = data.phone.replace(/\D/g, "").length >= 9;
+
   // ================= SUBMIT =================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,7 +53,7 @@ const Login = () => {
       const response = await Axios({
         ...SummaryApi.login,
         data: {
-          phone: formatPhone(data.phone),
+          phone: data.phone, // backend will normalize using formatPhone()
           password: data.password,
         },
       });
@@ -77,15 +69,10 @@ const Login = () => {
         const role = response.data.data?.role;
         localStorage.setItem("role", role);
 
-        if (role === "admin") {
-          navigate("/adminStats");
-        } else if (role === "client") {
-          navigate("/clientStats");
-        } else if (role === "agent") {
-          navigate("/agentStats");
-        } else {
-          navigate("/");
-        }
+        if (role === "admin") navigate("/adminStats");
+        else if (role === "client") navigate("/clientStats");
+        else if (role === "agent") navigate("/agentStats");
+        else navigate("/");
       } else {
         setError(response.data.message || "Login failed");
       }
@@ -98,7 +85,6 @@ const Login = () => {
 
   return (
     <section className="min-h-screen flex text-xs items-center justify-center bg-[#0f172a] px-6">
-
       <div className="w-full max-w-md">
 
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 space-y-6">
@@ -123,7 +109,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* PHONE */}
-            <div className="space-y-2 grid items-center gap-">
+            <div className="space-y-2">
               <label className="text-xs text-gray-400">Phone</label>
 
               <div className="flex items-center bg-white/90 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-green-400">
@@ -138,14 +124,13 @@ const Login = () => {
                   value={data.phone}
                   onChange={handleChange}
                   placeholder="712345678"
-                  maxLength={9}
                   className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
                 />
               </div>
             </div>
 
             {/* PASSWORD */}
-            <div className="space-y-2 grid items-center gap-2 mt-1">
+            <div className="space-y-2">
               <label className="text-xs text-gray-400">Password</label>
 
               <div className="flex items-center px-3 rounded-lg bg-white/90 focus-within:ring-2 focus-within:ring-green-400">
@@ -197,20 +182,10 @@ const Login = () => {
               )}
             </button>
 
-            {/* DIVIDER */}
-            <div className="relative flex items-center">
-              <div className="flex-grow border-t border-gray-700"></div>
-              <span className="mx-3 text-xs text-gray-500">or</span>
-              <div className="flex-grow border-t border-gray-700"></div>
-            </div>
-
             {/* REGISTER */}
             <div className="text-center text-sm text-gray-400">
               Don’t have an account?
-              <Link
-                to="/register"
-                className="ml-1 text-green-400 hover:underline"
-              >
+              <Link to="/register" className="ml-1 text-green-400 hover:underline">
                 Create one
               </Link>
             </div>

@@ -1,6 +1,7 @@
 import bcryptjs from "bcryptjs";
 import LoanModel from "../models/loan.model.js";
 import UserModel from "../models/user.model.js";
+import { formatPhone } from "../utils/formatPhone.js";
 
 // ✅ 1. Register Client (Agent Only)
 export async function registerClientByAgent(req, res) {
@@ -14,9 +15,22 @@ export async function registerClientByAgent(req, res) {
       });
     }
 
-    const { name, email, phone, nationalId } = req.body;
+    let { name, email, phone, nationalId } = req.body;
 
-    const existing = await UserModel.findOne({ nationalId });
+    // ✅ FORMAT PHONE (IMPORTANT FIX)
+    const formattedPhone = formatPhone(phone);
+
+    if (!formattedPhone) {
+      return res.status(400).json({
+        message: "Invalid phone number format",
+        success: false
+      });
+    }
+
+    // Check duplicates (normalize consistency)
+    const existing = await UserModel.findOne({
+      $or: [{ nationalId }, { phone: formattedPhone }]
+    });
 
     if (existing) {
       return res.status(400).json({
@@ -28,7 +42,7 @@ export async function registerClientByAgent(req, res) {
     const client = await UserModel.create({
       name,
       email,
-      phone,
+      phone: formattedPhone, // ✅ CLEAN STORAGE
       nationalId,
       password: await bcryptjs.hash("1234", 10),
       role: "client",
@@ -48,8 +62,6 @@ export async function registerClientByAgent(req, res) {
     });
   }
 }
-
-
 export async function agentDashboardController(req, res) {
   try {
     const agentId = req.userId;
@@ -146,35 +158,22 @@ export async function agentApplyLoan(req, res) {
     const { nationalId, amount, durationWeeks, mpesaCode } = req.body;
 
     if (!agentId) {
-      return res.status(401).json({
-        message: "Unauthorized",
-        success: false
-      });
+      return res.status(401).json({ message: "Unauthorized", success: false });
     }
 
     if (!nationalId || !amount || !durationWeeks || !mpesaCode) {
-      return res.status(400).json({
-        message: "All fields are required",
-        success: false
-      });
+      return res.status(400).json({ message: "All fields are required", success: false });
     }
 
     const client = await UserModel.findOne({ nationalId });
 
     if (!client) {
-      return res.status(404).json({
-        message: "Client not found",
-        success: false
-      });
+      return res.status(404).json({ message: "Client not found", success: false });
     }
-    console.log("AGENT ID (req.userId):", req.userId);
-console.log("CLIENT createdBy:", client.createdBy);
 
+    // ownership check
     if (!client.createdBy || String(client.createdBy) !== String(agentId)) {
-      return res.status(403).json({
-        message: "Unauthorized: Not your client",
-        success: false
-      });
+      return res.status(403).json({ message: "Unauthorized: Not your client", success: false });
     }
 
     const existingLoan = await LoanModel.findOne({
@@ -183,10 +182,7 @@ console.log("CLIENT createdBy:", client.createdBy);
     });
 
     if (existingLoan) {
-      return res.status(400).json({
-        message: "Client already has an active loan",
-        success: false
-      });
+      return res.status(400).json({ message: "Client already has an active loan", success: false });
     }
 
     const loan = await LoanModel.create({
@@ -206,19 +202,13 @@ console.log("CLIENT createdBy:", client.createdBy);
     return res.status(201).json({
       success: true,
       message: "Loan submitted successfully",
-      data: {
-        client: client.name,
-        status: loan.status
-      }
+      data: { client: client.name, status: loan.status }
     });
+
   } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-      success: false
-    });
+    return res.status(500).json({ message: error.message, success: false });
   }
 }
-
 
 export async function getMyClients(req, res) {
   try {

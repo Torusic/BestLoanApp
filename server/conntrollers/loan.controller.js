@@ -48,60 +48,102 @@ export async function applyLoanOnline(req, res) {
 }
 
 export async function applyLoanViaAgent(req, res) {
-    try {
-        const agentId = req.userId;
-        const { name, email, phone, nationalId, amount, durationWeeks, mpesaCode } = req.body;
+  try {
+    const agentId = req.userId;
 
-        let client = await UserModel.findOne({ nationalId });
+    const {
+      name,
+      email,
+      nationalId,
+      amount,
+      durationWeeks,
+      mpesaCode
+    } = req.body;
 
-        if (!client) {
-            const hashedPassword = await bcryptjs.hash("1234", 10);
-            client = await UserModel.create({
-                name,
-                email,
-                phone,
-                nationalId,
-                password: hashedPassword,
-                role: "client"
-            });
-        }
+    // ================= PHONE VALIDATION =================
+    const phone = formatPhone(req.body.phone);
 
-        const loanActive = await LoanModel.findOne({
-            user: client._id,
-            status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
-        });
-
-        if (loanActive) {
-            return res.status(400).json({ message: "Active loan exists" });
-        }if (mpesaCode && await isMpesaCodeUsed(mpesaCode)) {
-  return res.status(400).json({
-    message: "MPESA code already used"
-  });
-}
-
-
-        const loan = await LoanModel.create({
-            user: client._id,
-            agent: agentId,
-            amount,
-            durationWeeks,
-            mpesaCode,
-            status: "pending_approval",
-            feeStatus: "verified",
-            isFeePaid: true,
-            paymentVerified: true,
-            totalRepayment: amount,
-            balance: 0,
-            amountPaid: 0
-        });
-
-        return res.status(200).json({ success: true, data: loan });
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+    if (!phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid phone number format"
+      });
     }
-}
 
+    // ================= FIND OR CREATE CLIENT =================
+    let client = await UserModel.findOne({ nationalId });
+
+    if (!client) {
+      const hashedPassword = await bcryptjs.hash("1234", 10);
+
+      client = await UserModel.create({
+        name,
+        email,
+        phone, // ✅ normalized phone
+        nationalId,
+        password: hashedPassword,
+        role: "client",
+        createdBy: agentId // 🔥 important for ownership tracking
+      });
+    } else {
+      // Optional safety: keep phone updated if wrong format was stored before
+      if (client.phone !== phone) {
+        client.phone = phone;
+        await client.save();
+      }
+    }
+
+    // ================= CHECK ACTIVE LOAN =================
+    const loanActive = await LoanModel.findOne({
+      user: client._id,
+      status: {
+        $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"]
+      }
+    });
+
+    if (loanActive) {
+      return res.status(400).json({
+        success: false,
+        message: "Active loan exists"
+      });
+    }
+
+    // ================= MPESA CHECK =================
+    if (mpesaCode && await isMpesaCodeUsed(mpesaCode)) {
+      return res.status(400).json({
+        success: false,
+        message: "MPESA code already used"
+      });
+    }
+
+    // ================= CREATE LOAN =================
+    const loan = await LoanModel.create({
+      user: client._id,
+      agent: agentId,
+      amount,
+      durationWeeks,
+      mpesaCode,
+      status: "pending_approval",
+      feeStatus: "verified",
+      isFeePaid: true,
+      paymentVerified: true,
+      totalRepayment: amount,
+      balance: 0,
+      amountPaid: 0
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: loan
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
 export async function submitProcessingFeeManually(req, res) {
     try {
         const userId = req.userId;
