@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import AxiosToastError from "../../../utils/AxiosToastError";
-import Axios from "../../../utils/Axios";
 import SummaryApi from "../../../common/SummaryApi";
 import toast from "react-hot-toast";
+import Axios from "../../../utils/Axios";
 import { useNavigate } from "react-router-dom";
 
 function AddAgent({ close, fetchDashboard }) {
@@ -26,7 +26,8 @@ function AddAgent({ close, fetchDashboard }) {
     setErrors((prev) => ({ ...prev, [name]: "" }));
 
     if (name === "phone") {
-      const cleaned = value.replace(/\D/g, "").slice(0, 10); // ✅ 10 digits
+      // allow only digits + enforce 10 digits
+      const cleaned = value.replace(/\D/g, "").slice(0, 10);
       setAgent((prev) => ({ ...prev, phone: cleaned }));
       return;
     }
@@ -44,7 +45,7 @@ function AddAgent({ close, fetchDashboard }) {
     if (!agent.name.trim()) err.name = "Name required";
 
     if (!/^0\d{9}$/.test(agent.phone)) {
-      err.phone = "Enter valid 07XXXXXXXX format (10 digits)";
+      err.phone = "Enter valid 07XXXXXXXX (10 digits)";
     }
 
     if (agent.email && !/^\S+@\S+\.\S+$/.test(agent.email)) {
@@ -68,14 +69,9 @@ function AddAgent({ close, fetchDashboard }) {
     try {
       setLoading(true);
 
-      const payload = {
-        ...agent,
-        phone: agent.phone.replace(/\D/g, ""), // still send raw 10 digits
-      };
-
       const response = await Axios({
         ...SummaryApi.addAgent,
-        data: payload,
+        data: agent, // ✅ send RAW only
       });
 
       if (response.data.success) {
@@ -110,15 +106,10 @@ function AddAgent({ close, fetchDashboard }) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-800">
           <div>
             <h2 className="text-sm font-semibold text-white">Add New Agent</h2>
-            <p className="text-xs text-gray-400">
-              Register a new loan agent
-            </p>
+            <p className="text-xs text-gray-400">Register a new loan agent</p>
           </div>
 
-          <button
-            onClick={close}
-            className="p-2 rounded-lg hover:bg-gray-800 transition"
-          >
+          <button onClick={close} className="p-2 rounded-lg hover:bg-gray-800">
             <IoClose className="text-white text-xl" />
           </button>
         </div>
@@ -127,78 +118,53 @@ function AddAgent({ close, fetchDashboard }) {
         <form onSubmit={handleAddAgent} className="p-5 space-y-4">
 
           {/* NAME */}
-          <div>
-            <label className="text-xs text-gray-400">Full Name</label>
-            <input
-              name="name"
-              value={agent.name}
-              onChange={handleChange}
-              placeholder="Enter full name"
-              className="w-full mt-1 p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500"
-            />
-            {errors.name && (
-              <p className="text-red-400 text-xs">{errors.name}</p>
-            )}
-          </div>
+          <input
+            name="name"
+            value={agent.name}
+            onChange={handleChange}
+            placeholder="Full name"
+            className="w-full p-3 bg-gray-800 text-white rounded-lg"
+          />
+          {errors.name && <p className="text-red-400 text-xs">{errors.name}</p>}
 
           {/* EMAIL */}
-          <div>
-            <label className="text-xs text-gray-400">Email</label>
-            <input
-              name="email"
-              value={agent.email}
-              onChange={handleChange}
-              placeholder="Enter email (optional)"
-              className="w-full mt-1 p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500"
-            />
-            {errors.email && (
-              <p className="text-red-400 text-xs">{errors.email}</p>
-            )}
-          </div>
+          <input
+            name="email"
+            value={agent.email}
+            onChange={handleChange}
+            placeholder="Email (optional)"
+            className="w-full p-3 bg-gray-800 text-white rounded-lg"
+          />
 
           {/* PHONE */}
-          <div>
-            <label className="text-xs text-gray-400">Phone</label>
+          <div className="flex items-center bg-gray-800 rounded-lg overflow-hidden">
+            <span className="px-3 text-gray-300">+254</span>
 
-            <div className="flex items-center bg-gray-800 rounded-lg overflow-hidden mt-1">
-
-              <span className="px-3 text-gray-300">+254</span>
-
-              <input
-                name="phone"
-                value={agent.phone}
-                onChange={handleChange}
-                placeholder="0712345678"
-                maxLength={10}
-                className="w-full p-3 bg-transparent text-white outline-none"
-              />
-            </div>
-
-            {errors.phone && (
-              <p className="text-red-400 text-xs">{errors.phone}</p>
-            )}
+            <input
+              name="phone"
+              value={agent.phone}
+              onChange={handleChange}
+              placeholder="712345678"
+              maxLength={10}
+              className="w-full p-3 bg-transparent text-white outline-none"
+            />
           </div>
+          {errors.phone && <p className="text-red-400 text-xs">{errors.phone}</p>}
 
           {/* NATIONAL ID */}
-          <div>
-            <label className="text-xs text-gray-400">National ID</label>
-            <input
-              name="nationalId"
-              value={agent.nationalId}
-              onChange={handleChange}
-              placeholder="Enter ID number"
-              className="w-full mt-1 p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-green-500"
-            />
-            {errors.nationalId && (
-              <p className="text-red-400 text-xs">{errors.nationalId}</p>
-            )}
-          </div>
+          <input
+            name="nationalId"
+            value={agent.nationalId}
+            onChange={handleChange}
+            placeholder="National ID"
+            className="w-full p-3 bg-gray-800 text-white rounded-lg"
+          />
 
           {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 rounded-xl transition shadow-lg disabled:opacity-60"
+            className="w-full bg-green-600 text-white py-3 rounded-xl"
           >
             {loading ? "Adding..." : "Add Agent"}
           </button>

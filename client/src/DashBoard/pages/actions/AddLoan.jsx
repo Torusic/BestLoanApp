@@ -22,14 +22,17 @@ function AddLoan({ close, fetch }) {
   const handleChange = (e) => {
     const { name, value } = e.target
 
+    // PHONE (strict 10 digits)
     if (name === "phone") {
-      // ✅ 10 digits max (Kenya local format without +254)
       const cleaned = value.replace(/\D/g, "").slice(0, 10)
+      setData(prev => ({ ...prev, phone: cleaned }))
+      return
+    }
 
-      setData(prev => ({
-        ...prev,
-        phone: cleaned
-      }))
+    // AMOUNT (numbers only)
+    if (name === "amount") {
+      const cleaned = value.replace(/\D/g, "")
+      setData(prev => ({ ...prev, amount: cleaned }))
       return
     }
 
@@ -40,20 +43,20 @@ function AddLoan({ close, fetch }) {
   }
 
   // ================= VALIDATION =================
-  const isValidPhone = data.phone.replace(/\D/g, "").length === 10
+  const isValidPhone = /^0\d{9}$/.test(data.phone)
 
   // ================= SUBMIT =================
   const applyLoanforCustomer = async (e) => {
     e.preventDefault()
 
     if (!isValidPhone) {
-      return toast.error("Phone must be exactly 10 digits")
+      return toast.error("Phone must be in 07XXXXXXXX format")
     }
 
     try {
       const payload = {
         ...data,
-        phone: data.phone.replace(/\D/g, "") // raw 10 digits ONLY
+        phone: data.phone // backend will format using formatPhone.js
       }
 
       const response = await Axios({
@@ -114,10 +117,7 @@ function AddLoan({ close, fetch }) {
             <p className='text-xs text-gray-400'>Register loan for customer</p>
           </div>
 
-          <button
-            onClick={close}
-            className='p-2 rounded-lg hover:bg-gray-800 transition'
-          >
+          <button onClick={close} className='p-2 rounded-lg hover:bg-gray-800'>
             <IoClose className='text-white text-xl' />
           </button>
         </div>
@@ -140,9 +140,7 @@ function AddLoan({ close, fetch }) {
 
             {/* PHONE */}
             <div>
-              <label className='text-xs text-gray-400'>
-                Phone (10 digits)
-              </label>
+              <label className='text-xs text-gray-400'>Phone (07XXXXXXXX)</label>
 
               <div className='flex items-center mt-1 bg-gray-800 rounded-xl overflow-hidden'>
                 <span className='px-3 bg-gray-700 text-white'>+254</span>
@@ -151,14 +149,14 @@ function AddLoan({ close, fetch }) {
                   name='phone'
                   value={data.phone}
                   onChange={handleChange}
-                  placeholder='7123456789'
+                  placeholder='712345678'
                   className='w-full p-3 bg-transparent text-white outline-none'
                 />
               </div>
 
-              {!isValidPhone && data.phone.length > 0 && (
+              {data.phone && !isValidPhone && (
                 <p className='text-red-400 text-xs mt-1'>
-                  Phone must be 10 digits
+                  Must start with 0 and be 10 digits
                 </p>
               )}
             </div>
@@ -190,7 +188,6 @@ function AddLoan({ close, fetch }) {
               <label className='text-xs text-gray-400'>Duration</label>
 
               <div className='mt-1 flex items-center justify-between bg-gray-800 rounded-xl px-4 py-3'>
-
                 <button type='button' onClick={decrement}>−</button>
 
                 <input
@@ -200,7 +197,6 @@ function AddLoan({ close, fetch }) {
                 />
 
                 <button type='button' onClick={increment}>+</button>
-
               </div>
             </div>
 
@@ -229,7 +225,6 @@ function AddLoan({ close, fetch }) {
         </form>
 
       </div>
-
     </section>
   )
 }
