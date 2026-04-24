@@ -24,7 +24,7 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  // ================= PHONE VALIDATION (STRICT 10 DIGITS) =================
+  // ================= PHONE (STRICT 10 DIGITS) =================
   const cleanPhone = data.phone.replace(/\D/g, "");
   const isValidPhone = cleanPhone.length === 10;
 
@@ -81,7 +81,7 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    if (!isValidPhone) return setError("Phone number must be exactly 10 digits");
+    if (!isValidPhone) return setError("Phone must be exactly 10 digits");
     if (!isMatch) return setError("Passwords do not match");
     if (!isStrongPassword) return setError("Password is too weak");
 
@@ -93,7 +93,7 @@ const Register = () => {
         data: {
           name: data.name,
           email: data.email,
-          phone: cleanPhone, // ✅ RAW 10-digit phone
+          phone: cleanPhone,
           nationalId: data.nationalId,
           password: data.password,
         },
@@ -123,6 +123,7 @@ const Register = () => {
   return (
     <section className="min-h-screen flex items-center justify-center bg-[#0f172a] px-6">
       <div className="w-full max-w-md">
+
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8">
 
           {/* TITLE */}
@@ -130,9 +131,7 @@ const Register = () => {
             <h1 className="text-2xl font-semibold text-white">
               Create Account
             </h1>
-            <p className="text-sm text-gray-400">
-              Join us today
-            </p>
+            <p className="text-sm text-gray-400">Join us today</p>
           </div>
 
           {/* ERROR */}
@@ -146,7 +145,6 @@ const Register = () => {
 
             {/* NAME */}
             <input
-              type="text"
               name="name"
               value={data.name}
               onChange={handleChange}
@@ -156,7 +154,6 @@ const Register = () => {
 
             {/* EMAIL */}
             <input
-              type="email"
               name="email"
               value={data.email}
               onChange={handleChange}
@@ -168,7 +165,6 @@ const Register = () => {
             <div className="flex items-center bg-white/90 rounded-lg overflow-hidden">
               <span className="px-2 bg-gray-100 text-gray-700">+254</span>
               <input
-                type="text"
                 name="phone"
                 value={data.phone}
                 onChange={handleChange}
@@ -179,7 +175,6 @@ const Register = () => {
 
             {/* NATIONAL ID */}
             <input
-              type="text"
               name="nationalId"
               value={data.nationalId}
               onChange={handleChange}
@@ -219,6 +214,50 @@ const Register = () => {
               </div>
 
             </div>
+
+            {/* PASSWORD STRENGTH BAR */}
+            {data.password && (
+              <div>
+                <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className={`${strength.color} h-full`}
+                    style={{ width: `${strength.width}%` }}
+                  />
+                </div>
+
+                <p className="text-gray-400 mt-1">
+                  Strength: {strength.label}
+                </p>
+              </div>
+            )}
+
+            {/* PASSWORD RULES */}
+            {data.password && (
+              <div className="text-gray-400 space-y-1">
+                <p className={rules.length ? "text-green-400" : ""}>
+                  ✔ At least 8 characters
+                </p>
+                <p className={rules.upper ? "text-green-400" : ""}>
+                  ✔ Uppercase letter
+                </p>
+                <p className={rules.lower ? "text-green-400" : ""}>
+                  ✔ Lowercase letter
+                </p>
+                <p className={rules.number ? "text-green-400" : ""}>
+                  ✔ Number
+                </p>
+                <p className={rules.special ? "text-green-400" : ""}>
+                  ✔ Special character
+                </p>
+              </div>
+            )}
+
+            {/* MATCH */}
+            {data.confirmPassword && (
+              <p className={isMatch ? "text-green-400" : "text-red-400"}>
+                {isMatch ? "Passwords match" : "Passwords do not match"}
+              </p>
+            )}
 
             {/* BUTTON */}
             <button
