@@ -82,7 +82,7 @@ const Login = () => {
         } else if (role === "client") {
           navigate("/clientStats");
         } else if (role === "agent") {
-          navigate("/clientStats");
+          navigate("/agentStats");
         } else {
           navigate("/");
         }
