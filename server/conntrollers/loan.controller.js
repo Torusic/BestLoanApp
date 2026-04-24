@@ -2,6 +2,7 @@ import LoanModel from "../models/loan.model.js";
 import UserModel from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { isMpesaCodeUsed } from "../utils/isMpesaCodeUsed.js";
+import { formatPhone } from "../utils/formatPhone.js";
 
 export async function applyLoanOnline(req, res) {
     try {

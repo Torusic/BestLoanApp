@@ -223,44 +223,52 @@ export async function getAllClients(req,res){
     }
 }
 //admin add agents
-export async function adminAddAgents(req,res){
-    try {
-        
-        const{name,email,phone,nationalId}=req.body;
+export async function adminAddAgents(req, res) {
+  try {
+    const { name, email, phone, nationalId } = req.body;
 
-        const agent=await UserModel.findOne({$or:[{nationalId},{phone}]})
-        if(agent){
-            return res.status(400).json({
-                message:"agent already exist ",
-                error:true,
-                success:false
-            })
-        }
-        const hashedPassword = await bcryptjs.hash("1234", 10);
-        const newAgent=await UserModel.create({
-            name,
-            email,
-            phone,
-            nationalId,
-            password:hashedPassword,
-            role:'agent'
-        })
-        await newAgent.save();
+    const formattedPhone = formatPhone(phone);
 
-        return res.status(200).json({
-            message:"agent added Successfully",
-            error:false,
-            success:true
-        })
-
-        
-    } catch (error) {
-         return res.status(500).json({
-            message:error.message||error,
-            error:true,
-            success:false
-        })
+    if (!formattedPhone) {
+      return res.status(400).json({
+        message: "Invalid phone number",
+        success: false,
+      });
     }
+
+    const agent = await UserModel.findOne({
+      $or: [{ nationalId }, { phone: formattedPhone }],
+    });
+
+    if (agent) {
+      return res.status(400).json({
+        message: "Agent already exists",
+        success: false,
+      });
+    }
+
+    const hashedPassword = await bcryptjs.hash("1234", 10);
+
+    const newAgent = await UserModel.create({
+      name,
+      email,
+      phone: formattedPhone, // ✅ CLEAN STORAGE
+      nationalId,
+      password: hashedPassword,
+      role: "agent",
+    });
+
+    return res.status(200).json({
+      message: "Agent added successfully",
+      success: true,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
 }
 
 //admin stats
