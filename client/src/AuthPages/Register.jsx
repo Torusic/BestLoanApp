@@ -24,7 +24,9 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  const isValidPhone = data.phone.replace(/\D/g, "").length === 9;
+  // ================= PHONE VALIDATION (STRICT 10 DIGITS) =================
+  const cleanPhone = data.phone.replace(/\D/g, "");
+  const isValidPhone = cleanPhone.length === 10;
 
   // ================= PASSWORD STRENGTH =================
   const getStrength = (password) => {
@@ -66,11 +68,12 @@ const Register = () => {
     setError("");
 
     if (name === "phone") {
-      const cleaned = value.replace(/\D/g, "").slice(0, 9);
+      const cleaned = value.replace(/\D/g, "").slice(0, 10);
       setData((prev) => ({ ...prev, phone: cleaned }));
-    } else {
-      setData((prev) => ({ ...prev, [name]: value }));
+      return;
     }
+
+    setData((prev) => ({ ...prev, [name]: value }));
   };
 
   // ================= SUBMIT =================
@@ -78,6 +81,7 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
+    if (!isValidPhone) return setError("Phone number must be exactly 10 digits");
     if (!isMatch) return setError("Passwords do not match");
     if (!isStrongPassword) return setError("Password is too weak");
 
@@ -89,7 +93,7 @@ const Register = () => {
         data: {
           name: data.name,
           email: data.email,
-          phone: data.phone, // ✅ RAW PHONE SENT (NO FORMAT)
+          phone: cleanPhone, // ✅ RAW 10-digit phone
           nationalId: data.nationalId,
           password: data.password,
         },
@@ -140,6 +144,7 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
 
+            {/* NAME */}
             <input
               type="text"
               name="name"
@@ -149,6 +154,7 @@ const Register = () => {
               className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
             />
 
+            {/* EMAIL */}
             <input
               type="email"
               name="email"
@@ -158,6 +164,7 @@ const Register = () => {
               className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
             />
 
+            {/* PHONE */}
             <div className="flex items-center bg-white/90 rounded-lg overflow-hidden">
               <span className="px-2 bg-gray-100 text-gray-700">+254</span>
               <input
@@ -165,11 +172,12 @@ const Register = () => {
                 name="phone"
                 value={data.phone}
                 onChange={handleChange}
-                placeholder="712345678"
+                placeholder="7123456789"
                 className="w-full px-2 py-3 bg-transparent outline-none text-gray-900"
               />
             </div>
 
+            {/* NATIONAL ID */}
             <input
               type="text"
               name="nationalId"
@@ -181,6 +189,7 @@ const Register = () => {
 
             {/* PASSWORD */}
             <div className="flex gap-3">
+
               <div className="flex items-center w-1/2 px-3 bg-white/90 rounded-lg">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -208,8 +217,10 @@ const Register = () => {
                   {showConfirm ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
+
             </div>
 
+            {/* BUTTON */}
             <button
               type="submit"
               disabled={loading || !isStrongPassword || !isMatch || !isValidPhone}
