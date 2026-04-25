@@ -272,7 +272,7 @@ export async function approveLoan(req, res) {
         }
 
         if (loan.status !== "pending_approval") {
-            return res.status(400).json({ message: "Not ready" });
+            return res.status(409).json({ message: "Not ready" });
         }
 
         loan.status = "approved";
@@ -298,7 +298,7 @@ export async function disburseLoan(req, res) {
         }
 
         if (loan.status !== "approved") {
-            return res.status(400).json({ message: "Must be approved first" });
+            return res.status(409).json({ message: "Must be approved first" });
         }
 
         loan.status = "disbursed";
@@ -329,11 +329,11 @@ export async function myLoan(req, res) {
             status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
         }).sort({ createdAt: -1 });
 
-        if (!loan) {
-            return res.status(404).json({ message: "No active loan found" });
-        }
-
-        return res.status(200).json({ success: true, data: loan });
+        return res.status(200).json({
+            success: true,
+            data: loan || null,
+            message: loan ? "Active loan found" : "No active loan"
+        });
 
     } catch (error) {
         return res.status(500).json({ message: error.message });
