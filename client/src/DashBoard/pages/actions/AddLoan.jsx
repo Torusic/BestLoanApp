@@ -5,9 +5,12 @@ import SummaryApi from '../../../common/SummaryApi'
 import toast from 'react-hot-toast'
 import Axios from '../../../utils/Axios'
 import { useNavigate } from 'react-router-dom'
+import { LuLoader } from "react-icons/lu"
 
 function AddLoan({ close, fetch }) {
   const navigate = useNavigate()
+
+  const [loading, setLoading] = useState(false)
 
   const [data, setData] = useState({
     name: "",
@@ -22,14 +25,12 @@ function AddLoan({ close, fetch }) {
   const handleChange = (e) => {
     const { name, value } = e.target
 
-    // PHONE (strict 10 digits)
     if (name === "phone") {
       const cleaned = value.replace(/\D/g, "").slice(0, 10)
       setData(prev => ({ ...prev, phone: cleaned }))
       return
     }
 
-    // AMOUNT (numbers only)
     if (name === "amount") {
       const cleaned = value.replace(/\D/g, "")
       setData(prev => ({ ...prev, amount: cleaned }))
@@ -42,7 +43,6 @@ function AddLoan({ close, fetch }) {
     }))
   }
 
-  // ================= VALIDATION =================
   const isValidPhone = /^0\d{9}$/.test(data.phone)
 
   // ================= SUBMIT =================
@@ -54,14 +54,14 @@ function AddLoan({ close, fetch }) {
     }
 
     try {
-      const payload = {
-        ...data,
-        phone: data.phone // backend will format using formatPhone.js
-      }
+      setLoading(true)
 
       const response = await Axios({
         ...SummaryApi.applyLoanViaAdmin,
-        data: payload
+        data: {
+          ...data,
+          phone: data.phone
+        }
       })
 
       if (response.data.success) {
@@ -85,24 +85,19 @@ function AddLoan({ close, fetch }) {
 
     } catch (error) {
       AxiosToastError(error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  // ================= DURATION CONTROL =================
   const increment = () => {
     if (data.durationWeeks >= 24) return
-    setData(prev => ({
-      ...prev,
-      durationWeeks: prev.durationWeeks + 1
-    }))
+    setData(prev => ({ ...prev, durationWeeks: prev.durationWeeks + 1 }))
   }
 
   const decrement = () => {
     if (data.durationWeeks <= 4) return
-    setData(prev => ({
-      ...prev,
-      durationWeeks: prev.durationWeeks - 1
-    }))
+    setData(prev => ({ ...prev, durationWeeks: prev.durationWeeks - 1 }))
   }
 
   return (
@@ -149,16 +144,9 @@ function AddLoan({ close, fetch }) {
                   name='phone'
                   value={data.phone}
                   onChange={handleChange}
-                  placeholder='0712345678'
                   className='w-full p-3 bg-transparent text-white outline-none'
                 />
               </div>
-
-              {data.phone && !isValidPhone && (
-                <p className='text-red-400 text-xs mt-1'>
-                  Must start with 0 and be 10 digits
-                </p>
-              )}
             </div>
 
             {/* NATIONAL ID */}
@@ -216,10 +204,11 @@ function AddLoan({ close, fetch }) {
           {/* SUBMIT */}
           <button
             type='submit'
-            disabled={!isValidPhone}
-            className='w-full mt-6 bg-green-600 text-white py-3 rounded-xl disabled:opacity-50'
+            disabled={!isValidPhone || loading}
+            className='w-full mt-6 bg-green-600 text-white py-3 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2'
           >
-            Add Loan
+            {loading && <LuLoader className="animate-spin" />}
+            {loading ? "Processing..." : "Add Loan"}
           </button>
 
         </form>

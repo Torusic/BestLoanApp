@@ -8,31 +8,18 @@ import { FaMoneyBillWave } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { FiArrowRightCircle } from "react-icons/fi";
+import { LuLoader } from "react-icons/lu";
 
 const ApplyLoanSkeleton = () => {
   return (
     <div className="bg-gray-800 w-full max-w-lg md:max-w-5xl lg:max-w-7xl p-4 rounded-2xl animate-pulse space-y-6">
-
       <div className="h-6 w-40 bg-gray-700 rounded mx-auto"></div>
-
       <div className="h-16 w-full bg-gray-700 rounded-lg"></div>
-
       <div className="h-4 w-32 bg-gray-700 rounded mx-auto"></div>
-
       <div className="h-10 w-full bg-gray-700 rounded-lg"></div>
-
       <div className="h-2 w-full bg-gray-700 rounded-full"></div>
-
       <div className="h-20 w-full bg-gray-700 rounded-lg"></div>
-
       <div className="h-10 w-full bg-gray-700 rounded-lg"></div>
-
-      <div className="space-y-2">
-        <div className="h-3 w-3/4 bg-gray-700 rounded mx-auto"></div>
-        <div className="h-3 w-2/3 bg-gray-700 rounded mx-auto"></div>
-        <div className="h-3 w-1/2 bg-gray-700 rounded mx-auto"></div>
-      </div>
-
     </div>
   );
 };
@@ -42,6 +29,7 @@ function ApplyLoan() {
   const [apply, setApply] = useState({ amount: "", durationWeeks: 4 });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false); // 🔥 LOADING STATE
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,7 +55,11 @@ function ApplyLoan() {
     setApply((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ================= APPLY LOAN =================
   const handleApply = async () => {
+
+    if (submitting) return; // prevent double click
+
     if (!apply.amount || apply.amount <= 0) {
       setError("Please enter a valid loan amount.");
       return;
@@ -76,20 +68,25 @@ function ApplyLoan() {
     setError("");
 
     try {
+      setSubmitting(true);
+
       const response = await Axios({
         ...SummaryApi.apply,
         data: apply,
       });
 
       if (response.data.success) {
-        toast.success(response.data.message);
+        toast.success(response.data.message || "Loan applied successfully");
         setApply({ amount: "", durationWeeks: 4 });
         navigate("/clientStats/myLoan");
       } else {
         toast.error(response.data.message || "Something went wrong.");
       }
+
     } catch (err) {
       AxiosToastError(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -150,7 +147,6 @@ function ApplyLoan() {
 
             </div>
 
-            {/* PROGRESS BAR */}
             <div className="w-full bg-gray-900 rounded-full h-2">
               <div
                 className="bg-green-500 h-2 rounded-full transition-all duration-300"
@@ -174,15 +170,24 @@ function ApplyLoan() {
           {/* BUTTON */}
           <button
             onClick={handleApply}
-            disabled={!apply.amount || apply.amount <= 0}
-            className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 ${
-              !apply.amount || apply.amount <= 0
+            disabled={!apply.amount || apply.amount <= 0 || submitting}
+            className={`w-full py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition ${
+              !apply.amount || apply.amount <= 0 || submitting
                 ? "bg-gray-700 cursor-not-allowed"
                 : "bg-green-500 hover:bg-green-600"
             }`}
           >
-            <FiArrowRightCircle />
-            Apply
+            {submitting ? (
+              <>
+                <LuLoader className="animate-spin" />
+                Applying...
+              </>
+            ) : (
+              <>
+                <FiArrowRightCircle />
+                Apply
+              </>
+            )}
           </button>
 
           {/* TIPS */}
