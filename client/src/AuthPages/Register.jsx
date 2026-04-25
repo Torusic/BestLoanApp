@@ -280,7 +280,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading || !isFormValid}
-              className="w-full py-3 bg-green-500 rounded-lg flex justify-center items-center gap-2 disabled:opacity-50"
+              className="w-full py-3 bg-green-500 text-white rounded-lg flex justify-center items-center gap-2 disabled:opacity-50"
             >
               {loading ? (
                 <>
