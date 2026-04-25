@@ -109,8 +109,8 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* PHONE */}
-            <div className="space-y-2">
-              <label className="text-xs text-gray-400">Phone</label>
+            <div className="space-y-2 grid items-center gap-2">
+              <label className="text-xs text-gray-400 flex items-center gap-2">Phone <p className="italic text-xs">(10 digits)</p></label>
 
               <div className="flex items-center bg-white/90 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-green-400">
 
@@ -123,14 +123,14 @@ const Login = () => {
                   name="phone"
                   value={data.phone}
                   onChange={handleChange}
-                  placeholder="Enter Phone..."
+                  placeholder="0712345678"
                   className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
                 />
               </div>
             </div>
 
             {/* PASSWORD */}
-            <div className="space-y-2">
+            <div className="space-y-2 grid items-center gap-2">
               <label className="text-xs text-gray-400">Password</label>
 
               <div className="flex items-center px-3 rounded-lg bg-white/90 focus-within:ring-2 focus-within:ring-green-400">
