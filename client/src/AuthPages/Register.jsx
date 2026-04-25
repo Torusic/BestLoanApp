@@ -11,6 +11,7 @@ const Register = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -24,14 +25,14 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  // ================= PHONE (STRICT 10 DIGITS) =================
+  // ================= PHONE VALIDATION =================
   const cleanPhone = data.phone.replace(/\D/g, "");
-  const isValidPhone = cleanPhone.length === 10;
+  const isValidPhone =
+    cleanPhone.length === 10 && cleanPhone.startsWith("07");
 
   // ================= PASSWORD STRENGTH =================
   const getStrength = (password) => {
     let score = 0;
-
     if (password.length >= 8) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/[a-z]/.test(password)) score++;
@@ -45,7 +46,6 @@ const Register = () => {
 
   const strength = getStrength(data.password);
 
-  // ================= RULES =================
   const rules = {
     length: data.password.length >= 8,
     upper: /[A-Z]/.test(data.password),
@@ -81,9 +81,21 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    if (!isValidPhone) return setError("Phone must be exactly 10 digits");
-    if (!isMatch) return setError("Passwords do not match");
-    if (!isStrongPassword) return setError("Password is too weak");
+    // 🔥 TERMS VALIDATION FIX (IMPORTANT)
+    if (!termsAccepted) {
+      return setError(
+        "Please agree to the Terms and Conditions before creating an account."
+      );
+    }
+
+    if (!isValidPhone)
+      return setError("Phone must start with 07 and be 10 digits");
+
+    if (!isMatch)
+      return setError("Passwords do not match");
+
+    if (!isStrongPassword)
+      return setError("Password is too weak");
 
     try {
       setLoading(true);
@@ -109,6 +121,7 @@ const Register = () => {
           confirmPassword: "",
         });
 
+        setTermsAccepted(false);
         navigate("/login");
       } else {
         setError(res.data.message || "Registration failed");
@@ -120,11 +133,21 @@ const Register = () => {
     }
   };
 
+  const isFormValid =
+    isValidPhone &&
+    isStrongPassword &&
+    isMatch &&
+    termsAccepted &&
+    data.name &&
+    data.email &&
+    data.nationalId;
+
   return (
     <section className="min-h-screen flex items-center justify-center bg-[#0f172a] px-6">
+
       <div className="w-full max-w-md">
 
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8">
+        <div className="bg-white/5 backdrop-blur-xl shadow-2xl rounded-2xl p-8">
 
           {/* TITLE */}
           <div className="text-center mb-6">
@@ -136,77 +159,74 @@ const Register = () => {
 
           {/* ERROR */}
           {error && (
-            <div className="mb-4 text-sm text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
+            <div className="mb-4 text-sm text-red-400 bg-red-500/10 p-3 rounded-lg">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
 
-            {/* NAME */}
             <input
               name="name"
               value={data.name}
               onChange={handleChange}
               placeholder="Full name"
-              className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-white text-gray-900 outline-none"
             />
 
-            {/* EMAIL */}
             <input
               name="email"
               value={data.email}
               onChange={handleChange}
               placeholder="Email"
-              className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-white text-gray-900 outline-none"
             />
 
             {/* PHONE */}
-            <div className="flex items-center bg-white/90 rounded-lg overflow-hidden">
-              <span className="px-2 bg-gray-100 text-gray-700">+254</span>
+            <div className="flex items-center bg-white rounded-lg overflow-hidden">
+              <span className="px-3 text-gray-700">+254</span>
               <input
                 name="phone"
                 value={data.phone}
                 onChange={handleChange}
                 placeholder="0712345678"
-                className="w-full px-2 py-3 bg-transparent outline-none text-gray-900"
+                className="w-full px-2 py-3 bg-white text-gray-900 outline-none"
               />
             </div>
 
-            {/* NATIONAL ID */}
             <input
               name="nationalId"
               value={data.nationalId}
               onChange={handleChange}
               placeholder="National ID"
-              className="w-full px-4 py-3 rounded-lg bg-white/90 text-gray-900 outline-none"
+              className="w-full px-4 py-3 rounded-lg bg-white text-gray-900 outline-none"
             />
 
             {/* PASSWORD */}
             <div className="flex gap-3">
 
-              <div className="flex items-center w-1/2 px-3 bg-white/90 rounded-lg">
+              <div className="flex items-center w-1/2 px-3 bg-white rounded-lg">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={data.password}
                   onChange={handleChange}
                   placeholder="Password"
-                  className="w-full py-3 bg-transparent outline-none"
+                  className="w-full py-3 bg-white text-gray-900 outline-none"
                 />
                 <span onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </span>
               </div>
 
-              <div className="flex items-center w-1/2 px-3 bg-white/90 rounded-lg">
+              <div className="flex items-center w-1/2 px-3 bg-white rounded-lg">
                 <input
                   type={showConfirm ? "text" : "password"}
                   name="confirmPassword"
                   value={data.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm"
-                  className="w-full py-3 bg-transparent outline-none"
+                  className="w-full py-3 bg-white text-gray-900 outline-none"
                 />
                 <span onClick={() => setShowConfirm(!showConfirm)}>
                   {showConfirm ? <FaEye /> : <FaEyeSlash />}
@@ -215,55 +235,52 @@ const Register = () => {
 
             </div>
 
-            {/* PASSWORD STRENGTH BAR */}
+            {/* PASSWORD STRENGTH */}
             {data.password && (
-              <div>
-                <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div className="space-y-2">
+                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div
-                    className={`${strength.color} h-full`}
+                    className={`${strength.color} h-full transition-all`}
                     style={{ width: `${strength.width}%` }}
                   />
                 </div>
-
-                <p className="text-gray-400 mt-1">
+                <p className="text-gray-300 text-xs">
                   Strength: {strength.label}
                 </p>
               </div>
             )}
 
-            {/* PASSWORD RULES */}
+            {/* RULES */}
             {data.password && (
-              <div className="text-gray-400 space-y-1">
-                <p className={rules.length ? "text-green-400" : ""}>
-                  ✔ At least 8 characters
-                </p>
-                <p className={rules.upper ? "text-green-400" : ""}>
-                  ✔ Uppercase letter
-                </p>
-                <p className={rules.lower ? "text-green-400" : ""}>
-                  ✔ Lowercase letter
-                </p>
-                <p className={rules.number ? "text-green-400" : ""}>
-                  ✔ Number
-                </p>
-                <p className={rules.special ? "text-green-400" : ""}>
-                  ✔ Special character
-                </p>
+              <div className="text-xs space-y-1 text-gray-300">
+                <p className={rules.length ? "text-green-400" : ""}>✔ 8+ characters</p>
+                <p className={rules.upper ? "text-green-400" : ""}>✔ Uppercase</p>
+                <p className={rules.lower ? "text-green-400" : ""}>✔ Lowercase</p>
+                <p className={rules.number ? "text-green-400" : ""}>✔ Number</p>
+                <p className={rules.special ? "text-green-400" : ""}>✔ Special character</p>
               </div>
             )}
 
-            {/* MATCH */}
-            {data.confirmPassword && (
-              <p className={isMatch ? "text-green-400" : "text-red-400"}>
-                {isMatch ? "Passwords match" : "Passwords do not match"}
-              </p>
-            )}
+            {/* TERMS */}
+            <div className="flex items-center gap-2 text-xs text-gray-300">
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              />
+              <span>
+                I agree to{" "}
+                <Link to="/terms-and-conditions" className="text-green-400 underline">
+                  Terms & Conditions
+                </Link>
+              </span>
+            </div>
 
             {/* BUTTON */}
             <button
               type="submit"
-              disabled={loading || !isStrongPassword || !isMatch || !isValidPhone}
-              className="w-full py-3 bg-green-500 text-white rounded-lg flex justify-center items-center gap-2 disabled:opacity-60"
+              disabled={loading || !isFormValid}
+              className="w-full py-3 bg-green-500 rounded-lg flex justify-center items-center gap-2 disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -274,14 +291,9 @@ const Register = () => {
                 "Create Account"
               )}
             </button>
-             <div className="text-center text-sm text-gray-400">
-                          Already have an account?
-                          <Link to="/login" className="ml-1 text-green-400 hover:underline">
-                            Login
-                          </Link>
-                          </div>
 
           </form>
+
         </div>
       </div>
     </section>

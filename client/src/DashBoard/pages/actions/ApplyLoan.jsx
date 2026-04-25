@@ -194,7 +194,7 @@ function ApplyLoan() {
               Maximum loan duration is 24 weeks, minimum is 4 weeks.
             </p>
             <p className="text-xs text-gray-400 italic">
-              You will be redirected to pay the processing fee after applying.
+              You will be redirected to pay the non refundable processing fee after applying.
             </p>
           </div>
 

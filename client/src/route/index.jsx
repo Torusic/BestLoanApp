@@ -22,6 +22,7 @@ import History from "../DashBoard/pages/History.jsx";
 import AgentDashboard from "../DashBoard/AgentDashboard.jsx";
 import RepaymentHistory from "../DashBoard/pages/RepaymentHistory.jsx";
 import AgentStats from "../DashBoard/AgentStats.jsx";
+import TermsAndConditions from "../DashBoard/pages/TermsAndConditions.jsx";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path:"terms-and-conditions",
+        element:<TermsAndConditions/>
       },
 
       // ================= ADMIN ROUTES =================
