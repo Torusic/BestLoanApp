@@ -123,7 +123,7 @@ const Login = () => {
                   name="phone"
                   value={data.phone}
                   onChange={handleChange}
-                  placeholder="712345678"
+                  placeholder="Enter Phone..."
                   className="w-full px-2 py-3 bg-transparent text-gray-900 outline-none"
                 />
               </div>

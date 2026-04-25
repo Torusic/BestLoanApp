@@ -168,7 +168,7 @@ const Register = () => {
                 name="phone"
                 value={data.phone}
                 onChange={handleChange}
-                placeholder="7123456789"
+                placeholder="Enter Phone"
                 className="w-full px-2 py-3 bg-transparent outline-none text-gray-900"
               />
             </div>
