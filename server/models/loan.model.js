@@ -84,6 +84,11 @@ const loanSchema = new mongoose.Schema(
       sparse: true,
       index: true
     },
+    isActive: {
+  type: Boolean,
+  default: true,
+  index: true
+},
 
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -123,5 +128,15 @@ const loanSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// 🔒 ONE ACTIVE LOAN PER USER (REAL FIX)
+loanSchema.index(
+  { user: 1, isActive: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true
+    }
+  }
+);
 const LoanModel = mongoose.model("Loan", loanSchema);
 export default LoanModel;

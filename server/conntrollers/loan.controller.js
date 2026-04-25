@@ -5,49 +5,61 @@ import { isMpesaCodeUsed } from "../utils/isMpesaCodeUsed.js";
 import { formatPhone } from "../utils/formatPhone.js";
 
 export async function applyLoanOnline(req, res) {
-    try {
-        const clientId = req.userId;
-        const { amount, durationWeeks } = req.body;
+  try {
+    const clientId = req.userId;
+    const { amount, durationWeeks } = req.body;
 
-        if (amount < 5000 || amount > 95000) {
-            return res.status(400).json({ message: "Invalid amount" });
-        }
-
-        if (durationWeeks < 4 || durationWeeks > 24) {
-            return res.status(400).json({ message: "Invalid duration" });
-        }
-
-       const loanActive = await LoanModel.findOne({
-    user: clientId,
-    status: { 
-        $in: ["awaiting_fee", "pending_approval", "approved","disbursed"] 
+    if (amount < 5000 || amount > 95000) {
+      return res.status(400).json({ message: "Invalid amount" });
     }
-});
 
-        if (loanActive) {
-            return res.status(400).json({ message: "Active loan exists" });
-        }
-
-        const loan = await LoanModel.create({
-            user: clientId,
-            amount,
-            durationWeeks,
-            status: "awaiting_fee",
-            feeStatus: "pending",
-            isFeePaid: false,
-            paymentVerified: false,
-            totalRepayment:0,
-            balance: 0,
-            amountPaid: 0
-        });
-
-        return res.status(200).json({ success: true, data: loan });
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+    if (durationWeeks < 4 || durationWeeks > 24) {
+      return res.status(400).json({ message: "Invalid duration" });
     }
+
+    // 🔥 ATOMIC LOCK CHECK (IMPORTANT FIX)
+    const existingLoan = await LoanModel.findOneAndUpdate(
+      {
+        user: clientId,
+        status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
+      },
+      { $setOnInsert: {} },
+      {
+        new: true,
+        upsert: false
+      }
+    );
+
+    if (existingLoan) {
+      return res.status(400).json({
+        success: false,
+        message: "You already have an active loan"
+      });
+    }
+
+    // CREATE LOAN
+    const loan = await LoanModel.create({
+      user: clientId,
+      amount,
+      durationWeeks,
+      status: "awaiting_fee",
+      feeStatus: "pending",
+      isFeePaid: false,
+      paymentVerified: false,
+      totalRepayment: 0,
+      balance: 0,
+      amountPaid: 0
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: loan
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
-
 export async function applyLoanViaAgent(req, res) {
   try {
     const agentId = req.userId;
@@ -95,19 +107,17 @@ export async function applyLoanViaAgent(req, res) {
     }
 
     // ================= CHECK ACTIVE LOAN =================
-    const loanActive = await LoanModel.findOne({
-      user: client._id,
-      status: {
-        $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"]
-      }
-    });
+ const loanActive = await LoanModel.findOne({
+  user: client._id,
+  status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
+}).lean();
 
-    if (loanActive) {
-      return res.status(400).json({
-        success: false,
-        message: "Active loan exists"
-      });
-    }
+if (loanActive) {
+  return res.status(400).json({
+    success: false,
+    message: "Client already has an active loan"
+  });
+}
 
     // ================= MPESA CHECK =================
     if (mpesaCode && await isMpesaCodeUsed(mpesaCode)) {
@@ -146,45 +156,67 @@ export async function applyLoanViaAgent(req, res) {
   }
 }
 export async function submitProcessingFeeManually(req, res) {
-    try {
-        const userId = req.userId;
-        const { mpesaCode, amount } = req.body;
+  try {
+    const userId = req.userId;
+    const { mpesaCode, amount } = req.body;
 
-        const loan = await LoanModel.findOne({
-            user: userId,
-            status: "awaiting_fee"
-        });
-
-        if (!loan) {
-            return res.status(400).json({ message: "No loan awaiting fee" });
-        } if (await isMpesaCodeUsed(mpesaCode)) {
+    if (!mpesaCode || !amount) {
       return res.status(400).json({
+        success: false,
+        message: "Missing required fields"
+      });
+    }
+
+    const loan = await LoanModel.findOne({
+      user: userId,
+      status: "awaiting_fee"
+    });
+
+    if (!loan) {
+      return res.status(400).json({
+        success: false,
+        message: "No loan awaiting fee"
+      });
+    }
+
+    // 🔥 FIX: mpesa check first (faster)
+    const usedMpesa = await LoanModel.findOne({ mpesaCode });
+    if (usedMpesa) {
+      return res.status(400).json({
+        success: false,
         message: "MPESA code already used"
       });
     }
 
-        const existing = await LoanModel.findOne({ mpesaCode });
-
-        if (existing) {
-            return res.status(400).json({ message: "MPESA code used" });
-        }
-
-        if (Number(amount) !== Number(loan.processingFee || 0)) {
-            return res.status(400).json({ message: "Invalid fee amount" });
-        }
-
-        loan.mpesaCode = mpesaCode;
-        loan.feeStatus = "submitted";
-        loan.isFeePaid = true;
-        loan.status = "pending_approval";
-
-        await loan.save();
-
-        return res.status(200).json({ success: true, data: loan });
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+    if (await isMpesaCodeUsed(mpesaCode)) {
+      return res.status(400).json({
+        success: false,
+        message: "MPESA code already used"
+      });
     }
+
+    if (Number(amount) !== Number(loan.processingFee)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid fee amount"
+      });
+    }
+
+    loan.mpesaCode = mpesaCode;
+    loan.feeStatus = "submitted";
+    loan.isFeePaid = true;
+    loan.status = "pending_approval";
+
+    await loan.save();
+
+    return res.status(200).json({
+      success: true,
+      data: loan
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 export async function approveProcessingFee(req, res) {
@@ -323,21 +355,21 @@ export async function disburseLoan(req, res) {
 }
 
 export async function myLoan(req, res) {
-    try {
-        const loan = await LoanModel.findOne({
-            user: req.userId,
-            status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
-        }).sort({ createdAt: -1 });
+  try {
+    const loan = await LoanModel.findOne({
+      user: req.userId,
+      status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
+    }).sort({ createdAt: -1 });
 
-        return res.status(200).json({
-            success: true,
-            data: loan || null,
-            message: loan ? "Active loan found" : "No active loan"
-        });
+    return res.status(200).json({
+      success: true,
+      data: loan || null,
+      message: loan ? "Active loan found" : "No active loan"
+    });
 
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 export async function getMyLoanHistory(req, res) {
