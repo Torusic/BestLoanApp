@@ -144,7 +144,7 @@ function AddAgent({ close, fetchDashboard }) {
               name="phone"
               value={agent.phone}
               onChange={handleChange}
-              placeholder="712345678"
+              placeholder="0712345678"
               maxLength={10}
               className="w-full p-3 bg-transparent text-white outline-none"
             />

@@ -149,7 +149,7 @@ function AddLoan({ close, fetch }) {
                   name='phone'
                   value={data.phone}
                   onChange={handleChange}
-                  placeholder='712345678'
+                  placeholder='0712345678'
                   className='w-full p-3 bg-transparent text-white outline-none'
                 />
               </div>

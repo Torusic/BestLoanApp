@@ -155,7 +155,7 @@ export default function RegisterClients({ onClose }) {
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                placeholder="7123456789"
+                placeholder="07123456789"
                 className="w-full p-3 bg-transparent outline-none"
               />
             </div>
