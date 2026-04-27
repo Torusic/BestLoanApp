@@ -211,10 +211,12 @@ function Loan() {
               <tr>
                 <th className="px-4 py-4 text-left">#</th>
                 <th className="px-4 py-4 text-left">Customer</th>
-                <th className="px-4 py-4">Amount</th>
+                <th className="px-4 py-4">Loan Amount</th>
+                <th className="px-4 py-4">Interest Amount</th>
                 <th className="px-4 py-4">Balance</th>
                 <th className="px-4 py-4">Paid</th>
                 <th className="px-4 py-4">Duration</th>
+                
                 <th className="px-4 py-4">Fee MPESA code</th>
                 <th className="px-4 py-4">Fee Status</th>
                 
@@ -245,10 +247,14 @@ function Loan() {
                     <td className="px-4 py-4">{index + 1}</td>
                     <td className="px-4 py-4">{loan.user?.name}</td>
                     <td className="px-4 py-4 text-green-400">KES {loan.amount}</td>
+                                        <td className="px-4 py-4 text-purple-400">
+                    {loan.interestAmount}
+                  </td>
                     <td className="px-4 py-4 text-red-400">KES {loan.balance || 0}</td>
                     <td className="px-4 py-4 text-blue-400">{loan.amountPaid}</td>
                     
                     <td className="px-4 py-4">{loan.durationWeeks}</td>
+
  
                     <td className="px-4 py-4">{loan.mpesaCode || "N/A"}</td>
                    <td className="px-4 py-4">

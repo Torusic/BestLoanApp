@@ -2,8 +2,14 @@ import LoanModel from "../models/loan.model.js";
 import RepaymentModel from "../models/repayment.model.js";
 
 export const isMpesaCodeUsed = async (mpesaCode) => {
-  const loan = await LoanModel.findOne({ mpesaCode });
-  const repayment = await RepaymentModel.findOne({ mpesaCode });
+  if (!mpesaCode) return false;
 
-  return !!(loan || repayment);
+  const code = mpesaCode.trim().toUpperCase();
+
+  const [loan, repayment] = await Promise.all([
+    LoanModel.findOne({ mpesaCode: code }),
+    RepaymentModel.findOne({ mpesaCode: code })
+  ]);
+
+  return Boolean(loan || repayment);
 };

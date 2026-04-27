@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 import AxiosToastError from "../../utils/AxiosToastError";
@@ -46,9 +46,9 @@ function ActiveLoan() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
-  const [showMore, setShowMore] = useState(false);
   const [fee, setFee] = useState(false);
-const[repay,setRepay]=useState(false)
+  const [repay, setRepay] = useState(false);
+
   const fetchActiveLoans = useCallback(async () => {
     try {
       setError(null);
@@ -76,9 +76,10 @@ const[repay,setRepay]=useState(false)
     fetchActiveLoans();
   }, [fetchActiveLoans]);
 
+  // SAFE PROGRESS CALCULATION
   const progress = useMemo(() => {
-    if (!active) return 0;
-    if (!active.totalRepayment) return 0;
+    if (!active || !active.totalRepayment) return 0;
+
     return Math.min(
       100,
       Math.round((active.amountPaid / active.totalRepayment) * 100)
@@ -178,23 +179,48 @@ const[repay,setRepay]=useState(false)
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-800 p-3 rounded-lg">
               <p className="text-xs text-gray-400">Paid</p>
-              <p className="text-blue-400">{formatCurrency(active.amountPaid)}</p>
+              <p className="text-blue-400">
+                {formatCurrency(active.amountPaid)}
+              </p>
             </div>
 
             <div className="bg-gray-800 p-3 rounded-lg">
               <p className="text-xs text-gray-400">Balance</p>
-              <p className="text-red-400">{formatCurrency(active.balance)}</p>
+              <p className="text-red-400">
+                {formatCurrency(active.balance)}
+              </p>
             </div>
           </div>
 
           {/* LOAN INFO */}
           <div className="bg-gray-800 p-4 rounded-lg text-sm space-y-1">
             <p>Amount: {formatCurrency(active.amount)}</p>
+
+            <p>
+              Interest:{" "}
+              <span className="text-yellow-400">
+                {formatCurrency(active.interestAmount || 0)}
+              </span>
+            </p>
+
+            <p>
+              Total Repayment:{" "}
+              <span className="text-green-400">
+                {formatCurrency(active.totalRepayment || 0)}
+              </span>
+            </p>
+
             <p>Duration: {active.durationWeeks} weeks</p>
-            <p>Due Date: {active.dueDate ? new Date(active.dueDate).toDateString() : "Not set"}</p>
+
+            <p>
+              Due Date:{" "}
+              {active.dueDate
+                ? new Date(active.dueDate).toDateString()
+                : "Not set"}
+            </p>
           </div>
 
-          {/* PROCESSING FEE BLOCK */}
+          {/* PROCESSING FEE */}
           {active.status === "awaiting_fee" && !active.isFeePaid && (
             <div className="bg-orange-500/10 border border-orange-500/20 p-4 rounded-lg">
               <p className="text-sm mb-2">
@@ -213,7 +239,7 @@ const[repay,setRepay]=useState(false)
           {/* REPAY BUTTON */}
           {active.isDisbursed && active.balance > 0 && (
             <button
-            onClick={()=>setRepay(true)}
+              onClick={() => setRepay(true)}
               className="w-full bg-blue-600 hover:bg-blue-500 py-2 rounded-lg"
             >
               Pay Loan ({formatCurrency(active.balance)})
@@ -223,7 +249,7 @@ const[repay,setRepay]=useState(false)
         </motion.div>
       )}
 
-      {/* MODAL */}
+      {/* MODALS */}
       {fee && (
         <ProcessingFee
           loan={active}
@@ -231,6 +257,7 @@ const[repay,setRepay]=useState(false)
           refresh={fetchActiveLoans}
         />
       )}
+
       {repay && (
         <RepaymentModal
           loan={active}

@@ -3,6 +3,7 @@ import UserModel from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { isMpesaCodeUsed } from "../utils/isMpesaCodeUsed.js";
 import { formatPhone } from "../utils/formatPhone.js";
+import { calculateLoan } from "../utils/calculateLoan.js";
 
 export async function applyLoanOnline(req, res) {
   try {
@@ -36,20 +37,25 @@ export async function applyLoanOnline(req, res) {
         message: "You already have an active loan"
       });
     }
+    
+const { interest, totalRepayment } = calculateLoan(amount, durationWeeks);
 
     // CREATE LOAN
-    const loan = await LoanModel.create({
-      user: clientId,
-      amount,
-      durationWeeks,
-      status: "awaiting_fee",
-      feeStatus: "pending",
-      isFeePaid: false,
-      paymentVerified: false,
-      totalRepayment: 0,
-      balance: 0,
-      amountPaid: 0
-    });
+const loan = await LoanModel.create({
+  user: clientId,
+  amount,
+  durationWeeks,
+  status: "awaiting_fee",
+  feeStatus: "pending",
+  isFeePaid: false,
+  paymentVerified: false,
+
+  totalRepayment,
+  balance: 0,
+  amountPaid: 0,
+
+  interestAmount: interest 
+});
 
     return res.status(200).json({
       success: true,
@@ -127,22 +133,27 @@ if (loanActive) {
       });
     }
 
-    // ================= CREATE LOAN =================
-    const loan = await LoanModel.create({
-      user: client._id,
-      agent: agentId,
-      amount,
-      durationWeeks,
-      mpesaCode,
-      status: "pending_approval",
-      feeStatus: "verified",
-      isFeePaid: true,
-      paymentVerified: true,
-      totalRepayment: amount,
-      balance: 0,
-      amountPaid: 0
-    });
+        // ================= CREATE LOAN =================
+  
+const { interest, totalRepayment } = calculateLoan(amount, durationWeeks);
 
+const loan = await LoanModel.create({
+  user: client._id,
+  agent: agentId,
+  amount,
+  durationWeeks,
+  mpesaCode,
+
+  status: "pending_approval",
+  feeStatus: "verified",
+  isFeePaid: true,
+  paymentVerified: true,
+
+  interestAmount: interest,
+  totalRepayment,
+  balance: totalRepayment,
+  amountPaid: 0
+});
     return res.status(200).json({
       success: true,
       data: loan
@@ -332,18 +343,15 @@ export async function disburseLoan(req, res) {
         if (loan.status !== "approved") {
             return res.status(409).json({ message: "Must be approved first" });
         }
+      loan.status = "disbursed";
+      loan.isDisbursed = true;
+      loan.disbursedAt = new Date();
 
-        loan.status = "disbursed";
-        loan.isDisbursed = true;
-        loan.disbursedAt = new Date();
-        loan.totalRepayment = loan.amount;
-        loan.balance = loan.amount;
-        loan.amountPaid = 0;
-        loan.repaymentStatus = "not_started";
-
-        loan.dueDate = new Date(
-            Date.now() + loan.durationWeeks * 7 * 24 * 60 * 60 * 1000
-        );
+      loan.repaymentStatus = "not_started";
+      loan.amountPaid = loan.amountPaid || 0;
+      loan.dueDate = new Date(
+        Date.now() + loan.durationWeeks * 7 * 24 * 60 * 60 * 1000
+      );
 
         await loan.save();
 

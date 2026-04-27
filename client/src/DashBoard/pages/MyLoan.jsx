@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import SummaryApi from '../../common/SummaryApi'
 import Axios from '../../utils/Axios'
 import AxiosToastError from '../../utils/AxiosToastError'
-import toast from 'react-hot-toast'
 import {
   MdAttachMoney,
   MdCelebration,
   MdOutlinePendingActions,
   MdCheckCircle,
   MdError,
-  MdAccessTime
+  MdAccessTime,
+  MdTrendingUp
 } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import ProcessingFee from '../ProcessingFee'
@@ -102,7 +102,6 @@ function MyLoan() {
         </div>
       ) : !active ? (
 
-        /* NO LOAN */
         <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl text-center text-gray-400">
           No active loan found
 
@@ -118,39 +117,21 @@ function MyLoan() {
 
       ) : active.status === "repaid" ? (
 
-        /* REPAID */
         <div className="bg-green-500/10 border border-green-500/20 p-6 rounded-2xl text-center text-green-400">
           <MdCelebration size={35} className="mx-auto mb-2" />
           <p className="font-semibold">Congratulations 🎉</p>
           <p className="text-sm">You have fully repaid your loan.</p>
-
-          <Link
-            to="/clientStats/apply"
-            className="inline-block mt-4 bg-green-600 hover:bg-green-500 px-5 py-2 rounded-xl text-white"
-          >
-            Apply for another loan
-          </Link>
         </div>
 
       ) : active.status === "rejected" ? (
 
-        /* REJECTED */
         <div className="bg-red-500/10 border border-red-500/20 p-6 rounded-2xl text-center text-red-400">
           <MdError size={35} className="mx-auto mb-2" />
           <p className="font-semibold">Loan Rejected</p>
-          <p className="text-sm">Your loan application was not approved.</p>
-
-          <Link
-            to="/clientStats/apply"
-            className="inline-block mt-4 bg-green-600 hover:bg-green-500 px-5 py-2 rounded-xl text-white"
-          >
-            Apply Again
-          </Link>
         </div>
 
       ) : (
 
-        /* ACTIVE LOAN */
         <div className="space-y-5">
 
           {/* TOP CARD */}
@@ -162,6 +143,17 @@ function MyLoan() {
                 {formatCurrency(active.totalRepayment)}
               </p>
             </div>
+          </div>
+
+          {/* 🔥 INTEREST CARD (NEW) */}
+          <div className="bg-gray-900 border border-gray-800 p-4 rounded-2xl flex justify-between items-center">
+            <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <MdTrendingUp className="text-yellow-400" />
+              Interest Charged
+            </div>
+            <span className="text-yellow-400 font-semibold">
+              {formatCurrency(active.interestAmount)}
+            </span>
           </div>
 
           {/* STATUS */}
@@ -214,6 +206,20 @@ function MyLoan() {
             <div className="flex justify-between">
               <span className="text-gray-400">Loan Amount</span>
               <span>{formatCurrency(active.amount)}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-400">Interest</span>
+              <span className="text-yellow-400">
+                {formatCurrency(active.interestAmount)}
+              </span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-400">Total Repayment</span>
+              <span className="text-green-400">
+                {formatCurrency(active.totalRepayment)}
+              </span>
             </div>
 
             <div className="flex justify-between">

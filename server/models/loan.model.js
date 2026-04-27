@@ -89,7 +89,14 @@ const loanSchema = new mongoose.Schema(
   default: true,
   index: true
 },
-
+interestAmount: {
+  type: Number,
+  default: 0
+},
+interestRate: {
+  type: Number,
+  default: 0.05 // 5% per 4 weeks
+},
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
