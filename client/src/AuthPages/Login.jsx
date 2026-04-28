@@ -161,8 +161,8 @@ const Login = () => {
                 Remember me
               </label>
 
-              <span className="hover:text-green-400 cursor-pointer">
-                Forgot password?
+              <span className="hover:text-green-400 flex items-center gap-2 cursor-pointer">
+                Forgot password? <p className="italic text-red-600">(Soon)</p>
               </span>
             </div>
 
