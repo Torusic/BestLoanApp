@@ -19,18 +19,10 @@ export async function applyLoanOnline(req, res) {
     }
 
     // 🔥 ATOMIC LOCK CHECK (IMPORTANT FIX)
-    const existingLoan = await LoanModel.findOneAndUpdate(
-      {
-        user: clientId,
-        status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
-      },
-      { $setOnInsert: {} },
-      {
-        new: true,
-        upsert: false
-      }
-    );
-
+   const existingLoan = await LoanModel.findOne({
+  user: clientId,
+  status: { $in: ["awaiting_fee", "pending_approval", "approved", "disbursed"] }
+});
     if (existingLoan) {
       return res.status(400).json({
         success: false,
@@ -51,7 +43,7 @@ const loan = await LoanModel.create({
   paymentVerified: false,
 
   totalRepayment,
-  balance: 0,
+  balance: totalRepayment,
   amountPaid: 0,
 
   interestAmount: interest 
@@ -245,6 +237,7 @@ export async function approveProcessingFee(req, res) {
         loan.paymentVerified = true;
         loan.status = "approved";
         loan.approvedBy = req.userId;
+        loan.balance = loan.totalRepayment;
 
         await loan.save();
 
