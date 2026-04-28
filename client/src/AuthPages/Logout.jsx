@@ -4,6 +4,7 @@ import Axios from "../utils/Axios";
 import SummaryApi from "../common/SummaryApi";
 import toast from "react-hot-toast";
 import AxiosToastError from "../utils/AxiosToastError";
+import { IoPower } from "react-icons/io5";
 
 function Logout({ close }) {
   const [loading, setLoading] = useState(false);
@@ -49,7 +50,7 @@ function Logout({ close }) {
         {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="bg-red-100 text-red-500 p-3 rounded-full text-2xl">
-            ⏻
+            <IoPower size={20} />
           </div>
         </div>
 
