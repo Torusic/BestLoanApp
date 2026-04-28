@@ -155,8 +155,8 @@ const Login = () => {
             </div>
 
             {/* OPTIONS */}
-            <div className="flex justify-between items-center text-xs text-gray-400">
-              <label className="flex items-center gap-2 cursor-pointer">
+            <div className="flex justify-between gap-2 items-center text-xs text-gray-400">
+              <label className="flex items-center gap-1 cursor-pointer">
                 <input type="checkbox" className="accent-green-500" />
                 Remember me
               </label>
