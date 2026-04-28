@@ -43,8 +43,8 @@ function Logout({ close }) {
   };
 
   return (
-    <section className="fixed inset-0 flex items-center lg:text-xl text-xs p-3 justify-center bg-gray-900/60 z-50">
-      <div className="max-w-md w-full bg-gray-800 rounded-2xl shadow-xl p-6 text-center">
+    <section className="fixed inset-0 flex items-center lg:text-xl text-xs p-3 justify-center bg-gray-800/60 z-50">
+      <div className="max-w-md w-full bg-gray-900 rounded-2xl shadow-xl p-6 text-center">
 
         {/* Icon */}
         <div className="flex justify-center mb-4">
