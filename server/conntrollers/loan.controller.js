@@ -183,13 +183,7 @@ export async function submitProcessingFeeManually(req, res) {
     }
 
     // 🔥 FIX: mpesa check first (faster)
-    const usedMpesa = await LoanModel.findOne({ mpesaCode });
-    if (usedMpesa) {
-      return res.status(400).json({
-        success: false,
-        message: "MPESA code already used"
-      });
-    }
+
 
     if (await isMpesaCodeUsed(mpesaCode)) {
       return res.status(400).json({
