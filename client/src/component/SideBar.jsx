@@ -9,7 +9,7 @@ import { GiReceiveMoney } from "react-icons/gi";
 import { GrMoney } from "react-icons/gr";
 import { IoPeople, IoSettings } from "react-icons/io5";
 import { MdDashboard, MdHome } from "react-icons/md";
-
+import { HiOutlineLogout } from "react-icons/hi";
 function SideBar() {
   const location = useLocation();
   const role = localStorage.getItem("role") || "client";
@@ -83,6 +83,8 @@ function SideBar() {
         path: "/adminStats/settings",
         roles: ["agent","client"],
       },
+    
+
     ],
     []
   );

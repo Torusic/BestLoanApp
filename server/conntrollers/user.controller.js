@@ -191,7 +191,7 @@ export async function getAllAgents(req,res){
 //get All Agents
 export async function getAllClients(req,res){
     try {
-        const clients=await UserModel.find({role:'client'}).select('-password')
+        const clients=await UserModel.find({role:'client'}).select('-password').sort({createdAt:-1})
 
         if(!clients){
             return res.status(400).json({
@@ -473,5 +473,38 @@ export async function getUserSettingsController(req, res) {
       success: false,
       error: true,
     });
+  }
+}
+export async function logoutController(req,res){
+  try {
+    const userId=req.userId;
+
+    const cookiesOptions={
+      httpOnly:true,
+      secure:true,
+      sameSite:'None'
+    }
+
+    res.clearCookie("accessToken",cookiesOptions)
+    res.clearCookie("refreshToken",cookiesOptions)
+
+    const removeRefreshToken=await UserModel.findByIdAndUpdate(userId,{
+      refresh_token:""
+    });
+
+    return res.status(200).json({
+      message:"User logged out successfully",
+      error:false,
+      success:true
+    })
+
+
+  } catch (error) {
+    return res.status(500).json({
+      message:error.message||error,
+      success:false,
+      error:true
+    })
+    
   }
 }

@@ -5,6 +5,8 @@ import { IoPerson, IoSettings, IoShieldCheckmark } from "react-icons/io5";
 import Axios from "../../utils/Axios";
 import SummaryApi from "../../common/SummaryApi";
 import toast from "react-hot-toast";
+import { HiOutlineLogout } from "react-icons/hi";
+import Logout from "../../AuthPages/Logout";
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -14,6 +16,7 @@ const Settings = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const[logout,setLogout]=useState(false)
 
   const [data, setData] = useState({
     name: "",
@@ -211,8 +214,16 @@ const passwordStrength = getPasswordStrength(data.newPassword);
   return (
     <section className="min-h-screen bg-[#0f172a] text-white px-4 py-8">
       <div className="max-w-3xl mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold">Settings</h1>
+          <div onClick={()=>setLogout(true)} className="flex cursor-pointer items-center gap-1 text-xs">
+             Logout
+             <HiOutlineLogout size={20} />
+          </div>
 
-        <h1 className="text-xl font-semibold">Settings</h1>
+        </div>
+
+        
 
         {/* Tabs */}
         <div className="flex gap-2 overflow-x-auto scrollbar-hidden pb-2">
@@ -414,6 +425,12 @@ const passwordStrength = getPasswordStrength(data.newPassword);
 
         </div>
       </div>
+      {
+        logout&&(
+          <Logout
+          close={()=>setLogout(false)}/>
+        )
+      }
     </section>
   );
 };

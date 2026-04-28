@@ -1,5 +1,5 @@
 import { Router } from "express";
-import  { adminAddAgents, adminDashboardController, changePasswordController, getAllAgents, getAllClients, getUserSettingsController, loginController, registerController, toggleNotificationController, updateProfileController } from "../conntrollers/user.controller.js";
+import  { adminAddAgents, adminDashboardController, changePasswordController, getAllAgents, getAllClients, getUserSettingsController, loginController, logoutController, registerController, toggleNotificationController, updateProfileController } from "../conntrollers/user.controller.js";
 import { auth, authorizeRoles } from "../middleware/auth.js";
 
 
@@ -7,6 +7,7 @@ const userRouter=Router()
 
 userRouter.post('/register',registerController)
 userRouter.post('/login',loginController)
+userRouter.get('/logout',auth,logoutController)
 userRouter.post('/admin/addAgent',auth,authorizeRoles('admin'),adminAddAgents)
 userRouter.get('/admin/adminStats',auth,authorizeRoles('admin'),adminDashboardController)
 userRouter.get('/admin/allAgents',auth,authorizeRoles('admin'),getAllAgents)

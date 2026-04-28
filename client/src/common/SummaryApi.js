@@ -11,6 +11,11 @@ const SummaryApi = {
     url: "/api/user/login",
     method: "post",
   },
+  logout: {
+    url: "/api/user/logout",
+    method: "get",
+  },
+
 
   // ADMIN
   getStats: {
