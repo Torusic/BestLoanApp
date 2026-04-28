@@ -26,13 +26,20 @@ const repaymentSchema = new mongoose.Schema(
       required: true
     },
 
-    mpesaCode: {
-      type: String,
-      required: true,
-      unique: true, // prevents duplicate transactions
-      index: true
-    },
+   mpesaCode: {
+  type: String,
+  trim: true,
+  uppercase: true,
+  sparse: true,
 
+  validate: {
+    validator: function (v) {
+      // allows null OR valid M-Pesa format
+      return !v || /^[A-Z0-9]{10}$/.test(v);
+    },
+    message: "Invalid M-Pesa code format"
+  }
+},
     paybillNumber: {
       type: Number,
       default: 852648

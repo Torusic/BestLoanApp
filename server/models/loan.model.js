@@ -78,12 +78,21 @@ const loanSchema = new mongoose.Schema(
       type: String
     },
 
-    mpesaCode: {
-      type: String,
-      unique: true,
-      sparse: true,
-      index: true
+   mpesaCode: {
+  type: String,
+  trim: true,
+  uppercase: true,
+  sparse: true,
+
+  validate: {
+    validator: function (v) {
+      // allows null OR valid M-Pesa format
+      return !v || /^[A-Z0-9]{10}$/.test(v);
     },
+    message: "Invalid M-Pesa code format"
+  }
+},
+  
     isActive: {
   type: Boolean,
   default: true,

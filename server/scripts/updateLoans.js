@@ -1,44 +1,73 @@
 import mongoose from "mongoose";
 import LoanModel from "../models/loan.model.js";
-import dotenv from 'dotenv'
+import RepaymentModel from "../models/repayment.model.js";
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 const MONGO_URL = process.env.MONGO_URI;
 
-async function updateLoans() {
+// 🔧 normalize function
+const normalizeMpesaCode = (code) => {
+  if (!code) return null;
+  return code.trim().toUpperCase();
+};
+
+async function updateMpesaCodes() {
   try {
     await mongoose.connect(MONGO_URL);
+    console.log("🔄 Connected to DB");
 
-    const loans = await LoanModel.find({});
+    // =========================
+    // 1. UPDATE LOANS
+    // =========================
+    const loans = await LoanModel.find({ mpesaCode: { $exists: true, $ne: null } });
+
+    let loanCount = 0;
 
     for (const loan of loans) {
+      const normalized = normalizeMpesaCode(loan.mpesaCode);
 
-      const ratePer4Weeks = 0.05;
-      const periods = loan.durationWeeks / 4;
+      // skip if already clean
+      if (loan.mpesaCode === normalized) continue;
 
-      const interest = loan.amount * ratePer4Weeks * periods;
-      const totalRepayment = loan.amount + interest;
-
-      // update only financial fields
-      loan.interestAmount = interest;
-      loan.totalRepayment = totalRepayment;
-
-      // fix balance ONLY if loan not fully repaid
-      if (loan.status !== "repaid") {
-        loan.balance = totalRepayment - (loan.amountPaid || 0);
-      }
-
+      loan.mpesaCode = normalized;
       await loan.save();
+      loanCount++;
     }
 
-    console.log("✅ All existing loans updated successfully");
-    process.exit();
+    console.log(`✅ Loans updated: ${loanCount}`);
+
+    // =========================
+    // 2. UPDATE REPAYMENTS
+    // =========================
+    const repayments = await RepaymentModel.find({
+      mpesaCode: { $exists: true, $ne: null }
+    });
+
+    let repaymentCount = 0;
+
+    for (const rep of repayments) {
+      const normalized = normalizeMpesaCode(rep.mpesaCode);
+
+      // skip if already clean
+      if (rep.mpesaCode === normalized) continue;
+
+      rep.mpesaCode = normalized;
+      await rep.save();
+      repaymentCount++;
+    }
+
+    console.log(`✅ Repayments updated: ${repaymentCount}`);
+
+    await mongoose.disconnect();
+    console.log("🚀 Migration complete");
+    process.exit(0);
 
   } catch (error) {
-    console.error("❌ Error updating loans:", error);
+    console.error("❌ Migration failed:", error);
     process.exit(1);
   }
 }
 
-updateLoans();
+updateMpesaCodes();
