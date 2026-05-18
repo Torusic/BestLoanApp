@@ -6,7 +6,7 @@ export const auth=async(req,res,next)=>{
         
         if(!token){
         return res.status(401).json({
-            message:"Provide Token",
+            message:"Session or token expired!!! Kindly Login again.",
             error: true,
             success:false
         })
